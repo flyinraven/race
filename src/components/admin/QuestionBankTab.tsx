@@ -51,6 +51,7 @@ interface QuestionBankTabProps {
   setCustomGenSeqCount: (val: number | '') => void;
   customGenOsceCount: number | '';
   setCustomGenOsceCount: (val: number | '') => void;
+  isGeneratingCustom: boolean;
   isGeneratingBatch: boolean;
   batchProgress: any;
   handleCustomGenerate: () => void;
@@ -121,6 +122,7 @@ export default function QuestionBankTab({
   setCustomGenSeqCount,
   customGenOsceCount,
   setCustomGenOsceCount,
+  isGeneratingCustom,
   isGeneratingBatch,
   batchProgress,
   handleCustomGenerate,
@@ -217,7 +219,7 @@ export default function QuestionBankTab({
           <div className="flex flex-wrap gap-4">
             <button 
               onClick={handleCustomGenerate}
-              disabled={isGeneratingBatch}
+              disabled={isGeneratingCustom || isGeneratingBatch}
               className="flex-grow bg-indigo-600 text-white px-4 py-3 rounded-lg font-medium hover:bg-indigo-700 transition disabled:opacity-50 min-w-[200px] flex items-center justify-center gap-2"
             >
               <Cpu className="w-5 h-5" /> Generate Questions
@@ -229,7 +231,7 @@ export default function QuestionBankTab({
               <FileText className="w-5 h-5" /> Download Entire Question Bank (JSON)
             </button>
           </div>
-          {isGeneratingBatch && (
+          {isGeneratingCustom && (
             <div className="mt-6 p-4 bg-indigo-50 border border-indigo-100 rounded-lg">
               <div className="flex items-center gap-3 mb-2">
                 <Loader2 className="w-5 h-5 text-indigo-600 animate-spin" />
@@ -336,10 +338,10 @@ export default function QuestionBankTab({
             </select>
             <button 
               onClick={() => handleBatchGenerate(selectedBatchType)}
-              disabled={isGeneratingBatch}
+              disabled={isGeneratingCustom || isGeneratingBatch}
               className="w-full sm:w-auto bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-indigo-700 transition disabled:opacity-50 shadow-sm flex items-center justify-center gap-2"
             >
-              <Cpu className="w-5 h-5" />
+              {isGeneratingBatch ? <Loader2 className="w-5 h-5 animate-spin" /> : <Cpu className="w-5 h-5" />}
               {isGeneratingBatch ? 'Generating...' : 'Start Generation'}
             </button>
           </div>

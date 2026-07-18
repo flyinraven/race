@@ -171,6 +171,7 @@ export default function AdminDashboard() {
 
   // Batch Generation State
   const [isGeneratingBatch, setIsGeneratingBatch] = useState(false);
+  const [isGeneratingCustom, setIsGeneratingCustom] = useState(false);
   const [batchProgress, setBatchProgress] = useState<{ current: number, total: number, waiting?: boolean, waitTime?: number, waitMessage?: string }>({ current: 0, total: 0 });
   const [selectedBatchType, setSelectedBatchType] = useState<'paper1' | 'paper2' | 'paper3' | 'paper4' | 'osce' | 'full_exam'>('paper1');
   const [isPaused, setIsPaused] = useState(false);
@@ -418,7 +419,7 @@ export default function AdminDashboard() {
   const handleCustomGenerate = async () => {
     setIsPaused(false);
     isPausedRef.current = false;
-    setIsGeneratingBatch(true);
+    setIsGeneratingCustom(true);
     setUploadStatus('');
     try {
       const TOPICS = [
@@ -550,7 +551,7 @@ export default function AdminDashboard() {
     } catch (e) {
       customAlert(`Error: ${e.message}`);
     } finally {
-      setIsGeneratingBatch(false);
+      setIsGeneratingCustom(false);
       setBatchProgress({ current: 0, total: 0, waiting: false });
     }
   };
@@ -1048,6 +1049,7 @@ export default function AdminDashboard() {
             setCustomGenSeqCount={setCustomGenSeqCount}
             customGenOsceCount={customGenOsceCount}
             setCustomGenOsceCount={setCustomGenOsceCount}
+            isGeneratingCustom={isGeneratingCustom}
             isGeneratingBatch={isGeneratingBatch}
             batchProgress={batchProgress}
             handleCustomGenerate={handleCustomGenerate}

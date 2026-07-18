@@ -235,7 +235,7 @@ export default function QuestionBankTab({
                 <Loader2 className="w-5 h-5 text-indigo-600 animate-spin" />
                 <span className="font-medium text-indigo-900">
                   {batchProgress.waiting 
-                    ? `Rate limit reached. Waiting ${batchProgress.waitTime}s before retrying...` 
+                    ? `Rate limit reached. ${batchProgress.waitMessage ? `(${batchProgress.waitMessage}) ` : ''}Waiting ${batchProgress.waitTime}s before retrying...` 
                     : `Generating custom questions (${batchProgress.current} / ${batchProgress.total})...`
                   }
                 </span>
@@ -350,7 +350,7 @@ export default function QuestionBankTab({
                 {isPaused ? (
                   <span>Generation Paused. Click Resume to continue.</span>
                 ) : batchProgress.waiting ? (
-                  <span>API Quota Hit. Waiting to resume: {batchProgress.waitTime}s... please do not close this window.</span>
+                  <span>API Quota Hit. {batchProgress.waitMessage ? `(${batchProgress.waitMessage}) ` : ''}Waiting to resume: {batchProgress.waitTime}s... please do not close this window.</span>
                 ) : (
                   <span>Generating {batchProgress.current} of {batchProgress.total} questions... please do not close this window.</span>
                 )}

@@ -522,7 +522,7 @@ export default function AdminDashboard() {
             if (remainingSpecs.length > 0) {
               await sleep(2000);
             }
-          } catch (err) {
+          } catch (err: any) {
              const errorMessage = typeof err === 'string' ? err.toLowerCase() : JSON.stringify(err, Object.getOwnPropertyNames(err)).toLowerCase();
              if (errorMessage.includes('429') || errorMessage.includes('quota') || errorMessage.includes('too many requests') || errorMessage.includes('resource_exhausted')) {
                 retryCount++;
@@ -530,9 +530,9 @@ export default function AdminDashboard() {
                   throw new Error(`Google AI API Quota Error after 20 retries. Try again later.`);
                 }
                 const backoffSeconds = 30 + (retryCount * 10);
-                setBatchProgress(prev => ({ ...prev, waiting: true, waitTime: backoffSeconds }));
+                setBatchProgress(prev => ({ ...prev, waiting: true, waitTime: backoffSeconds, waitMessage: err.message || 'Rate limit or quota hit' }));
                 await sleep(backoffSeconds * 1000);
-                setBatchProgress(prev => ({ ...prev, waiting: false, waitTime: undefined }));
+                setBatchProgress(prev => ({ ...prev, waiting: false, waitTime: undefined, waitMessage: undefined }));
                 continue;
              }
              
@@ -661,19 +661,19 @@ export default function AdminDashboard() {
              const errorMessage = typeof err === 'string' ? err.toLowerCase() : JSON.stringify(err, Object.getOwnPropertyNames(err)).toLowerCase();
              if (false) {
                  throw new Error(`Google Cloud Billing Quota Exhausted: Please check your Google Cloud Console to increase your quota or set up billing.`);
-             } else if (errorMessage.includes('429') || errorMessage.includes('quota') || errorMessage.includes('too many requests') || errorMessage.includes('resource_exhausted')) {
-                retryCount++;
-                if (retryCount > 6) {
-                  throw new Error("Google AI API Quota Exceeded after multiple retries. You may have hit your daily free tier limit. Please wait until tomorrow, or use the 'Load Pre-Generated Full Exams' button instead.");
-                }
-                const waitTime = 60 + (retryCount * 5); 
-                console.warn(`Rate limit hit. Retrying (${retryCount}/6) in ${waitTime} seconds...`);
-                setBatchProgress(prev => ({ ...prev, waiting: true, waitTime }));
-                for (let s = waitTime; s > 0; s--) {
-                   setBatchProgress(prev => ({ ...prev, waiting: true, waitTime: s }));
-                   await sleep(1000);
-                }
-                setBatchProgress(prev => ({ ...prev, waiting: false }));
+              } else if (errorMessage.includes('429') || errorMessage.includes('quota') || errorMessage.includes('too many requests') || errorMessage.includes('resource_exhausted')) {
+                 retryCount++;
+                 if (retryCount > 6) {
+                   throw new Error("Google AI API Quota Exceeded after multiple retries. You may have hit your daily free tier limit. Please wait until tomorrow, or use the 'Load Pre-Generated Full Exams' button instead.");
+                 }
+                 const waitTime = 60 + (retryCount * 5); 
+                 console.warn(`Rate limit hit. Retrying (${retryCount}/6) in ${waitTime} seconds...`);
+                 setBatchProgress(prev => ({ ...prev, waiting: true, waitTime, waitMessage: err.message || 'Rate limit or quota hit' }));
+                 for (let s = waitTime; s > 0; s--) {
+                    setBatchProgress(prev => ({ ...prev, waiting: true, waitTime: s, waitMessage: err.message || 'Rate limit or quota hit' }));
+                    await sleep(1000);
+                 }
+                 setBatchProgress(prev => ({ ...prev, waiting: false, waitMessage: undefined }));
              } else {
                 retryCount++;
                 if (retryCount > 3) {

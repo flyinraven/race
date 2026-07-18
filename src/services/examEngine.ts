@@ -29,158 +29,31 @@ const cleanJsonText = (str: string) => {
 };
 
 async function callAI(parts: any[], config: any, modelOverride?: string) {
-  const { provider, apiKey, modelName } = getAiConfig();
+  const customKey = localStorage.getItem('ranzco_api_key');
+  const provider = localStorage.getItem('ranzco_ai_provider') || 'google';
+  const modelName = localStorage.getItem('ranzco_ai_model') || 'gemini-2.5-pro';
   const selectedModel = modelOverride || modelName;
-  
-  // Format parts properly for the @google/genai SDK
+
   const formattedParts = parts.map(p => {
     if (typeof p === 'string') return { text: p };
     return p;
   });
 
-  if (provider === 'google') {
-    const ai = getAiClient();
-    try {
-      const response = await ai.models.generateContent({
-        model: selectedModel,
-        contents: formattedParts,
-        config: config
-      });
-      return response.text;
-    } catch (e: any) {
-      const errorStr = typeof e === 'string' ? e : JSON.stringify(e, Object.getOwnPropertyNames(e));
-      if (errorStr.includes('429') || errorStr.toLowerCase().includes('quota') || errorStr.toLowerCase().includes('resource_exhausted')) {
-        throw new Error(`[429 Quota Exceeded] ${errorStr}`);
-      }
-      throw new Error(`API Error: ${errorStr}`);
-    }
-  }
-  
-  if (!apiKey) {
-    throw new Error(`API Key required for provider: ${provider}`);
-  }
-
-  // Handle OpenAI / DeepSeek format
-  if (provider === 'openai' || provider === 'deepseek') {
-    const baseUrl = provider === 'deepseek' ? 'https://api.deepseek.com/chat/completions' : 'https://api.openai.com/v1/chat/completions';
-    
-    // Transform parts to OpenAI format
-    let userMessageContent: any[] | string = [];
-    if (typeof parts === 'string') {
-      userMessageContent = parts;
-    } else if (Array.isArray(parts)) {
-      userMessageContent = parts.map(p => {
-        if (typeof p === 'string') return { type: 'text', text: p };
-        if (p?.inlineData?.mimeType === 'application/pdf') {
-          // OpenAI currently won't support PDF easily without files API, but for compatibility let's just send as text or warn
-          throw new Error("PDF processing currently only fully supported with Google / Anthropic. Use JSON upload for OpenAI/Deepseek.");
-        }
-        if (p?.inlineData?.mimeType?.startsWith('image/')) {
-           return { type: 'image_url', image_url: { url: `data:${p.inlineData.mimeType};base64,${p.inlineData.data}` } };
-        }
-        return { type: 'text', text: JSON.stringify(p) };
-      });
-      // If it's a single string element, just send the string
-      if (userMessageContent.length === 1 && userMessageContent[0].type === 'text') {
-         userMessageContent = userMessageContent[0].text;
-      }
-    }
-
-    const isO1Mode = modelName.startsWith('o1') || modelName.startsWith('o3');
-
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`
-    };
-
-    const messages = [];
-    if (config.systemInstruction) {
-      // O-series models use 'developer' or just integrate into user prompt
-      messages.push({ role: isO1Mode ? 'developer' : 'system', content: config.systemInstruction });
-    }
-    messages.push({ role: 'user', content: userMessageContent });
-
-    const body: any = {
-      model: modelName,
-      messages
-    };
-
-    if (config.responseMimeType === 'application/json' && !isO1Mode) {
-      body.response_format = { type: 'json_object' };
-    }
-    
-    // O-series don't support temperature well often, but let's pass if not o1
-    if (config.temperature !== undefined && !isO1Mode) {
-      body.temperature = config.temperature;
-    }
-
-    const res = await fetch(baseUrl, {
+  try {
+    const data = await apiFetch('/ai/generate', {
       method: 'POST',
-      headers,
-      body: JSON.stringify(body)
-    });
-
-    if (!res.ok) {
-      let errTxt = '';
-      try { errTxt = await res.text(); } catch(e) {}
-      throw new Error(`API Error ${res.status}: ${errTxt}`);
-    }
-    
-    const data = await res.json();
-    return cleanJsonText(data.choices?.[0]?.message?.content || "");
-  }
-  
-  if (provider === 'anthropic') {
-    // Anthropic API might have CORS issues from browser, but using standard fetch we'll try
-    // We add anthropic-dangerously-allow-browser or just use standard headers (requires proxy if blocked)
-    // Fortunately Anthropic CORS might work if we just fetch
-    let userMessageContent: any[] = [];
-    
-    (Array.isArray(parts) ? parts : [parts]).forEach(p => {
-       if (typeof p === 'string') {
-          userMessageContent.push({ type: 'text', text: p });
-       } else if (p?.inlineData?.mimeType === 'application/pdf') {
-          userMessageContent.push({ 
-            type: 'document', 
-            source: { type: 'base64', media_type: 'application/pdf', data: p.inlineData.data }
-          });
-       } else if (p?.inlineData?.mimeType?.startsWith('image/')) {
-          userMessageContent.push({ 
-            type: 'image', 
-            source: { type: 'base64', media_type: p.inlineData.mimeType, data: p.inlineData.data }
-          });
-       }
-    });
-
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerously-allow-browser': 'true' // Supported by their edge workers if we send headers
-      },
       body: JSON.stringify({
-        model: modelName,
-        max_tokens: 4096,
-        system: config.systemInstruction,
-        messages: [{ role: 'user', content: userMessageContent }],
-        temperature: config.temperature
+        parts: formattedParts,
+        config,
+        modelOverride: selectedModel,
+        provider,
+        customKey
       })
     });
-
-    if (!res.ok) {
-      let errTxt = '';
-      try { errTxt = await res.text(); } catch(e) {}
-      throw new Error(`Anthropic Error ${res.status}: ${errTxt}`);
-    }
-
-    const data = await res.json();
-    const responseText = data.content?.map((c: any) => c.text).join('\n') || "";
-    return cleanJsonText(responseText);
+    return cleanJsonText(data.text || "");
+  } catch (e: any) {
+    throw new Error(e.message || "AI generation failed");
   }
-  
-  throw new Error("Unknown AI Provider");
 }
 
 export async function getExamGuidelines(): Promise<string> {

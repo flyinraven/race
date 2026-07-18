@@ -6,6 +6,18 @@ import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import fs from 'fs';
 import path from 'path';
+import { GoogleGenAI } from '@google/genai';
+
+let aiInstance: GoogleGenAI | null = null;
+let currentKey = '';
+
+function getAiClient(apiKey: string) {
+  if (!aiInstance || currentKey !== apiKey) {
+    aiInstance = new GoogleGenAI({ apiKey });
+    currentKey = apiKey;
+  }
+  return aiInstance;
+}
 
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key-change-in-prod';
@@ -429,6 +441,86 @@ router.post('/admin/upload-image', authenticate, requireAdmin, async (req, res) 
   } catch (e: any) {
     console.error('Image upload error:', e);
     res.status(500).json({ error: e.message });
+  }
+});
+
+router.post('/ai/generate', authenticate, async (req: any, res) => {
+  try {
+    const { parts, config, modelOverride, provider, customKey } = req.body;
+    
+    // Retrieve API key: custom client override key or Render environment variable
+    const apiKey = customKey || process.env.GEMINI_API_KEY || '';
+    if (!apiKey) {
+      return res.status(400).json({ error: 'GEMINI_API_KEY is not configured on Render. Please configure it in your Render dashboard Environment tab.' });
+    }
+
+    const selectedModel = modelOverride || 'gemini-2.5-pro';
+
+    // Route to Google GenAI SDK if google provider
+    if (provider === 'google' || !provider) {
+      const ai = getAiClient(apiKey);
+      const response = await ai.models.generateContent({
+        model: selectedModel,
+        contents: parts,
+        config: config
+      });
+      return res.json({ text: response.text });
+    }
+    
+    // Support OpenAI / DeepSeek fallbacks if configured in client
+    if (provider === 'openai' || provider === 'deepseek') {
+      const baseUrl = provider === 'deepseek' ? 'https://api.deepseek.com/chat/completions' : 'https://api.openai.com/v1/chat/completions';
+      
+      let userMessageContent: any[] | string = [];
+      if (parts.length === 1 && typeof parts[0] === 'string') {
+        userMessageContent = parts[0];
+      } else {
+        userMessageContent = parts.map((p: any) => {
+          if (p.text) return { type: 'text', text: p.text };
+          if (p.inlineData) {
+            return {
+              type: 'image_url',
+              image_url: { url: `data:${p.inlineData.mimeType};base64,${p.inlineData.data}` }
+            };
+          }
+          return { type: 'text', text: String(p) };
+        });
+      }
+
+      const messages = [];
+      if (config?.systemInstruction) {
+        messages.push({ role: 'system', content: config.systemInstruction });
+      }
+      messages.push({ role: 'user', content: userMessageContent });
+
+      const response = await fetch(baseUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: selectedModel,
+          messages,
+          temperature: config?.temperature ?? 0.7,
+          response_format: config?.responseMimeType === 'application/json' ? { type: 'json_object' } : undefined
+        })
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`OpenAI/DeepSeek API Error: ${errText}`);
+      }
+
+      const resData = await response.json();
+      const text = resData.choices?.[0]?.message?.content || '';
+      return res.json({ text });
+    }
+
+    res.status(400).json({ error: `Unsupported provider: ${provider}` });
+  } catch (e: any) {
+    console.error('Proxy AI execution failed:', e);
+    res.status(500).json({ error: e.message || 'AI Proxy failed.' });
   }
 });
 

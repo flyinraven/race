@@ -300,24 +300,22 @@ For SEQ:
 For OSCE:
 - Rules: Simulate a real RANZCO OSCE verbal station. Each station is exactly 9 minutes, examiner-led.
 - The OSCE station MUST follow this strict real-world RANZCO format:
-  * The scenario is a PATIENT ENCOUNTER card — a brief description of who the candidate meets (e.g. "You are presented with a 72-year-old patient referred by their GP for bilateral blurred vision. Slit-lamp and fundus images are below."). NOT a full essay.
-  * Use "![Image](SEARCH_IMAGE:1_or_2_word_query)" to embed ONE relevant clinical image (e.g. fundus photo, slit-lamp image, OCT, VF).
-  * Sub-questions are asked VERBALLY by the examiner — short, direct, clinical questions.
-  * EXACTLY 4-6 sub-questions, escalating in structure: History/Examination → Diagnosis → Investigations → Management → Complications/Prognosis.
-  * Each sub-question must have mark allocation in brackets (e.g. "(2 marks)", "(4 marks)").
+  * The scenario is a PATIENT ENCOUNTER card. It describes the patient history (age, gender, optometrist findings) and states the examiner's initial instructions to the candidate, e.g. "Examiner: This is Julie, a 48-year-old female. Please perform a posterior segment examination and verbally state your findings."
+  * Use "![Image](SEARCH_IMAGE:1_or_2_word_query)" to embed ONE relevant clinical image (e.g. fundus photo, slit-lamp, OCT, VF, FFA) to examine.
+  * Sub-questions are asked VERBALLY by the examiner and represent the following strict clinical progression:
+    a) Description of findings: Candidate's verbal list of signs (e.g. "What key findings do you see, and what negative signs differentiate this from choroidal melanoma?") [3 marks]
+    b) Differential Diagnosis & Primary Diagnosis (e.g. "What is your diagnosis and the key differentials?") [2 marks]
+    c) Investigations: Ancillary tests needed, e.g. FFA, ICG, visual field [2 marks]
+    d) Management algorithm (acute and chronic, surgical options, referrals) [3 marks]
+    e) Complications, prognosis, or patient counselling [2 marks]
+  * Each sub-question must have mark allocation in brackets (e.g. "(2 marks)", "(3 marks)").
   * Total marks for the station = 10-15 marks.
   * Model answers for OSCE must be CONCISE spoken-style responses (as a candidate would say them aloud to the examiner), not long essays.
-  * Example sub-question progression for a retinal detachment station:
-    a) "What are the two most important symptoms this patient describes and why are they significant? (2 marks)"
-    b) "Describe the key findings on fundoscopy you would expect in this patient. (3 marks)"
-    c) "What is your diagnosis and the most likely underlying mechanism? (2 marks)"
-    d) "Outline your immediate management plan for this patient. (3 marks)"
-    e) "What factors would predict a poorer visual outcome after surgery? (2 marks)"
 
 Format: Raw JSON array of Question Objects:
 [
   {
-    "scenario": "**OSCE Station — [Topic]:**\\n\\nYou are shown to a [age]-year-old [patient description]. [1-2 sentence clinical context]\\n\\n![Image](SEARCH_IMAGE:<query>)",
+    "scenario": "**OSCE Station — [Topic]:**\\n\\n**Patient History:** [age]-year-old [gender] presenting with [history].\\n\\n**Examiner Instructions:** \\\"This is [Name]. Please perform a [examination type] segment examination and verbally state your findings.\\\"\\n\\n![Image](SEARCH_IMAGE:<query>)",
     "subQuestions": [
       { "id": "q1", "text": "a) [Question text]? ([N] marks)", "modelAnswer": "Concise spoken-style answer..." },
       { "id": "q2", "text": "b) [Question text]? ([N] marks)", "modelAnswer": "Concise spoken-style answer..." }

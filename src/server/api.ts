@@ -459,7 +459,7 @@ router.post('/ai/generate', authenticate, async (req: any, res) => {
         } catch (e: any) {
           lastError = e;
           const msg = e.message || '';
-          const isRetryable = msg.includes('503') || msg.includes('demand') || msg.includes('rate') || msg.includes('UNAVAILABLE') || msg.includes('limit') || msg.includes('overloaded');
+          const isRetryable = msg.includes('503') || msg.includes('demand') || msg.includes('rate') || msg.includes('UNAVAILABLE') || msg.includes('limit') || msg.includes('overloaded') || msg.includes('quota') || msg.includes('exhausted') || msg.includes('RESOURCE_EXHAUSTED') || msg.includes('429');
           if (isRetryable && attempt < maxAttempts) {
             console.warn(`Google API call failed (Attempt ${attempt}/${maxAttempts}). Retrying in ${attempt * 2}s...`, msg);
             await new Promise(r => setTimeout(r, attempt * 2000));
@@ -529,7 +529,7 @@ router.post('/ai/generate', authenticate, async (req: any, res) => {
         } catch (e: any) {
           lastError = e;
           const msg = e.message || '';
-          const isRetryable = msg.includes('503') || msg.includes('demand') || msg.includes('rate') || msg.includes('UNAVAILABLE') || msg.includes('limit') || msg.includes('overloaded') || msg.includes('429');
+          const isRetryable = msg.includes('503') || msg.includes('demand') || msg.includes('rate') || msg.includes('UNAVAILABLE') || msg.includes('limit') || msg.includes('overloaded') || msg.includes('429') || msg.includes('quota') || msg.includes('exhausted') || msg.includes('RESOURCE_EXHAUSTED');
           if (isRetryable && attempt < maxAttempts) {
             console.warn(`${provider.toUpperCase()} API call failed (Attempt ${attempt}/${maxAttempts}). Retrying in ${attempt * 2}s...`, msg);
             await new Promise(r => setTimeout(r, attempt * 2000));
@@ -598,7 +598,7 @@ router.post('/ai/generate', authenticate, async (req: any, res) => {
         } catch (e: any) {
           lastError = e;
           const msg = e.message || '';
-          const isRetryable = msg.includes('503') || msg.includes('demand') || msg.includes('rate') || msg.includes('UNAVAILABLE') || msg.includes('limit') || msg.includes('overloaded') || msg.includes('429');
+          const isRetryable = msg.includes('503') || msg.includes('demand') || msg.includes('rate') || msg.includes('UNAVAILABLE') || msg.includes('limit') || msg.includes('overloaded') || msg.includes('429') || msg.includes('quota') || msg.includes('exhausted') || msg.includes('RESOURCE_EXHAUSTED');
           if (isRetryable && attempt < maxAttempts) {
             console.warn(`Anthropic API call failed (Attempt ${attempt}/${maxAttempts}). Retrying in ${attempt * 2}s...`, msg);
             await new Promise(r => setTimeout(r, attempt * 2000));

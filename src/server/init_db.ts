@@ -97,6 +97,7 @@ export async function initDb() {
     await query(`ALTER TABLE profiles ADD COLUMN IF NOT EXISTS tier TEXT DEFAULT 'free'`);
     await query(`ALTER TABLE profiles ADD COLUMN IF NOT EXISTS tier_expiry TIMESTAMP WITH TIME ZONE`);
     await query(`ALTER TABLE profiles ADD COLUMN IF NOT EXISTS joined TEXT`);
+    await query(`ALTER TABLE profiles ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP`);
 
     // Migrate data from any old camelCase columns if they exist
     await query(`

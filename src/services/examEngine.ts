@@ -342,8 +342,8 @@ Format: Raw JSON Object ONLY (no markdown wraps, no \`\`\`json):
 }
 
 MODE 3: [PARSE_PDF_BANK]
-Input: PDF exam questions & examiner reports. Default Year/Paper.
-Action: Parse into standard JSON structure. Infer missing fields. Include modelAnswers based on examiner reports where available.
+Input: PDF exam questions & examiner reports.
+Action: Parse into standard JSON structure. You MUST automatically extract the exam year (e.g., "2023") and paper/semester (e.g., "Paper 1" or "Semester 2") from the document header or text. If not found, default to "2024" and "Past Exam". Include modelAnswers based on examiner reports where available.
 Format: Raw JSON array:
 [
   {

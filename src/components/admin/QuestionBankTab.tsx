@@ -58,10 +58,6 @@ interface QuestionBankTabProps {
   handleExportBank: () => void;
   
   // Upload State
-  uploadDefaultYear: string;
-  setUploadDefaultYear: (val: string) => void;
-  uploadDefaultPaper: string;
-  setUploadDefaultPaper: (val: string) => void;
   fileInputRef: React.RefObject<HTMLInputElement | null>;
   isUploading: boolean;
   handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -122,10 +118,6 @@ export default function QuestionBankTab({
   batchProgress,
   handleCustomGenerate,
   handleExportBank,
-  uploadDefaultYear,
-  setUploadDefaultYear,
-  uploadDefaultPaper,
-  setUploadDefaultPaper,
   fileInputRef,
   isUploading,
   handleFileUpload,
@@ -250,30 +242,10 @@ export default function QuestionBankTab({
         </div>
         <div className="p-6">
           <p className="text-slate-600 mb-6 text-sm leading-relaxed">
-             Upload documents (past exam papers or custom question lists) from elsewhere. The AI engine will automatically scan the document, parse its questions, sub-questions, and model answers, and sort them into the appropriate curriculum topics.
+             Upload documents (past exam papers or custom question lists) from elsewhere. The AI engine will automatically scan the document, parse its questions, sub-questions, and model answers, determine the exam year/semester automatically, and sort them into the appropriate curriculum topics.
              <br /><br />
              Supported formats: <strong className="text-slate-800">PDF (.pdf), Word (.docx), Plain Text (.txt), or JSON (.json)</strong>.
           </p>
-          <div className="flex gap-4 mb-4 max-w-md">
-            <div className="flex-1">
-              <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Default Year</label>
-              <input 
-                value={uploadDefaultYear} 
-                onChange={e => setUploadDefaultYear(e.target.value)}
-                className="w-full border border-slate-300 rounded p-2 text-sm focus:ring-1 focus:ring-purple-500"
-                placeholder="e.g. 2023"
-              />
-            </div>
-            <div className="flex-1">
-              <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Default Paper</label>
-              <input 
-                value={uploadDefaultPaper} 
-                onChange={e => setUploadDefaultPaper(e.target.value)}
-                className="w-full border border-slate-300 rounded p-2 text-sm focus:ring-1 focus:ring-purple-500"
-                placeholder="e.g. Sem 1"
-              />
-            </div>
-          </div>
           <div className="relative max-w-md">
             <input 
               type="file" 

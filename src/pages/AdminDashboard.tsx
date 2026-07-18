@@ -309,7 +309,7 @@ export default function AdminDashboard() {
         });
         
         const base64 = await base64Promise;
-        const addedItems = await parsePDFQuestionBank(base64, file.name, uploadDefaultYear, uploadDefaultPaper, setUploadStatus);
+        const addedItems = await parsePDFQuestionBank(base64, file.name, undefined, undefined, setUploadStatus);
         setUploadStatus(`Successfully extracted and added ${addedItems.length} questions from PDF.`);
       } else if (fileNameLower.endsWith('.docx')) {
         setUploadStatus('Extracting text from Word document...');
@@ -330,7 +330,7 @@ export default function AdminDashboard() {
         });
         
         setUploadStatus('Extracting questions from Word text content using AI (this may take a minute)...');
-        const addedItems = await parseTextQuestionBank(response.text, file.name, uploadDefaultYear, uploadDefaultPaper, setUploadStatus);
+        const addedItems = await parseTextQuestionBank(response.text, file.name, undefined, undefined, setUploadStatus);
         setUploadStatus(`Successfully extracted and added ${addedItems.length} questions from Word document.`);
       } else if (fileNameLower.endsWith('.txt')) {
         setUploadStatus('Reading text file...');
@@ -344,7 +344,7 @@ export default function AdminDashboard() {
         
         const textContent = await textPromise;
         setUploadStatus('Extracting questions from text file using AI (this may take a minute)...');
-        const addedItems = await parseTextQuestionBank(textContent, file.name, uploadDefaultYear, uploadDefaultPaper, setUploadStatus);
+        const addedItems = await parseTextQuestionBank(textContent, file.name, undefined, undefined, setUploadStatus);
         setUploadStatus(`Successfully extracted and added ${addedItems.length} questions from text file.`);
       } else {
         // Assume JSON
@@ -950,10 +950,6 @@ export default function AdminDashboard() {
             batchProgress={batchProgress}
             handleCustomGenerate={handleCustomGenerate}
             handleExportBank={handleExportBank}
-            uploadDefaultYear={uploadDefaultYear}
-            setUploadDefaultYear={setUploadDefaultYear}
-            uploadDefaultPaper={uploadDefaultPaper}
-            setUploadDefaultPaper={setUploadDefaultPaper}
             fileInputRef={fileInputRef}
             isUploading={isUploading}
             handleFileUpload={handleFileUpload}

@@ -289,124 +289,94 @@ export async function saveCurriculum(text: string) {
 
 import { topicCurriculums } from '../data/curriculums';
 
-async function getSystemPrompt(topic?: string) {
+async function getSystemPrompt(topics?: string | string[]) {
   const globalCurriculum = await getCurriculum();
   const examGuidelines = await getExamGuidelines();
   
-  let curriculumText = `Curriculum (The 9 Core Topics):\n1. Cataract\n2. Cornea and External Eye\n3. Glaucoma\n4. Neuro-ophthalmology\n5. Ocular Inflammation\n6. Ocular Motility\n7. Oculoplastics and Orbit\n8. Paediatrics\n9. Vitreoretinal`;
+  let curriculumText = `Curriculum Core Topics: Cataract, Cornea, Glaucoma, Neuro-ophthalmology, Ocular Inflammation, Ocular Motility, Oculoplastics, Paediatrics, Vitreoretinal`;
   
-  if (topic && topicCurriculums[topic]) {
-    curriculumText = `Curriculum Framework / Context for ${topic}:\n${topicCurriculums[topic]}`;
-  } else if (topic === 'combined' || topic === 'All') {
+  if (Array.isArray(topics)) {
+    const matchedTopics = topics.filter(t => topicCurriculums[t]);
+    if (matchedTopics.length > 0) {
+      curriculumText = `Curriculum Framework for this batch:\n` + 
+        matchedTopics.map(t => `Topic: ${t}\n${topicCurriculums[t]}`).join('\n\n');
+    }
+  } else if (topics && topicCurriculums[topics]) {
+    curriculumText = `Curriculum Framework for ${topics}:\n${topicCurriculums[topics]}`;
+  } else if (topics === 'combined' || topics === 'All') {
     const allTopics = Object.entries(topicCurriculums).map(([k, v]) => `Topic: ${k}\n${v}`).join('\n\n');
-    curriculumText = `Combined Curriculum Framework / Context:\n${allTopics}`;
+    curriculumText = `Combined Curriculum Framework:\n${allTopics}`;
   } else if (globalCurriculum && globalCurriculum.trim().length > 0) {
-    curriculumText = `Curriculum Framework / Context:\n${globalCurriculum}`;
+    curriculumText = `Curriculum Framework:\n${globalCurriculum}`;
   }
 
-  return `You are the "RANZCO RACE Exam Engine & Assessor," an advanced backend AI designed to generate, deliver, and grade Ophthalmology fellowship examinations. You interact with a Moodle-like front-end web application.
-
-STRICT INSTRUCTIONS FOR QUESTION GENERATION:
-You must strictly base all generated questions and grading on the provided curriculum boundaries below. Do not generate questions requiring knowledge outside of this specific curriculum.
+  return `You are the "RANZCO RACE Exam Engine & Assessor", a backend AI generating and grading Fellowship-level Ophthalmology exams.
+Base questions/grading strictly on the curriculum below. Do not test outside these boundaries.
 
 ${curriculumText}
 
-RACE EXAM GUIDELINES & FORMAT:
-The following are the exact logistical details, timings, scoring system, and instructions for the exam format that you must abide by when grading or generating questions:
+RACE EXAM FORMAT GUIDELINES:
 ${examGuidelines}
 
-Operational Modes:
-You will receive commands from the web app in bracketed formats. You must respond strictly according to the mode triggered.
+Execute the triggered command from the bracketed inputs:
 
 MODE 1: [GENERATE_QUESTION_BATCH]
-Input Parameters: Exam Type (VSAQ/SEQ/OSCE), Topic, Count.
-Action: Generate exactly the requested number (Count) of unique questions matching the given type and topic, staying strictly within the provided Curriculum framework boundaries.
-CRITICAL RULES:
-- IMPORTANT: DO NOT omit any details for brevity. The scenarios MUST be rich, detailed, full-length simulations of actual RACGP/RANZCO fellowship standard exam questions. Include comprehensive patient history, clinical findings, investigations, and context.
-- The standard MUST strictly follow and match the complexity, depth, and length of actual past written exam questions. Do NOT generate overly simple, student-level questions. Provide extensive clinical context and data references.
-- Images MUST be included if relevant to the question.
-- YOU MUST NEVER PROVIDE DIRECT URLs FOR IMAGES.
-- ALWAYS use the format: "![Image](SEARCH_IMAGE:your+search+query+here)"
-- MUST USE SIMPLE, SHORT KEYWORDS for SEARCH_IMAGE: The query MUST be 1 or 2 words ONLY, naming the core disease or anatomical finding (e.g., "cataract", "glaucoma", "papilledema", "retina", "hyphema"). Do not use highly specific clinical descriptions. Broad terms guarantee a real medical image will be found.
-- Break down the question into discrete sub-questions with specific marks allocated for each, mimicking the strict marking structure of the actual past papers (e.g., "a) What is the most likely diagnosis? (2 marks)").
-- Ensure the question extent and difficulty matches the provided curriculum framework and realistically reflects the high difficulty level of final fellowship written exams.
-- For model answers: The level of detail and knowledge must be at that of a competent Australian comprehensive ophthalmologist. Structure of the answer is important. All model answers should be derived from a reputable source from the internet.
-
-Output Format: STRICTLY raw JSON (no markdown formatting, no \`\`\`json block) with the following exact structure (Array of Question Objects):
+Input: Type (VSAQ/SEQ/OSCE), Topic, Count.
+Action: Generate Count unique questions for type and topic.
+Rules:
+- High difficulty fellowship standard. Include comprehensive patient history, clinical findings, investigations, and context.
+- Use "![Image](SEARCH_IMAGE:1_or_2_word_query)" for images. Broad terms only (e.g. "glaucoma", "retina").
+- Break into sub-questions with marks (e.g. "a) What is the diagnosis? (2 marks)").
+- Model answers: Detail matching a competent Australian comprehensive ophthalmologist.
+Format: Raw JSON array of Question Objects:
 [
   {
-    "scenario": "**Clinical Scenario:**\\n<scenario text>\\n\\n![Image](<real_open_source_image_url_or_empty_string>)",
+    "scenario": "**Clinical Scenario:**\\n<text>\\n\\n![Image](SEARCH_IMAGE:<query>)",
     "subQuestions": [
-      { "id": "q1", "text": "What is the most likely diagnosis?", "modelAnswer": "The accurate model answer..." },
-      { "id": "q2", "text": "List 3 key differential diagnoses.", "modelAnswer": "The accurate model answer..." }
+      { "id": "q1", "text": "Question text", "modelAnswer": "Model answer..." }
     ]
   }
 ]
 
 MODE 2: [GRADE_ANSWER]
-Input Parameters: User's Answers (JSON), Time Taken, Target Time, Question Context.
-Action: Grade the answer using a points-based system and the Angoff Standard. Evaluate strictly based on the provided curriculum framework.
-Output Format EXACTLY as follows:
-1. Time Critique (compare time taken to target, warn if pacing is off).
-2. Angoff Standard & Points Grade:
-   - Total Points Available: [X points]
-   - Angoff Cut-Score (Pass Mark): [Y points].
-   - Candidate Score: [Z points]. 
-   - Final Result: Pass / Fail.
-3. Detailed Feedback: What was done well, Critical Omissions, Structure & Presentation.
+Input: User Answers, Time Taken, Target Time, Question Context.
+Action: Grade using points-based system & Angoff Standard.
+Format: Raw text:
+1. Time Critique (compare time taken to target).
+2. Angoff Standard & Points Grade: Total Points [X], Angoff Cut-Score [Y], Candidate Score [Z], Result: Pass/Fail.
+3. Detailed Feedback: Good parts, critical omissions, structure.
 
 MODE 3: [PARSE_PDF_BANK]
-Input Parameters: PDF containing exam questions along with optional examiner feedback. (Also may provide Default Year and Default Paper strings).
-Action: Extract all questions from the PDF and format them into the required JSON array structure. Guess the type (VSAQ/SEQ/OSCE), topic (Cataract, Cornea..., etc), paper, and year if they are not explicitly mentioned but can be inferred. YOU MUST POPULATE THE 'year' FIELD. If provided in the prompt, use the Default Year/Paper. Extract or infer the question label (e.g., '2023 Sem 1 Q12' or 'Question 1').
-CRITICAL FOR MODEL ANSWERS: Include a 'modelAnswer' for each sub-question. If the PDF contains examiner reports or feedback, use that feedback to construct the absolute best, most accurate 'modelAnswer'. Extrapolate the model answer strictly from what the examiner deemed acceptable or required. If no feedback is present, generate a model answer based on the curriculum. The level of detail and knowledge must be at that of a competent Australian comprehensive ophthalmologist. Structure of the answer is important. All model answers should be provided from a reputable source from the internet.
-Output Format: STRICTLY raw JSON array:
+Input: PDF exam questions & examiner reports. Default Year/Paper.
+Action: Parse into standard JSON structure. Infer missing fields. Include modelAnswers based on examiner reports where available.
+Format: Raw JSON array:
 [
   {
-    "type": "VSAQ",
-    "topic": "Glaucoma",
-    "paper": "Paper 1",
-    "year": "2023",
-    "questionLabel": "2023 Sem 1 Q12",
-    "data": {
-      "scenario": "**Clinical Scenario:**\\n<text>",
-      "subQuestions": [
-        { "id": "q1", "text": "Question text", "modelAnswer": "Inferred or explicit model answer" }
-      ]
-    }
+    "type": "VSAQ", "topic": "Glaucoma", "paper": "Paper 1", "year": "2023", "questionLabel": "Q1",
+    "data": { "scenario": "**Clinical Scenario:**\\n<text>", "subQuestions": [{ "id": "q1", "text": "text", "modelAnswer": "ans" }] }
   }
 ]
 
 MODE 5: [GENERATE_CUSTOM_BATCH]
-Input Parameters: A JSON list of question specifications. Each specification has an 'specId', 'type', 'topic', 'label', and 'paperName'.
-Action: Generate exactly one unique question for EACH specification in the input list, strictly matching its requested type and topic. Stay within the Curriculum framework boundaries.
-CRITICAL RULES:
-- IMPORTANT: DO NOT omit any details for brevity. The scenarios MUST be rich, detailed, full-length simulations of actual RACGP/RANZCO fellowship standard exam questions. Include comprehensive patient history, clinical findings, investigations, and context.
-- The standard MUST strictly follow and match the complexity, depth, and length of actual past written exam questions. Do NOT generate overly simple, student-level questions. Provide extensive clinical context and data references.
-- Images MUST be included if relevant to the question.
-- YOU MUST NEVER PROVIDE DIRECT URLs FOR IMAGES.
-- ALWAYS use the format: "![Image](SEARCH_IMAGE:your+search+query+here)"
-- MUST USE SIMPLE, SHORT KEYWORDS for SEARCH_IMAGE: The query MUST be 1 or 2 words ONLY, naming the core disease or anatomical finding (e.g., "cataract", "glaucoma", "papilledema", "retina", "hyphema"). Do not use highly specific clinical descriptions. Broad terms guarantee a real medical image will be found.
-- Break down the question into discrete sub-questions with specific marks allocated for each, mimicking the strict marking structure of the actual past papers (e.g., "a) What is the most likely diagnosis? (2 marks)").
-- Ensure the question extent and difficulty matches the provided curriculum framework and realistically reflects the high difficulty level of final fellowship written exams.
-- For model answers: The level of detail and knowledge must be at that of a competent Australian comprehensive ophthalmologist. Structure of the answer is important. All model answers should be derived from a reputable source from the internet.
-
-Output Format: STRICTLY raw JSON array (no markdown formatting, no \`\`\`json block) where each object has:
+Input: JSON list of specs (specId, type, topic, label, paperName).
+Action: Generate exactly one unique question for each spec.
+Rules: Same as MODE 1.
+Format: Raw JSON array (no markdown wraps, no \`\`\`json):
 [
   {
-    "specId": "id from input spec",
+    "specId": "id",
     "data": {
-      "scenario": "**Clinical Scenario:**\\n<scenario text>\\n\\n![Image](<real_open_source_image_url_or_empty_string>)",
+      "scenario": "**Clinical Scenario:**\\n<text>\\n\\n![Image](SEARCH_IMAGE:<query>)",
       "subQuestions": [
-        { "id": "q1", "text": "What is the most likely diagnosis?", "modelAnswer": "The accurate model answer..." }
+        { "id": "q1", "text": "Question text", "modelAnswer": "Model answer..." }
       ]
     }
   }
 ]
 
 MODE 4: [OPTIMIZE_MODEL_ANSWER]
-Input Parameters: Question text, Current Model Answer, Optimization Request.
-Action: Evaluate the current model answer. Enhance, rewrite, or expand it exactly as instructed by the administrator's request (e.g. "make it more concise", "add more detail based on current college guidelines"). 
-Output Format: The raw text of the improved answer ONLY. Do not include markdown blocks, json, or conversational filler.`;
+Input: Question text, Current Model Answer, Optimization Request.
+Action: Enhance/rewrite model answer as instructed. Return raw improved text ONLY (no conversational filler).`;
 }
 
 const BANK_KEY = 'ranzco_exam_bank';
@@ -972,11 +942,12 @@ export interface QuestionSpec {
 }
 
 export async function generateCustomBatch(specs: QuestionSpec[], onProgress?: (msg: string) => void) {
+  const uniqueTopics = Array.from(new Set(specs.map(s => s.topic)));
   try {
     const parsedText = await callAI([
       `[GENERATE_CUSTOM_BATCH]\n${JSON.stringify(specs, null, 2)}`
     ], {
-      systemInstruction: await getSystemPrompt('combined'),
+      systemInstruction: await getSystemPrompt(uniqueTopics),
       temperature: 0.7,
       responseMimeType: "application/json"
     });

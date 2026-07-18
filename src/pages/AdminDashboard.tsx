@@ -137,7 +137,15 @@ export default function AdminDashboard() {
 
   // Batch Generation State
   const [isGeneratingBatch, setIsGeneratingBatch] = useState(false);
-  const [batchProgress, setBatchProgress] = useState<{ current: number, total: number, waiting?: boolean, waitTime?: number }>({ current: 0, total: 0 });
+  const [batchProgress, setBatchProgress] = useState<{ current: number, total: number, waiting?: boolean, waitTime?: number, waitMessage?: string }>({ current: 0, total: 0 });
+  const [selectedBatchType, setSelectedBatchType] = useState<'paper1' | 'paper2' | 'paper3' | 'paper4' | 'osce' | 'full_exam'>('paper1');
+  const [isPaused, setIsPaused] = useState(false);
+  const isPausedRef = useRef(false);
+
+  const togglePause = () => {
+    isPausedRef.current = !isPausedRef.current;
+    setIsPaused(isPausedRef.current);
+  };
 
   const [isFixingFaulty, setIsFixingFaulty] = useState(false);
 
@@ -372,6 +380,8 @@ export default function AdminDashboard() {
   };
 
   const handleCustomGenerate = async () => {
+    setIsPaused(false);
+    isPausedRef.current = false;
     setIsGeneratingBatch(true);
     setUploadStatus('');
     try {
@@ -402,6 +412,11 @@ export default function AdminDashboard() {
       setBatchProgress({ current: 0, total: questionsToGenerate.length });
       
       while (remainingSpecs.length > 0) {
+        if (isPausedRef.current) {
+          setBatchProgress(prev => ({ ...prev, waiting: true, waitMessage: 'Generation Paused' }));
+          await sleep(1000);
+          continue;
+        }
         const chunk = remainingSpecs.slice(0, Math.min(chunkSize, remainingSpecs.length));
         let success = false;
         let retryCount = 0;
@@ -476,6 +491,8 @@ export default function AdminDashboard() {
 
 
   const handleBatchGenerate = async (type: 'paper1' | 'paper2' | 'paper3' | 'paper4' | 'osce' | 'full_exam') => {
+    setIsPaused(false);
+    isPausedRef.current = false;
     setIsGeneratingBatch(true);
     try {
       const TOPICS = [
@@ -530,6 +547,11 @@ export default function AdminDashboard() {
       setBatchProgress({ current: 0, total: questionsToGenerate.length });
       
       while (remainingSpecs.length > 0) {
+        if (isPausedRef.current) {
+          setBatchProgress(prev => ({ ...prev, waiting: true, waitMessage: 'Generation Paused' }));
+          await sleep(1000);
+          continue;
+        }
         const chunk = remainingSpecs.slice(0, Math.min(chunkSize, remainingSpecs.length));
         let success = false;
         let retryCount = 0;
@@ -675,6 +697,11 @@ export default function AdminDashboard() {
       const chunkSize = 5;
       
       while (remainingSpecs.length > 0) {
+        if (isPausedRef.current) {
+          setFixStatus('Generation Paused');
+          await sleep(1000);
+          continue;
+        }
         const chunk = remainingSpecs.slice(0, Math.min(chunkSize, remainingSpecs.length));
         let success = false;
         let retryCount = 0;
@@ -1145,60 +1172,49 @@ export default function AdminDashboard() {
               </div>
               <div className="p-6">
                 <p className="text-slate-600 mb-6 text-sm">
-                  Automatically generate a complete set of questions for Paper 1, Paper 2, or OSCE and add them directly to the question bank. This process may take a several minutes depending on AI limits.
+                  Automatically generate a complete set of questions for Paper 1, Paper 2, or OSCE and add them directly to the question bank. This process may take several minutes depending on AI limits.
                 </p>
-                <div className="flex flex-wrap gap-4">
-                  <button 
-                    onClick={() => handleBatchGenerate('paper1')}
+                <div className="flex flex-col sm:flex-row gap-4 items-center max-w-xl">
+                  <select 
+                    value={selectedBatchType}
+                    onChange={(e) => setSelectedBatchType(e.target.value as any)}
                     disabled={isGeneratingBatch}
-                    className="flex-1 bg-indigo-600 text-white px-4 py-3 rounded-lg font-medium hover:bg-indigo-700 transition disabled:opacity-50 min-w-[200px]"
+                    className="w-full sm:w-auto flex-1 bg-white border border-slate-300 rounded-lg px-4 py-3 font-medium text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   >
-                    Generate Paper 1 (15 VSAQ, 5 SEQ)
-                  </button>
+                    <option value="paper1">Paper 1 (15 VSAQ, 5 SEQ)</option>
+                    <option value="paper2">Paper 2 (15 VSAQ, 4 SEQ)</option>
+                    <option value="paper3">Paper 3 (15 VSAQ, 5 SEQ)</option>
+                    <option value="paper4">Paper 4 (15 VSAQ, 4 SEQ)</option>
+                    <option value="osce">OSCE (18 Stations)</option>
+                    <option value="full_exam">Full Exam (Papers 1-4 + OSCE)</option>
+                  </select>
                   <button 
-                    onClick={() => handleBatchGenerate('paper2')}
+                    onClick={() => handleBatchGenerate(selectedBatchType)}
                     disabled={isGeneratingBatch}
-                    className="flex-1 bg-indigo-600 text-white px-4 py-3 rounded-lg font-medium hover:bg-indigo-700 transition disabled:opacity-50 min-w-[200px]"
+                    className="w-full sm:w-auto bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-indigo-700 transition disabled:opacity-50 shadow-sm flex items-center justify-center gap-2"
                   >
-                    Generate Paper 2 (15 VSAQ, 4 SEQ)
-                  </button>
-                  <button 
-                    onClick={() => handleBatchGenerate('paper3')}
-                    disabled={isGeneratingBatch}
-                    className="flex-1 bg-indigo-600 text-white px-4 py-3 rounded-lg font-medium hover:bg-indigo-700 transition disabled:opacity-50 min-w-[200px]"
-                  >
-                    Generate Paper 3 (15 VSAQ, 5 SEQ)
-                  </button>
-                  <button 
-                    onClick={() => handleBatchGenerate('paper4')}
-                    disabled={isGeneratingBatch}
-                    className="flex-1 bg-indigo-600 text-white px-4 py-3 rounded-lg font-medium hover:bg-indigo-700 transition disabled:opacity-50 min-w-[200px]"
-                  >
-                    Generate Paper 4 (15 VSAQ, 4 SEQ)
-                  </button>
-                  <button 
-                    onClick={() => handleBatchGenerate('osce')}
-                    disabled={isGeneratingBatch}
-                    className="flex-1 bg-indigo-600 text-white px-4 py-3 rounded-lg font-medium hover:bg-indigo-700 transition disabled:opacity-50 min-w-[200px]"
-                  >
-                    Generate OSCE (18 Stations)
-                  </button>
-                  <button 
-                    onClick={() => handleBatchGenerate('full_exam')}
-                    disabled={isGeneratingBatch}
-                    className="flex-1 bg-purple-600 text-white px-4 py-3 rounded-lg font-medium hover:bg-purple-700 transition disabled:opacity-50 min-w-[200px] sm:col-span-2 w-full"
-                  >
-                    Generate Full Exam (Papers 1-4 + OSCE)
+                    <Cpu className="w-5 h-5" />
+                    {isGeneratingBatch ? 'Generating...' : 'Start Generation'}
                   </button>
                 </div>
                 {isGeneratingBatch && (
-                  <div className="mt-4 p-4 bg-indigo-50 text-indigo-700 rounded-lg flex items-center gap-3 text-sm font-medium border border-indigo-100 shadow-sm">
-                    <Loader2 className={`w-5 h-5 ${batchProgress.waiting ? '' : 'animate-spin'}`} />
-                    {batchProgress.waiting ? (
-                       <span>API Quota Hit. Waiting to resume: {batchProgress.waitTime}s... please do not close this window.</span>
-                    ) : (
-                       <span>Generating {batchProgress.current} of {batchProgress.total} questions... please do not close this window.</span>
-                    )}
+                  <div className="mt-4 p-4 bg-indigo-50 text-indigo-700 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm font-medium border border-indigo-100 shadow-sm">
+                    <div className="flex items-center gap-3">
+                      <Loader2 className={`w-5 h-5 ${batchProgress.waiting && !isPaused ? '' : 'animate-spin'}`} />
+                      {isPaused ? (
+                        <span>Generation Paused. Click Resume to continue.</span>
+                      ) : batchProgress.waiting ? (
+                        <span>API Quota Hit. Waiting to resume: {batchProgress.waitTime}s... please do not close this window.</span>
+                      ) : (
+                        <span>Generating {batchProgress.current} of {batchProgress.total} questions... please do not close this window.</span>
+                      )}
+                    </div>
+                    <button
+                      onClick={togglePause}
+                      className="bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-2 rounded-lg text-xs font-semibold shadow transition duration-150"
+                    >
+                      {isPaused ? 'Resume' : 'Pause'}
+                    </button>
                   </div>
                 )}
               </div>

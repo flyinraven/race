@@ -1154,7 +1154,7 @@ export default function AdminDashboard() {
               </div>
               <div className="p-6">
                 <p className="text-slate-600 mb-6 text-sm leading-relaxed">
-                  Upload past questions below. They are stored safely in your <strong className="text-slate-800">Supabase</strong> cloud database. The file must be a JSON array or a PDF document containing exam questions. (PDF extraction uses AI and may take a moment).
+                  Upload past questions below. They are stored safely in your <strong className="text-slate-800">PostgreSQL</strong> cloud database. The file must be a JSON array or a PDF document containing exam questions. (PDF extraction uses AI and may take a moment).
                 </p>
                 <div className="flex gap-4 mb-4 max-w-md">
                   <div className="flex-1">
@@ -1545,96 +1545,7 @@ export default function AdminDashboard() {
 
         {activeTab === 'settings' && (
           <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-              <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
-                <Cpu className="w-6 h-6 text-emerald-600" />
-                <h3 className="text-lg font-bold text-slate-900">AI Engine Configuration</h3>
-              </div>
-              <div className="p-6">
-                <p className="text-slate-600 mb-6 text-sm">
-                  Configure the AI Provider, model, and provide your API key. (Gemini free tier has default limits). Note: PDF processing is best supported on Google and Anthropic.
-                </p>
-                <div className="space-y-5">
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1">Provider</label>
-                    <select 
-                      value={aiProvider}
-                      onChange={(e) => {
-                        setAiProvider(e.target.value);
-                        if (e.target.value === 'google') setAiModel('gemini-2.5-pro');
-                        else if (e.target.value === 'openai') setAiModel('gpt-4o');
-                        else if (e.target.value === 'anthropic') setAiModel('claude-3-7-sonnet-20250219');
-                        else if (e.target.value === 'deepseek') setAiModel('deepseek-chat');
-                      }}
-                      className="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none bg-white"
-                    >
-                      <option value="google">Google (Gemini)</option>
-                      <option value="openai">OpenAI (ChatGPT)</option>
-                      <option value="anthropic">Anthropic (Claude)</option>
-                      <option value="deepseek">DeepSeek</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1">API Key</label>
-                    <input 
-                      type="password" 
-                      value={aiApiKey}
-                      onChange={(e) => setAiApiKey(e.target.value)}
-                      placeholder={aiProvider === 'google' ? 'AIzaSy...' : 'sk-...'}
-                      className="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1">AI Model</label>
-                    <select 
-                      value={aiModel}
-                      onChange={(e) => setAiModel(e.target.value)}
-                      className="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none bg-white"
-                    >
-                      {aiProvider === 'google' && (
-                        <>
-                          <option value="gemini-2.5-pro">Gemini 2.5 Pro (Best for Complex Reasoning)</option>
-                          <option value="gemini-3.0-pro">Gemini 3.0 Pro</option>
-                          <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
-                        </>
-                      )}
-                      {aiProvider === 'openai' && (
-                        <>
-                          <option value="gpt-4o">GPT-4o (Best Overall)</option>
-                          <option value="gpt-4.5-turbo">GPT-4.5 Turbo</option>
-                          <option value="o1">o1 (Advanced Reasoning)</option>
-                          <option value="o3-mini">o3-mini (Fast Reasoning)</option>
-                          <option value="o4-mini">o4-mini</option>
-                        </>
-                      )}
-                      {aiProvider === 'anthropic' && (
-                        <>
-                          <option value="claude-3-7-sonnet-20250219">Claude 3.7 Sonnet</option>
-                          <option value="claude-3-8-sonnet">Claude 3.8 Sonnet</option>
-                          <option value="claude-3-7-opus">Claude 3.7 Opus</option>
-                        </>
-                      )}
-                      {aiProvider === 'deepseek' && (
-                        <>
-                          <option value="deepseek-chat">DeepSeek-V3</option>
-                          <option value="deepseek-reasoner">DeepSeek-R1 (Reasoner)</option>
-                          <option value="deepseek-v4">DeepSeek-V4</option>
-                        </>
-                      )}
-                    </select>
-                  </div>
-                  <div className="pt-4 flex items-center gap-4 border-t border-slate-100 mt-6">
-                    <button 
-                      onClick={saveAiConfig}
-                      className="bg-emerald-600 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-emerald-700 transition text-sm whitespace-nowrap"
-                    >
-                      Save Configuration
-                    </button>
-                    {aiConfigSaved && <span className="text-sm text-emerald-600 font-medium flex items-center gap-1"><CheckCircle className="w-4 h-4" /> Saved!</span>}
-                  </div>
-                </div>
-              </div>
-            </div>
+
 
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mt-8">
               <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
@@ -1690,73 +1601,7 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mt-8">
-              <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
-                <Database className="w-6 h-6 text-purple-600" />
-                <h3 className="text-lg font-bold text-slate-900">Supabase Configuration</h3>
-              </div>
-              <div className="p-6 text-sm text-slate-700 space-y-4">
-                <p>
-                  To sync your Question Bank and Model Answers with <strong>Supabase</strong>, securely configure these environment variables in your project settings:
-                </p>
-                <div className="bg-slate-100 border border-slate-200 rounded p-4 font-mono text-xs">
-                  VITE_SUPABASE_URL=https://your-project.supabase.co<br/>
-                  VITE_SUPABASE_ANON_KEY=eyJhbGci...
-                </div>
-                <p>
-                  Create your table by pasting this SQL into the <strong>SQL Editor</strong> in your Supabase dashboard:
-                </p>
-                <div className="bg-slate-900 text-emerald-400 border border-slate-800 rounded p-4 font-mono text-xs overflow-x-auto whitespace-pre">
-{`CREATE TABLE questions (
-  id text PRIMARY KEY,
-  type text NOT NULL,
-  topic text NOT NULL,
-  paper text,
-  year text,
-  "questionLabel" text,
-  data jsonb NOT NULL,
-  used boolean DEFAULT false
-);
 
-CREATE TABLE settings (
-  id text PRIMARY KEY,
-  value text NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS profiles (
-  id text PRIMARY KEY,
-  email text NOT NULL,
-  "firstName" text,
-  "lastName" text,
-  role text NOT NULL,
-  tier text NOT NULL,
-  "tierExpiry" text,
-  joined text NOT NULL,
-  profile text
-);
-
--- If the table already existed from an older version, add missing columns just in case:
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS "firstName" text;
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS "lastName" text;
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS "tierExpiry" text;
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS profile text;
-
--- VERY IMPORTANT: Reload the schema cache in Supabase to recognize the newly added columns!
-NOTIFY pgrst, 'reload schema';
-
-CREATE TABLE email_templates (
-  id text PRIMARY KEY,
-  name text NOT NULL,
-  subject text NOT NULL,
-  body text NOT NULL,
-  enabled boolean DEFAULT true
-);`}
-                </div>
-                <p className="text-xs text-slate-500 mt-4">
-                  If Supabase is not configured or unavailable, the system safely falls back to local storage caching.
-                </p>
-              </div>
-            </div>
           </div>
         )}
 

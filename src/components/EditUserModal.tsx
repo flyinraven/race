@@ -15,22 +15,20 @@ export default function EditUserModal({ user, onSave, onClose }: EditUserModalPr
   const [role, setRole] = useState<'student'|'admin'>('student');
   const [tier, setTier] = useState<'free' | 'pro'>('free');
   const [tierExpiry, setTierExpiry] = useState<string>('');
-  const [profile, setProfile] = useState('');
 
   useEffect(() => {
     if (user) {
       setEmail(user.email || '');
       setFirstName(user.firstName || '');
       setLastName(user.lastName || '');
-      setRole(user.role || 'student');
-      setTier(user.tier || 'free');
+      setRole((user.role as 'student'|'admin') || 'student');
+      setTier((user.tier as 'free'|'pro') || 'free');
       setTierExpiry(user.tierExpiry || '');
-      setProfile(user.profile || '');
     }
   }, [user]);
 
   const handleSave = () => {
-    onSave({ ...user, email, firstName, lastName, role, tier, tierExpiry: tierExpiry || null, profile });
+    onSave({ ...user, email, firstName, lastName, role, tier, tierExpiry: tierExpiry || null });
   };
 
   return (
@@ -113,15 +111,7 @@ export default function EditUserModal({ user, onSave, onClose }: EditUserModalPr
             </div>
           )}
 
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Profile / Notes</label>
-            <textarea 
-              value={profile}
-              onChange={(e) => setProfile(e.target.value)}
-              className="w-full border border-slate-300 rounded px-3 py-2 h-24 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-              placeholder="Additional user profile details..."
-            />
-          </div>
+
         </div>
 
         <div className="border-t border-slate-100 p-4 bg-slate-50 flex justify-end gap-3">

@@ -1,6 +1,8 @@
 import { GoogleGenAI } from '@google/genai';
 import { jsonrepair } from 'jsonrepair';
 import { get, set } from 'idb-keyval';
+import * as pdfjsLib from 'pdfjs-dist';
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
 
 let aiInstance: GoogleGenAI | null = null;
 let currentKey = '';
@@ -26,8 +28,9 @@ const cleanJsonText = (str: string) => {
   return str.replace(/```(?:json)?/gi, '').replace(/```/g, '').trim();
 };
 
-async function callAI(parts: any[], config: any) {
+async function callAI(parts: any[], config: any, modelOverride?: string) {
   const { provider, apiKey, modelName } = getAiConfig();
+  const selectedModel = modelOverride || modelName;
   
   // Format parts properly for the @google/genai SDK
   const formattedParts = parts.map(p => {
@@ -39,7 +42,7 @@ async function callAI(parts: any[], config: any) {
     const ai = getAiClient();
     try {
       const response = await ai.models.generateContent({
-        model: modelName,
+        model: selectedModel,
         contents: formattedParts,
         config: config
       });
@@ -341,10 +344,18 @@ Format: Raw JSON array of Question Objects:
 MODE 2: [GRADE_ANSWER]
 Input: User Answers, Time Taken, Target Time, Question Context.
 Action: Grade using points-based system & Angoff Standard.
-Format: Raw text:
-1. Time Critique (compare time taken to target).
-2. Angoff Standard & Points Grade: Total Points [X], Angoff Cut-Score [Y], Candidate Score [Z], Result: Pass/Fail.
-3. Detailed Feedback: Good parts, critical omissions, structure.
+Format: Raw JSON Object ONLY (no markdown wraps, no \`\`\`json):
+{
+  "timeCritique": "Compare time taken to target...",
+  "totalPoints": 10,
+  "angoffPassMark": 6,
+  "candidateScore": 8,
+  "passed": true,
+  "detailedRubric": [
+    { "criterion": "Criterion description", "points": 1, "maxPoints": 2, "feedback": "Feedback for this criterion", "checked": true }
+  ],
+  "generalFeedback": "Summary critique of style, omissions, and structure..."
+}
 
 MODE 3: [PARSE_PDF_BANK]
 Input: PDF exam questions & examiner reports. Default Year/Paper.
@@ -505,7 +516,7 @@ export async function getBank(): Promise<BankQuestion[]> {
     return cleanQ;
   });
   
-  if (needsResave && !isSupabaseConfigured) {
+  if (needsResave) {
     set(BANK_KEY, JSON.stringify(results)).catch(e => console.error(e));
   }
   
@@ -607,74 +618,85 @@ export async function parsePDFQuestionBank(pdfBase64: string, fileName: string, 
   );
 
   const processingPromise = async () => {
-    onProgress?.("Extracting clinical images from PDF (this may take up to 3 minutes)...");
+    onProgress?.("Loading PDF and extracting text...");
+    
+    const pdfData = atob(pdfBase64.split('base64,').pop() || pdfBase64);
+    const uint8Array = new Uint8Array(pdfData.length);
+    for (let i = 0; i < pdfData.length; i++) {
+        uint8Array[i] = pdfData.charCodeAt(i);
+    }
+    
+    const doc = await pdfjsLib.getDocument({data: uint8Array}).promise;
+    const pageTexts: string[] = [];
+    
+    for (let pageNum = 1; pageNum <= doc.numPages; pageNum++) {
+      onProgress?.(`Extracting text from page ${pageNum} of ${doc.numPages}...`);
+      const page = await doc.getPage(pageNum);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items.map((item: any) => item.str).join(' ');
+      pageTexts.push(`--- Page ${pageNum} ---\n${pageText}\n\n`);
+    }
+    
+    onProgress?.("Extracting clinical images from PDF (this may take up to 2 minutes)...");
     const extractedImages = await extractImagesFromPDF(pdfBase64);
     
-    const rawPdfData = pdfBase64.indexOf('base64,') > -1 ? pdfBase64.split('base64,').pop() : pdfBase64;
+    // Parse in chunks of 5 pages
+    const chunkSize = 5;
+    let combinedQuestions: any[] = [];
     
-    if (!rawPdfData || rawPdfData.trim().length === 0) {
-      throw new Error("Invalid or empty PDF data provided.");
-    }
-    
-    onProgress?.(`Sending PDF + ${extractedImages.length} images to AI for extraction (this may take 1-5 minutes)...`);
-    const parts: any[] = [
-      {
-        inlineData: {
-          mimeType: "application/pdf",
-          data: rawPdfData
-        }
-      },
-      `[PARSE_PDF_BANK]\nPlease read this document, extract all questions, identify their type and topic among the 9 core topics, and format them as the specified JSON array structure. The original file name is "${fileName}" which may contain the year, semester, or paper information. Override year or paper with info from the filename if found. Use the filename as the source of truth for the exam date/paper if it looks like e.g., "2021 Sem 1" or "RANZCO 2021". ${defaultYear ? `Default Year Fallback: ${defaultYear}. ` : ''}${defaultPaper ? `Default Paper Fallback: ${defaultPaper}. ` : ''}`
-    ];
-
-    if (extractedImages.length > 0) {
-      parts.push(`\n\n--- EXTRACTED IMAGES FROM PDF (${extractedImages.length} images) ---`);
-      extractedImages.forEach((imgB64, idx) => {
+    for (let i = 0; i < pageTexts.length; i += chunkSize) {
+      const chunkIndex = Math.floor(i / chunkSize) + 1;
+      const totalChunks = Math.ceil(pageTexts.length / chunkSize);
+      onProgress?.(`Sending page chunk ${chunkIndex} of ${totalChunks} to AI for extraction...`);
+      
+      const chunkText = pageTexts.slice(i, i + chunkSize).join('\n');
+      
+      const parts = [
+        `[PARSE_PDF_BANK]\nThis is a portion of a past exam paper PDF. Extract all questions from this text, map them to one of the 9 core topics, and format them as the specified JSON array structure. Keep any ImageIndex_X placeholders intact if images are referenceable.\nSource File: "${fileName}".\nDefault Year: ${defaultYear || 'AI'}. Default Paper: ${defaultPaper || 'Paper'}.\n\nText Content:\n${chunkText}`
+      ];
+      
+      if (extractedImages.length > 0) {
+        parts.push(`\n\n--- EXTRACTED IMAGES (${extractedImages.length} images) ---`);
+        extractedImages.forEach((imgB64, imgIdx) => {
           const rawData = imgB64.indexOf('base64,') > -1 ? imgB64.split('base64,').pop() : imgB64;
-          if (rawData && rawData.trim().length > 0) {
-            parts.push(`\nImageIndex_${idx}:`);
-            parts.push({
-                inlineData: {
-                    mimeType: "image/jpeg",
-                    data: rawData
-                }
-            });
+          if (rawData) {
+            parts.push(`\nImageIndex_${imgIdx}:`);
+            parts.push({ inlineData: { mimeType: "image/jpeg", data: rawData } });
           }
-      });
-      parts.push(`\nCRITICAL: If a question has an associated clinical image in the original PDF, you MUST insert its exact markdown tag (e.g. ![Image](ImageIndex_0)) inside the 'scenario' field. Replace 0 with the actual index number matching the image. Do this for EVERY image you can confidently associate with a question. \nWARNING: Do NOT output an empty tag like ![Image](). You MUST include the ImageIndex_X inside the parentheses. Failure to include the image tag will ruin the exam for the student.`);
-    }
-
-    const parsedText = await callAI(parts, {
-      systemInstruction: await getSystemPrompt(),
-      temperature: 0.2, // Low temp for extraction tasks
-      responseMimeType: "application/json"
-    });
-    onProgress?.("AI extraction complete. Validating and saving to database...");
-    console.log(`[PARSE_PDF_BANK] extractedImages count: ${extractedImages.length}`);
-    console.log(`[PARSE_PDF_BANK] AI parsedText snippet:`, parsedText.substring(0, 500) + '...');
-
-    let questionsArr: any[] = [];
-    try {
-      questionsArr = JSON.parse(parsedText || "[]");
-    } catch (e) {
-      console.warn("JSON parse failed, attempting jsonrepair...", e);
+        });
+      }
+      
+      const parsedText = await callAI(parts, {
+        systemInstruction: await getSystemPrompt(),
+        temperature: 0.1,
+        responseMimeType: "application/json"
+      }, 'gemini-2.5-pro'); // Use pro for document extraction
+      
+      let chunkQuestions: any[] = [];
       try {
-        const repaired = jsonrepair(parsedText || "[]");
-        questionsArr = JSON.parse(repaired);
-      } catch (repairErr) {
-        throw new Error("Failed to parse AI output. The PDF might be too large and the response got truncated. Try uploading a smaller portion (fewer pages).");
+        chunkQuestions = JSON.parse(parsedText || "[]");
+      } catch (e) {
+        try {
+          const repaired = jsonrepair(parsedText || "[]");
+          chunkQuestions = JSON.parse(repaired);
+        } catch (repairErr) {
+          console.warn(`Failed to parse chunk ${chunkIndex}, skipping.`, repairErr);
+        }
+      }
+      
+      if (Array.isArray(chunkQuestions)) {
+        combinedQuestions = [...combinedQuestions, ...chunkQuestions];
       }
     }
-
-    // Replace ImageIndex with actual base64
-    if (extractedImages.length > 0) {
-      let finalJSONStr = JSON.stringify(questionsArr).replace(/(!\[.*?\]\()?ImageIndex_(\d+)(\)?)/g, (match, prefix, idx, suffix) => {
+    
+    onProgress?.("Reassembling questions and embedding images...");
+    
+    if (extractedImages.length > 0 && combinedQuestions.length > 0) {
+      let finalJSONStr = JSON.stringify(combinedQuestions).replace(/(!\[.*?\]\()?ImageIndex_(\d+)(\)?)/g, (match, prefix, idx, suffix) => {
          const img = extractedImages[parseInt(idx, 10)];
-         // Ensure it turns into ![Image](data:image/...)
          return img ? `![Image](${img})` : match;
       });
 
-      // Fallback for empty ![Image]() tags
       let imgFallbackIndex = 0;
       finalJSONStr = finalJSONStr.replace(/!\[.*?\]\(\)/g, (match) => {
          const img = extractedImages[imgFallbackIndex % extractedImages.length];
@@ -682,25 +704,23 @@ export async function parsePDFQuestionBank(pdfBase64: string, fileName: string, 
          return img ? `![Image](${img})` : match;
       });
 
-      questionsArr = JSON.parse(finalJSONStr);
+      combinedQuestions = JSON.parse(finalJSONStr);
     }
     
-    if (Array.isArray(questionsArr) && questionsArr.length > 0) {
-      // Auto-fetch images where SEARCH_IMAGE is found (useful for external LLM generation imports)
-      await Promise.all(questionsArr.map(async (qData: any) => {
+    if (Array.isArray(combinedQuestions) && combinedQuestions.length > 0) {
+      await Promise.all(combinedQuestions.map(async (qData: any) => {
           const actualData = qData.data || qData;
           await processSearchImages(actualData);
       }));
+      
       const bank = await getBank();
-      let countAdded = 0;
-      const newBankItems: BankQuestion[] = questionsArr.map((qData: any) => {
-        countAdded++;
+      const newBankItems: BankQuestion[] = combinedQuestions.map((qData: any) => {
         return {
           id: Math.random().toString(36).substring(2, 15),
           type: qData.type || 'VSAQ',
           topic: qData.topic || 'combined',
-          paper: qData.paper,
-          year: qData.year,
+          paper: qData.paper || defaultPaper || 'Past Exam',
+          year: qData.year || defaultYear || 'AI',
           questionLabel: qData.questionLabel,
           data: qData.data || qData,
           used: false
@@ -712,12 +732,15 @@ export async function parsePDFQuestionBank(pdfBase64: string, fileName: string, 
       
       return newBankItems;
     } else {
-      throw new Error("Parsed result is not a valid array");
+      throw new Error("No valid questions were extracted from this PDF.");
     }
   };
 
   try {
-    return await Promise.race([processingPromise(), timeoutPromise]);
+    return await Promise.race([
+      processingPromise(),
+      timeoutPromise
+    ]);
   } catch (err) {
     console.error("PDF Parsing failed", err);
     throw err;
@@ -1048,7 +1071,8 @@ export async function gradeAnswerMode(answer: string, pdfBase64: string | null, 
     const responseText = await callAI(parts, {
       systemInstruction: await getSystemPrompt(),
       temperature: 0.2,
-    });
+      responseMimeType: "application/json"
+    }, 'gemini-2.5-flash');
     return responseText;
   } catch (err) {
     console.error("Answer grading failed", err);

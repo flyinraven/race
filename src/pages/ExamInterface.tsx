@@ -644,7 +644,86 @@ export default function ExamInterface() {
                     <div className="mt-6 pt-6 border-t border-slate-200 prose prose-slate max-w-none">
                       <h4 className="text-blue-800 border-b border-blue-100 pb-2">AI Feedback & Model Answer</h4>
                       <div className="markdown-body mt-4">
-                         <Markdown urlTransform={customUrlTransform} components={MarkdownComponents}>{gradingResults[idx]}</Markdown>
+                         {(() => {
+                           const resText = gradingResults[idx];
+                           if (resText && resText.trim().startsWith('{') && resText.trim().endsWith('}')) {
+                             try {
+                               const parsed = JSON.parse(resText);
+                               return (
+                                 <div className="space-y-6">
+                                   {/* Scorecard Summary */}
+                                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                                     <div className="p-3 bg-white border border-slate-100 rounded-md shadow-sm">
+                                       <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">Candidate Score</span>
+                                       <div className="text-3xl font-black text-slate-800 mt-1">
+                                         {parsed.candidateScore} <span className="text-sm font-normal text-slate-400">/ {parsed.totalPoints} points</span>
+                                       </div>
+                                     </div>
+                                     <div className="p-3 bg-white border border-slate-100 rounded-md shadow-sm">
+                                       <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">Angoff Pass Mark</span>
+                                       <div className="text-2xl font-black text-slate-700 mt-2">
+                                         {parsed.angoffPassMark} <span className="text-sm font-normal text-slate-400">points</span>
+                                       </div>
+                                     </div>
+                                     <div className="p-3 bg-white border border-slate-100 rounded-md shadow-sm flex items-center justify-center">
+                                       <span className={`w-full text-center py-2 rounded-lg text-sm font-black uppercase tracking-wider ${
+                                         parsed.passed ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'
+                                       }`}>
+                                         {parsed.passed ? 'PASS' : 'FAIL'}
+                                       </span>
+                                     </div>
+                                   </div>
+
+                                   {/* Time Critique */}
+                                   {parsed.timeCritique && (
+                                     <div className="p-4 bg-indigo-50 border border-indigo-100 rounded-lg text-sm text-indigo-900 flex items-center gap-2">
+                                       <span className="font-bold">⏱️ Time Assessment:</span>
+                                       <span>{parsed.timeCritique}</span>
+                                     </div>
+                                   )}
+
+                                   {/* Detailed Rubric Checklist */}
+                                   {parsed.detailedRubric && parsed.detailedRubric.length > 0 && (
+                                     <div className="space-y-3">
+                                       <h5 className="font-bold text-slate-800 text-xs uppercase tracking-wider">Detailed Marking Rubric</h5>
+                                       <div className="border border-slate-200 rounded-lg overflow-hidden divide-y divide-slate-100 shadow-sm">
+                                         {parsed.detailedRubric.map((item: any, rIdx: number) => (
+                                           <div key={rIdx} className="p-4 flex items-start gap-4 bg-white text-sm hover:bg-slate-50 transition">
+                                             <div className="mt-0.5">
+                                               {item.checked ? (
+                                                 <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center text-white font-bold text-xs">✓</div>
+                                               ) : (
+                                                 <div className="w-5 h-5 rounded-full bg-slate-100 border border-slate-300 flex items-center justify-center text-slate-400 text-xs">✗</div>
+                                               )}
+                                             </div>
+                                             <div className="flex-grow">
+                                               <div className="flex justify-between items-start gap-2">
+                                                 <span className="font-semibold text-slate-800">{item.criterion}</span>
+                                                 <span className="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full shrink-0">
+                                                   {item.points} / {item.maxPoints} pts
+                                                 </span>
+                                               </div>
+                                               {item.feedback && <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">{item.feedback}</p>}
+                                             </div>
+                                           </div>
+                                         ))}
+                                       </div>
+                                     </div>
+                                   )}
+
+                                   {/* General Feedback Comments */}
+                                   {parsed.generalFeedback && (
+                                     <div className="prose prose-slate max-w-none text-sm bg-white border border-slate-200 p-5 rounded-lg shadow-sm">
+                                       <h5 className="font-bold text-slate-800 mb-3 uppercase tracking-wider text-xs border-b border-slate-100 pb-2">Assessor Critique & Comments</h5>
+                                       <Markdown urlTransform={customUrlTransform} components={MarkdownComponents}>{parsed.generalFeedback}</Markdown>
+                                     </div>
+                                   )}
+                                 </div>
+                               );
+                             } catch (jsonErr) {}
+                           }
+                           return <Markdown urlTransform={customUrlTransform} components={MarkdownComponents}>{resText}</Markdown>;
+                         })()}
                       </div>
                     </div>
                   </div>

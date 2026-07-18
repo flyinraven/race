@@ -36,6 +36,7 @@ async function startServer() {
 
   // API Routes
   app.use("/api", apiRouter);
+  app.use("/uploads", express.static(path.join(process.cwd(), 'uploads')));
   app.post("/api/send-email", async (req, res) => {
     try {
       const { to, subject, text, html } = req.body;

@@ -49,6 +49,28 @@ export async function initDb() {
 
       ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token TEXT;
       ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token_expires_at TIMESTAMP WITH TIME ZONE;
+
+      -- Normalize profiles table columns
+      ALTER TABLE profiles ADD COLUMN IF NOT EXISTS first_name TEXT;
+      ALTER TABLE profiles ADD COLUMN IF NOT EXISTS last_name TEXT;
+      ALTER TABLE profiles ADD COLUMN IF NOT EXISTS role TEXT DEFAULT 'student';
+      ALTER TABLE profiles ADD COLUMN IF NOT EXISTS tier TEXT DEFAULT 'free';
+      ALTER TABLE profiles ADD COLUMN IF NOT EXISTS tier_expiry TIMESTAMP WITH TIME ZONE;
+      ALTER TABLE profiles ADD COLUMN IF NOT EXISTS joined TEXT;
+
+      -- Copy data from camelCase columns if they exist
+      DO $$
+      BEGIN
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='profiles' AND column_name='firstName') THEN
+          UPDATE profiles SET first_name = "firstName" WHERE first_name IS NULL;
+        END IF;
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='profiles' AND column_name='lastName') THEN
+          UPDATE profiles SET last_name = "lastName" WHERE last_name IS NULL;
+        END IF;
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='profiles' AND column_name='tierExpiry') THEN
+          UPDATE profiles SET tier_expiry = "tierExpiry" WHERE tier_expiry IS NULL;
+        END IF;
+      END $$;
     `);
     console.log('Database tables initialized successfully.');
   } catch (err) {

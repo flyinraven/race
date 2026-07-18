@@ -131,20 +131,41 @@ export default function EditQuestionModal({ question, onClose, onSave }: EditQue
                     const file = e.target.files?.[0];
                     if (!file) return;
                     const reader = new FileReader();
-                    reader.onload = (event) => {
+                    reader.onload = async (event) => {
                       const base64 = event.target?.result as string;
-                      const currentScenario = editedQuestion.data.scenario || '';
-                      const newScenario = currentScenario + `\n\n![Image](${base64})`;
-                      handleTopLevelChange('data', { ...editedQuestion.data, scenario: newScenario });
+                      try {
+                        const token = localStorage.getItem('siteground_token');
+                        const res = await fetch('/api/admin/upload-image', {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                          },
+                          body: JSON.stringify({
+                            fileName: file.name,
+                            fileDataB64: base64
+                          })
+                        });
+                        const data = await res.json();
+                        if (res.ok && data.url) {
+                          const currentScenario = editedQuestion.data.scenario || '';
+                          const newScenario = currentScenario + `\n\n![Image](${data.url})`;
+                          handleTopLevelChange('data', { ...editedQuestion.data, scenario: newScenario });
+                        } else {
+                          alert(data.error || 'Failed to upload image.');
+                        }
+                      } catch (err: any) {
+                        alert(`Upload failed: ${err.message}`);
+                      }
                     };
                     reader.readAsDataURL(file);
                     e.target.value = ''; // Reset
                   }}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer text-xs"
                   title="Upload an image to attach to this scenario"
                 />
                 <button className="text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1.5 rounded font-medium transition cursor-pointer flex items-center gap-1 pointer-events-none">
-                  Attach Base64 Image
+                  Upload Clinical Image
                 </button>
               </div>
             </div>
@@ -161,6 +182,40 @@ export default function EditQuestionModal({ question, onClose, onSave }: EditQue
               placeholder="Type or paste text/images here..."
               className="w-full border border-slate-300 rounded p-3 text-sm focus:ring-2 focus:ring-indigo-500 h-32 resize-y font-mono"
             />
+            
+            {/* Wikimedia Commons Image Search Integration */}
+            <div className="mt-2 p-3 bg-slate-50 border border-slate-200 rounded-lg flex flex-col sm:flex-row gap-2 items-center">
+              <span className="text-xs font-semibold text-slate-500 uppercase shrink-0">Search Clinical Image:</span>
+              <input 
+                type="text" 
+                placeholder="e.g. Glaucomatous cupping" 
+                id="modalImageSearchQuery"
+                className="flex-grow p-1.5 border border-slate-300 rounded text-xs outline-none focus:ring-1 focus:ring-indigo-500 bg-white"
+                onKeyDown={async (e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const btn = document.getElementById('modalImageSearchBtn');
+                    if (btn) btn.click();
+                  }
+                }}
+              />
+              <button 
+                id="modalImageSearchBtn"
+                onClick={async () => {
+                  const queryInput = document.getElementById('modalImageSearchQuery') as HTMLInputElement;
+                  if (!queryInput || !queryInput.value.trim()) return;
+                  const queryVal = encodeURIComponent(queryInput.value.trim());
+                  const targetUrl = `/api/image-search-proxy?q=${queryVal}`;
+                  const currentScenario = editedQuestion.data.scenario || '';
+                  const newScenario = currentScenario + `\n\n![Clinical Photograph](${targetUrl})`;
+                  handleTopLevelChange('data', { ...editedQuestion.data, scenario: newScenario });
+                  queryInput.value = ''; // Reset query field
+                }}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded text-xs font-semibold transition shrink-0"
+              >
+                Search & Add
+              </button>
+            </div>
           </div>
 
           <div className="space-y-6">

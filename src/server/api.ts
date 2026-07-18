@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 import { query } from './db';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
+import fs from 'fs';
+import path from 'path';
 
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key-change-in-prod';
@@ -372,7 +374,7 @@ router.put('/admin/users/:id', authenticate, requireAdmin, async (req, res) => {
   }
 });
 
-router.delete('/admin/users/:id', authenticate, requireAdmin, async (req, res) => {
+router.delete('/admin/users/:id', authenticate, requireAdmin, async (req: any, res) => {
   try {
     const { id } = req.params;
     if (id === req.user.id) {
@@ -381,6 +383,35 @@ router.delete('/admin/users/:id', authenticate, requireAdmin, async (req, res) =
     await query('DELETE FROM users WHERE id = $1', [id]);
     res.json({ success: true });
   } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+router.post('/admin/upload-image', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const { fileName, fileDataB64 } = req.body;
+    if (!fileName || !fileDataB64) {
+      return res.status(400).json({ error: 'Missing fileName or fileDataB64.' });
+    }
+    
+    const rawB64 = fileDataB64.indexOf('base64,') > -1 ? fileDataB64.split('base64,').pop() : fileDataB64;
+    if (!rawB64) return res.status(400).json({ error: 'Invalid base64 data.' });
+    
+    const buffer = Buffer.from(rawB64, 'base64');
+    const cleanName = fileName.replace(/[^a-zA-Z0-9.-]/g, '_');
+    const uniqueName = `${Date.now()}_${cleanName}`;
+    
+    const uploadDir = path.join(process.cwd(), 'uploads');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    
+    const filePath = path.join(uploadDir, uniqueName);
+    fs.writeFileSync(filePath, buffer);
+    
+    res.json({ success: true, url: `/uploads/${uniqueName}` });
+  } catch (e: any) {
+    console.error('Image upload error:', e);
     res.status(500).json({ error: e.message });
   }
 });

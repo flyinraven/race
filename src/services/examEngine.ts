@@ -15,6 +15,21 @@ export function getAiConfig() {
   return { apiKey, modelName, provider };
 }
 
+// Per-task model storage keys
+export type AiTask = 'generation' | 'grading' | 'parsing' | 'optimization';
+export const TASK_MODEL_KEYS: Record<AiTask, string> = {
+  generation:   'ranzco_model_generation',
+  grading:      'ranzco_model_grading',
+  parsing:      'ranzco_model_parsing',
+  optimization: 'ranzco_model_optimization',
+};
+
+/** Returns the model for a specific task, falling back to the global default. */
+export function getTaskModel(task: AiTask): string {
+  const global = localStorage.getItem('ranzco_ai_model') || 'gemini-2.5-flash';
+  return localStorage.getItem(TASK_MODEL_KEYS[task]) || global;
+}
+
 function getAiClient() {
   const { apiKey } = getAiConfig();
   if (!aiInstance || currentKey !== apiKey) {
@@ -567,7 +582,7 @@ export async function parsePDFQuestionBank(pdfBase64: string, fileName: string, 
         systemInstruction: await getSystemPrompt(),
         temperature: 0.1,
         responseMimeType: "application/json"
-      }, 'gemini-2.5-flash'); // Use flash for document extraction
+      }, getTaskModel('parsing'));
       
       let chunkQuestions: any[] = [];
       try {
@@ -678,7 +693,7 @@ Count: ${count}`
       systemInstruction: await getSystemPrompt(topic),
       temperature: 0.85,
       responseMimeType: "application/json"
-    });
+    }, getTaskModel('generation'));
     
     let questionsArr: any[] = [];
     try {
@@ -788,13 +803,13 @@ async function fetchCommonsImage(originalQuery: string): Promise<string> {
 
 export async function generateFreshQuestions(type: string, topic: string, customLabel: string, paperName: string, count: number = 1) {
   try {
-    const parsedText = await callAI([
+  const parsedText = await callAI([
       `[GENERATE_QUESTION_BATCH]\nExam Type: ${type}\nTopic: ${topic}\nCount: ${count}`
     ], {
       systemInstruction: await getSystemPrompt(topic),
       temperature: 0.85,
       responseMimeType: "application/json"
-    });
+    }, getTaskModel('generation'));
     
     let questionsArr: any[] = [];
     try {
@@ -864,13 +879,13 @@ export interface QuestionSpec {
 export async function generateCustomBatch(specs: QuestionSpec[], onProgress?: (msg: string) => void) {
   const uniqueTopics = Array.from(new Set(specs.map(s => s.topic)));
   try {
-    const parsedText = await callAI([
+  const parsedText = await callAI([
       `[GENERATE_CUSTOM_BATCH]\n${JSON.stringify(specs, null, 2)}`
     ], {
       systemInstruction: await getSystemPrompt(uniqueTopics),
       temperature: 0.7,
       responseMimeType: "application/json"
-    });
+    }, getTaskModel('generation'));
     
     let questionsArr: any[] = [];
     try {
@@ -969,7 +984,7 @@ export async function gradeAnswerMode(answer: string, pdfBase64: string | null, 
       systemInstruction: "You are the 'RANZCO Assessor', an AI that grades fellowship-level ophthalmic written answers. Compare the candidate's text answer against the provided question context and standard model answer. Score the response using a points-based system based on the Angoff Pass Mark standard. Output details in the requested raw JSON format.",
       temperature: 0.2,
       responseMimeType: "application/json"
-    }, 'gemini-2.5-flash');
+    }, getTaskModel('grading'));
     return responseText;
   } catch (err) {
     console.error("Answer grading failed", err);
@@ -985,7 +1000,7 @@ export async function optimizeModelAnswer(questionText: string, currentAnswer: s
     let responseText = await callAI(parts, {
       systemInstruction: await getSystemPrompt(),
       temperature: 0.4,
-    });
+    }, getTaskModel('optimization'));
     // Strip markdown blocks if the AI somehow included them
     responseText = responseText.replace(/^```[a-z]*\n/m, "").replace(/```$/m, "").trim();
     return responseText;

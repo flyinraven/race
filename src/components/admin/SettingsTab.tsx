@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { FileText, CheckCircle, Key, Cpu, Eye, EyeOff, Zap, AlertCircle } from 'lucide-react';
+import { FileText, CheckCircle, Key, Cpu, Eye, EyeOff, Zap, AlertCircle, ChevronDown } from 'lucide-react';
 import { apiFetch } from '../../lib/apiClient';
+import { TASK_MODEL_KEYS, type AiTask } from '../../services/examEngine';
 
 interface SettingsTabProps {
   curriculumText: string;
@@ -60,6 +61,36 @@ export default function SettingsTab({
   const [showKey, setShowKey] = useState(false);
   const [testStatus, setTestStatus] = useState<'idle' | 'testing' | 'ok' | 'fail'>('idle');
   const [testError, setTestError] = useState('');
+  const [showPerTask, setShowPerTask] = useState(false);
+
+  // Per-task model state — read from localStorage on mount
+  const taskKeys = Object.keys(TASK_MODEL_KEYS) as AiTask[];
+  const [taskModels, setTaskModels] = useState<Record<AiTask, string>>(() => {
+    const global = localStorage.getItem('ranzco_ai_model') || 'gemini-2.5-flash';
+    return {
+      generation:   localStorage.getItem(TASK_MODEL_KEYS.generation)   || '',
+      grading:      localStorage.getItem(TASK_MODEL_KEYS.grading)      || '',
+      parsing:      localStorage.getItem(TASK_MODEL_KEYS.parsing)      || '',
+      optimization: localStorage.getItem(TASK_MODEL_KEYS.optimization) || '',
+    };
+  });
+
+  const savePerTaskModel = (task: AiTask, model: string) => {
+    const updated = { ...taskModels, [task]: model };
+    setTaskModels(updated);
+    if (model) {
+      localStorage.setItem(TASK_MODEL_KEYS[task], model);
+    } else {
+      localStorage.removeItem(TASK_MODEL_KEYS[task]);
+    }
+  };
+
+  const TASK_LABELS: Record<AiTask, { label: string; description: string }> = {
+    generation:   { label: 'Question Generation', description: 'Batch/custom question creation and single exam questions' },
+    grading:      { label: 'Answer Grading & Assessment', description: 'Marking candidate answers and producing rubric feedback' },
+    parsing:      { label: 'PDF / Past Paper Parsing', description: 'Extracting questions from uploaded past exam PDFs' },
+    optimization: { label: 'Model Answer Optimization', description: 'Rewriting and improving model answers in the question bank' },
+  };
 
   const handleTestConnection = async () => {
     if (!aiApiKey.trim()) {
@@ -194,6 +225,44 @@ export default function SettingsTab({
                   ? '⚠️ Free tier quota is 0 for this model. Requires Google Cloud billing.'
                   : ''}
               </p>
+            )}
+          </div>
+
+          {/* Per-task model overrides */}
+          <div className="border border-slate-200 rounded-lg overflow-hidden">
+            <button
+              onClick={() => setShowPerTask(v => !v)}
+              className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
+            >
+              <span>Per-task model overrides <span className="font-normal text-slate-500">(optional)</span></span>
+              <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${showPerTask ? 'rotate-180' : ''}`} />
+            </button>
+            {showPerTask && (
+              <div className="border-t border-slate-200 divide-y divide-slate-100">
+                <p className="px-4 py-3 text-xs text-slate-500 bg-slate-50">
+                  Leave a field set to <strong>Global default</strong> to use the model selected above. Set a specific model to override it for that task only.
+                </p>
+                {taskKeys.map(task => (
+                  <div key={task} className="px-4 py-4">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-slate-800">{TASK_LABELS[task].label}</p>
+                        <p className="text-xs text-slate-500 mt-0.5">{TASK_LABELS[task].description}</p>
+                      </div>
+                      <select
+                        value={taskModels[task]}
+                        onChange={e => savePerTaskModel(task, e.target.value)}
+                        className="border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-500 outline-none bg-white min-w-[220px]"
+                      >
+                        <option value="">— Global default ({aiModel}) —</option>
+                        {models.map(m => (
+                          <option key={m.id} value={m.id}>{m.id}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
 

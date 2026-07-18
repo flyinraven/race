@@ -416,7 +416,7 @@ router.post('/ai/generate', authenticate, async (req: any, res) => {
       return res.status(400).json({ error: 'GEMINI_API_KEY is not configured on Render. Please configure it in your Render dashboard Environment tab.' });
     }
 
-    const selectedModel = modelOverride || 'gemini-2.5-pro';
+    const selectedModel = modelOverride || 'gemini-2.5-flash';
 
     // Route to Google GenAI SDK if google provider
     if (provider === 'google' || !provider) {

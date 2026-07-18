@@ -10,7 +10,7 @@ let currentKey = '';
 export function getAiConfig() {
   const customKey = localStorage.getItem('ranzco_api_key');
   const apiKey = customKey || process.env.GEMINI_API_KEY || '';
-  const modelName = localStorage.getItem('ranzco_ai_model') || 'gemini-2.5-pro';
+  const modelName = localStorage.getItem('ranzco_ai_model') || 'gemini-2.5-flash';
   const provider = localStorage.getItem('ranzco_ai_provider') || 'google';
   return { apiKey, modelName, provider };
 }
@@ -31,7 +31,7 @@ const cleanJsonText = (str: string) => {
 async function callAI(parts: any[], config: any, modelOverride?: string) {
   const customKey = localStorage.getItem('ranzco_api_key');
   const provider = localStorage.getItem('ranzco_ai_provider') || 'google';
-  const modelName = localStorage.getItem('ranzco_ai_model') || 'gemini-2.5-pro';
+  const modelName = localStorage.getItem('ranzco_ai_model') || 'gemini-2.5-flash';
   const selectedModel = modelOverride || modelName;
 
   const formattedParts = parts.map(p => {
@@ -543,7 +543,7 @@ export async function parsePDFQuestionBank(pdfBase64: string, fileName: string, 
         systemInstruction: await getSystemPrompt(),
         temperature: 0.1,
         responseMimeType: "application/json"
-      }, 'gemini-2.5-pro'); // Use pro for document extraction
+      }, 'gemini-2.5-flash'); // Use flash for document extraction
       
       let chunkQuestions: any[] = [];
       try {

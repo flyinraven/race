@@ -63,7 +63,7 @@ export default function AdminDashboard() {
   // AI Configuration State
   const [aiProvider, setAiProvider] = useState('google');
   const [aiApiKey, setAiApiKey] = useState('');
-  const [aiModel, setAiModel] = useState('gemini-2.5-pro');
+  const [aiModel, setAiModel] = useState('gemini-2.5-flash');
   const [aiConfigSaved, setAiConfigSaved] = useState(false);
   const [curriculumText, setCurriculumText] = useState('');
   const [curriculumSaved, setCurriculumSaved] = useState(false);
@@ -110,7 +110,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     setAiProvider(localStorage.getItem('ranzco_ai_provider') || 'google');
     setAiApiKey(localStorage.getItem('ranzco_api_key') || '');
-    setAiModel(localStorage.getItem('ranzco_ai_model') || 'gemini-2.5-pro');
+    setAiModel(localStorage.getItem('ranzco_ai_model') || 'gemini-2.5-flash');
     getCurriculum().then(setCurriculumText);
     getExamGuidelines().then(setExamGuidelines);
     refreshBank();

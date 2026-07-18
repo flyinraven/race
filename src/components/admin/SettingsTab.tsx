@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FileText, CheckCircle, Key, Cpu, Eye, EyeOff, Zap, AlertCircle, ChevronDown, Trash2, Upload, Calendar, BookOpen, AlertTriangle } from 'lucide-react';
+import { FileText, CheckCircle, Key, Cpu, Eye, EyeOff, Zap, AlertCircle, ChevronDown, Trash2, Upload, BookOpen } from 'lucide-react';
 import { apiFetch } from '../../lib/apiClient';
 import { TASK_MODEL_KEYS, type AiTask, CurriculumDoc, getCurriculumDocs, uploadCurriculumDoc, deleteCurriculumDoc } from '../../services/examEngine';
 import * as pdfjsLib from 'pdfjs-dist';
@@ -32,13 +32,32 @@ const GOOGLE_MODELS = [
   { id: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro — Requires billing' },
   { id: 'gemini-2.0-flash', label: 'Gemini 2.0 Flash' },
   { id: 'gemini-1.5-flash', label: 'Gemini 1.5 Flash' },
-  { id: 'gemini-1.5-pro', label: 'Gemini 1.5 Pro' },
 ];
 
 const OPENAI_MODELS = [
   { id: 'gpt-4o-mini', label: 'GPT-4o Mini — Cheaper, fast' },
   { id: 'gpt-4o', label: 'GPT-4o — More capable' },
-  { id: 'gpt-4-turbo', label: 'GPT-4 Turbo' },
+  { id: 'o1-mini', label: 'o1-mini — Reasoning' },
+  { id: 'o1', label: 'o1 — Advanced reasoning' },
+];
+
+const ANTHROPIC_MODELS = [
+  { id: 'claude-3-7-sonnet-latest', label: 'Claude 3.7 Sonnet — Latest state-of-the-art' },
+  { id: 'claude-3-5-sonnet-latest', label: 'Claude 3.5 Sonnet' },
+  { id: 'claude-3-5-haiku-latest', label: 'Claude 3.5 Haiku — Fast' },
+  { id: 'claude-3-opus-latest', label: 'Claude 3 Opus' },
+];
+
+const DEEPSEEK_MODELS = [
+  { id: 'deepseek-chat', label: 'DeepSeek V3 (deepseek-chat) — Highly cost-effective' },
+  { id: 'deepseek-reasoner', label: 'DeepSeek R1 (deepseek-reasoner) — Advanced reasoning' },
+];
+
+const OPENROUTER_MODELS = [
+  { id: 'meta-llama/llama-3.3-70b-instruct', label: 'Llama 3.3 70B Instruct' },
+  { id: 'deepseek/deepseek-r1', label: 'DeepSeek R1 (OpenRouter)' },
+  { id: 'google/gemini-2.5-pro', label: 'Gemini 2.5 Pro (OpenRouter)' },
+  { id: 'qwen/qwen-2.5-72b-instruct', label: 'Qwen 2.5 72B Instruct' },
 ];
 
 const TOPICS = [
@@ -69,11 +88,11 @@ export default function SettingsTab({
   const [testStatus, setTestStatus] = useState<'idle' | 'testing' | 'ok' | 'fail'>('idle');
   const [testError, setTestError] = useState('');
   const [showPerTask, setShowPerTask] = useState(false);
+  const [customModelName, setCustomModelName] = useState('');
+  const [showCustomModelInput, setShowCustomModelInput] = useState(false);
 
   // Curriculum Manager State
   const [curriculumDocs, setCurriculumDocs] = useState<CurriculumDoc[]>([]);
-  const [uploadTopic, setUploadTopic] = useState(TOPICS[0]);
-  const [uploadYear, setUploadYear] = useState(new Date().getFullYear().toString());
   const [isUploadingDoc, setIsUploadingDoc] = useState(false);
   const [uploadDocStatus, setUploadDocStatus] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -118,12 +137,13 @@ export default function SettingsTab({
     setTestError('');
     try {
       saveAiConfig();
+      const activeModel = showCustomModelInput ? customModelName : aiModel;
       const result = await apiFetch('/ai/generate', {
         method: 'POST',
         body: JSON.stringify({
           parts: [{ text: 'Say "OK" in one word.' }],
           config: { temperature: 0.1 },
-          modelOverride: aiModel,
+          modelOverride: activeModel,
           provider: aiProvider,
           customKey: aiApiKey,
         }),
@@ -143,12 +163,6 @@ export default function SettingsTab({
   const handleDocUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    if (!uploadYear.trim() || !uploadYear.match(/^\d{4}$/)) {
-      setUploadDocStatus('Error: Please enter a valid 4-digit year.');
-      if (fileInputRef.current) fileInputRef.current.value = '';
-      return;
-    }
 
     setIsUploadingDoc(true);
     setUploadDocStatus(`Reading ${file.name}...`);
@@ -214,15 +228,74 @@ export default function SettingsTab({
         throw new Error('No text content could be extracted from this document.');
       }
 
-      setUploadDocStatus('Saving curriculum document to database...');
+      setUploadDocStatus('AI analyzing document to determine target topic and year...');
+      
+      const snippet = textContent.slice(0, 4000);
+      const parts = [
+        `[CURRICULUM_ANALYSIS]
+Analyze the following curriculum framework document. Determine which of the 9 core topics it belongs to:
+- Cataract
+- Cornea and External Eye
+- Glaucoma
+- Neuro-ophthalmology
+- Ocular Inflammation
+- Ocular Motility
+- Oculoplastics and Orbit
+- Paediatrics
+- Vitreoretinal
+
+Also determine the publication or revision year of this curriculum document (if not specified, default to "2024").
+
+You must respond ONLY with a raw JSON object matching this structure:
+{
+  "topic": "Glaucoma",
+  "year": "2023"
+}
+
+Text snippet:
+${snippet}`
+      ];
+
+      const activeModel = showCustomModelInput ? customModelName : aiModel;
+      const aiResponse = await apiFetch('/ai/generate', {
+        method: 'POST',
+        body: JSON.stringify({
+          parts,
+          config: { temperature: 0.1, responseMimeType: "application/json" },
+          modelOverride: activeModel,
+          provider: aiProvider,
+          customKey: aiApiKey
+        })
+      });
+
+      let topic = TOPICS[0];
+      let year = '2024';
+
+      try {
+        const parsed = JSON.parse(aiResponse?.text || '{}');
+        if (parsed.topic) topic = parsed.topic;
+        if (parsed.year) year = String(parsed.year);
+      } catch (err) {
+        console.warn("AI topic extraction failed, defaulting.", err);
+      }
+
+      // Normalize topic string
+      const matchedTopic = TOPICS.find(t => t.toLowerCase() === topic.toLowerCase() || topic.toLowerCase().includes(t.toLowerCase()));
+      if (matchedTopic) {
+        topic = matchedTopic;
+      } else {
+        topic = TOPICS[0];
+      }
+
+      setUploadDocStatus(`Saving curriculum document under topic "${topic}" and year ${year}...`);
       await uploadCurriculumDoc({
-        topic: uploadTopic,
+        topic,
         filename: file.name,
-        year: uploadYear,
+        year,
         text_content: textContent
       });
 
-      setUploadDocStatus(`Successfully uploaded curriculum doc for ${uploadTopic}.`);
+      setUploadDocStatus(`Successfully analyzed and uploaded curriculum doc for ${topic} (${year}).`);
       await refreshCurriculumDocs();
     } catch (err: any) {
       setUploadDocStatus(`Error: ${err.message || 'Failed to extract document.'}`);
@@ -249,7 +322,12 @@ export default function SettingsTab({
     optimization: { label: 'Model Answer Optimization', description: 'Rewriting and improving model answers in the question bank' },
   };
 
-  const models = aiProvider === 'google' ? GOOGLE_MODELS : OPENAI_MODELS;
+  const models = 
+    aiProvider === 'google' ? GOOGLE_MODELS :
+    aiProvider === 'openai' ? OPENAI_MODELS :
+    aiProvider === 'anthropic' ? ANTHROPIC_MODELS :
+    aiProvider === 'deepseek' ? DEEPSEEK_MODELS :
+    OPENROUTER_MODELS;
 
   return (
     <div className="max-w-2xl mx-auto space-y-8">
@@ -261,7 +339,7 @@ export default function SettingsTab({
           <div>
             <h3 className="text-lg font-bold text-slate-900">AI API Configuration</h3>
             <p className="text-xs text-slate-500 mt-0.5">
-              Keys are stored in your browser and sent only when making AI requests.
+              Select your provider, key, and models to power question generation and assessment.
             </p>
           </div>
         </div>
@@ -270,25 +348,35 @@ export default function SettingsTab({
           {/* Provider */}
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-2">AI Provider</label>
-            <div className="flex gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
               {[
-                { id: 'google', label: 'Google AI Studio', badge: 'Free tier available' },
+                { id: 'google', label: 'Google', badge: 'Free tier' },
                 { id: 'openai', label: 'OpenAI', badge: 'Paid' },
+                { id: 'anthropic', label: 'Anthropic', badge: 'Claude' },
+                { id: 'deepseek', label: 'DeepSeek', badge: 'Economic' },
+                { id: 'openrouter', label: 'OpenRouter', badge: 'Any Model' },
               ].map(p => (
                 <button
                   key={p.id}
                   onClick={() => {
                     setAiProvider(p.id);
-                    setAiModel(p.id === 'google' ? 'gemini-2.5-flash' : 'gpt-4o-mini');
+                    setAiModel(
+                      p.id === 'google' ? 'gemini-2.5-flash' :
+                      p.id === 'openai' ? 'gpt-4o-mini' :
+                      p.id === 'anthropic' ? 'claude-3-5-sonnet-latest' :
+                      p.id === 'deepseek' ? 'deepseek-chat' :
+                      'meta-llama/llama-3.3-70b-instruct'
+                    );
+                    setShowCustomModelInput(false);
                   }}
-                  className={`flex-1 border rounded-lg px-4 py-3 text-left transition ${
+                  className={`border rounded-lg px-2 py-2 text-left transition ${
                     aiProvider === p.id
                       ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
                       : 'border-slate-200 hover:border-slate-300 text-slate-600'
                   }`}
                 >
-                  <p className="font-semibold text-sm">{p.label}</p>
-                  <p className="text-xs mt-0.5 opacity-70">{p.badge}</p>
+                  <p className="font-semibold text-xs truncate">{p.label}</p>
+                  <p className="text-[10px] opacity-75 truncate">{p.badge}</p>
                 </button>
               ))}
             </div>
@@ -304,7 +392,13 @@ export default function SettingsTab({
                 type={showKey ? 'text' : 'password'}
                 value={aiApiKey}
                 onChange={e => setAiApiKey(e.target.value)}
-                placeholder={aiProvider === 'google' ? 'AIza...' : 'sk-...'}
+                placeholder={
+                  aiProvider === 'google' ? 'AIza...' :
+                  aiProvider === 'openai' ? 'sk-proj-...' :
+                  aiProvider === 'anthropic' ? 'sk-ant-...' :
+                  aiProvider === 'deepseek' ? 'sk-...' :
+                  'sk-or-...'
+                }
                 className="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm font-mono focus:ring-2 focus:ring-indigo-500 outline-none pr-11"
               />
               <button
@@ -315,41 +409,48 @@ export default function SettingsTab({
                 {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
-            {aiProvider === 'google' && (
-              <p className="text-xs text-slate-500 mt-1.5">
-                Get your free key at{' '}
-                <a
-                  href="https://aistudio.google.com/app/apikey"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-indigo-600 underline hover:text-indigo-800"
-                >
-                  aistudio.google.com
-                </a>
-              </p>
-            )}
           </div>
 
           {/* Model */}
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-2">AI Model</label>
-            <select
-              value={aiModel}
-              onChange={e => setAiModel(e.target.value)}
-              className="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
-            >
-              {models.map(m => (
-                <option key={m.id} value={m.id}>{m.label}</option>
-              ))}
-            </select>
-            {aiProvider === 'google' && (
-              <p className="text-xs mt-1.5 text-slate-500">
-                {aiModel === 'gemini-2.5-flash'
-                  ? '✓ Recommended — Generous free tier, fast, high quality.'
-                  : aiModel === 'gemini-2.5-pro'
-                  ? '⚠️ Free tier quota is 0 for this model. Requires Google Cloud billing.'
-                  : ''}
-              </p>
+            {!showCustomModelInput ? (
+              <div className="flex gap-2">
+                <select
+                  value={aiModel}
+                  onChange={e => setAiModel(e.target.value)}
+                  className="flex-grow border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
+                >
+                  {models.map(m => (
+                    <option key={m.id} value={m.id}>{m.label}</option>
+                  ))}
+                </select>
+                <button
+                  onClick={() => setShowCustomModelInput(true)}
+                  className="px-3 border border-slate-300 rounded-lg text-xs text-slate-600 hover:bg-slate-50 font-medium"
+                >
+                  Type Model ID
+                </button>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={customModelName}
+                  onChange={e => setCustomModelName(e.target.value)}
+                  placeholder="e.g. meta-llama/llama-3.1-405b-instruct"
+                  className="flex-grow border border-slate-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none font-mono"
+                />
+                <button
+                  onClick={() => {
+                    setShowCustomModelInput(false);
+                    setCustomModelName('');
+                  }}
+                  className="px-3 border border-slate-300 rounded-lg text-xs text-slate-600 hover:bg-slate-50 font-medium"
+                >
+                  Use List
+                </button>
+              </div>
             )}
           </div>
 
@@ -374,16 +475,13 @@ export default function SettingsTab({
                         <p className="text-sm font-semibold text-slate-800">{TASK_LABELS[task].label}</p>
                         <p className="text-xs text-slate-500 mt-0.5">{TASK_LABELS[task].description}</p>
                       </div>
-                      <select
+                      <input
+                        type="text"
+                        placeholder="Model override (optional)..."
                         value={taskModels[task]}
                         onChange={e => savePerTaskModel(task, e.target.value)}
-                        className="border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-500 outline-none bg-white min-w-[220px]"
-                      >
-                        <option value="">— Global default ({aiModel}) —</option>
-                        {models.map(m => (
-                          <option key={m.id} value={m.id}>{m.id}</option>
-                        ))}
-                      </select>
+                        className="border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-500 outline-none bg-white min-w-[220px] font-mono"
+                      />
                     </div>
                   </div>
                 ))}
@@ -441,43 +539,13 @@ export default function SettingsTab({
           <BookOpen className="w-6 h-6 text-purple-600" />
           <div>
             <h3 className="text-lg font-bold text-slate-900">Clinical Curriculum Manager</h3>
-            <p className="text-xs text-slate-500 mt-0.5">Upload syllabus documents per topic to restrict AI clinical examination boundaries.</p>
+            <p className="text-xs text-slate-500 mt-0.5">Upload syllabus documents. The AI automatically determines the topic and year from content.</p>
           </div>
         </div>
         <div className="p-6 space-y-6">
 
           {/* Upload panel */}
           <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
-            <h4 className="text-sm font-bold text-slate-800 mb-3 flex items-center gap-1.5">
-              <Upload className="w-4 h-4 text-purple-600" />
-              Upload Curriculum Reference
-            </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Target Topic</label>
-                <select
-                  value={uploadTopic}
-                  onChange={e => setUploadTopic(e.target.value)}
-                  className="w-full border border-slate-300 rounded p-2 text-sm bg-white focus:ring-1 focus:ring-purple-500"
-                >
-                  {TOPICS.map(t => <option key={t} value={t}>{t}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Written Year</label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    value={uploadYear}
-                    onChange={e => setUploadYear(e.target.value)}
-                    className="w-full border border-slate-300 rounded p-2 text-sm focus:ring-1 focus:ring-purple-500 pl-8 font-mono"
-                    placeholder="e.g. 2025"
-                  />
-                  <Calendar className="w-4 h-4 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
-                </div>
-              </div>
-            </div>
-
             <div className="relative">
               <input
                 type="file"
@@ -487,9 +555,9 @@ export default function SettingsTab({
                 disabled={isUploadingDoc}
                 className={`absolute inset-0 w-full h-full opacity-0 ${isUploadingDoc ? 'cursor-not-allowed' : 'cursor-pointer'}`}
               />
-              <div className={`bg-purple-50 border border-purple-200 text-purple-700 w-full py-3 rounded-lg font-semibold transition flex items-center justify-center gap-2 pointer-events-none ${isUploadingDoc ? 'opacity-70' : 'hover:bg-purple-100'}`}>
+              <div className={`bg-purple-50 border border-purple-200 text-purple-700 w-full py-4 rounded-lg font-semibold transition flex items-center justify-center gap-2 pointer-events-none ${isUploadingDoc ? 'opacity-70' : 'hover:bg-purple-100'}`}>
                 {isUploadingDoc ? <Zap className="w-5 h-5 animate-pulse" /> : <Upload className="w-5 h-5" />}
-                {isUploadingDoc ? 'Extracting document text...' : 'Select Document (PDF, Word, TXT)'}
+                {isUploadingDoc ? 'Analyzing & extracting curriculum...' : 'Upload Curriculum Reference (PDF, Word, TXT)'}
               </div>
             </div>
             {uploadDocStatus && (

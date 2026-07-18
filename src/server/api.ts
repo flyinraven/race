@@ -454,9 +454,13 @@ router.post('/ai/generate', authenticate, async (req: any, res) => {
       return res.json({ text: response.text });
     }
     
-    // Support OpenAI / DeepSeek fallbacks if configured in client
-    if (provider === 'openai' || provider === 'deepseek') {
-      const baseUrl = provider === 'deepseek' ? 'https://api.deepseek.com/chat/completions' : 'https://api.openai.com/v1/chat/completions';
+    // Support OpenAI / DeepSeek / OpenRouter fallbacks
+    if (provider === 'openai' || provider === 'deepseek' || provider === 'openrouter') {
+      const baseUrl = provider === 'deepseek' 
+        ? 'https://api.deepseek.com/chat/completions' 
+        : provider === 'openrouter'
+        ? 'https://openrouter.ai/api/v1/chat/completions'
+        : 'https://api.openai.com/v1/chat/completions';
       
       let userMessageContent: any[] | string = [];
       if (parts.length === 1 && typeof parts[0] === 'string') {
@@ -496,11 +500,64 @@ router.post('/ai/generate', authenticate, async (req: any, res) => {
 
       if (!response.ok) {
         const errText = await response.text();
-        throw new Error(`OpenAI/DeepSeek API Error: ${errText}`);
+        throw new Error(`${provider.toUpperCase()} API Error: ${errText}`);
       }
 
       const resData = await response.json();
       const text = resData.choices?.[0]?.message?.content || '';
+      return res.json({ text });
+    }
+
+    // Support Anthropic Claude
+    if (provider === 'anthropic') {
+      const baseUrl = 'https://api.anthropic.com/v1/messages';
+      
+      let anthropicMessages = [];
+      if (parts.length === 1 && typeof parts[0] === 'string') {
+        anthropicMessages = [{ role: 'user', content: parts[0] }];
+      } else {
+        const contentArray = parts.map((p: any) => {
+          if (p.text) return { type: 'text', text: p.text };
+          if (p.inlineData) {
+            return {
+              type: 'image',
+              source: {
+                type: 'base64',
+                media_type: p.inlineData.mimeType || 'image/jpeg',
+                data: p.inlineData.data
+              }
+            };
+          }
+          return { type: 'text', text: String(p) };
+        });
+        anthropicMessages = [{ role: 'user', content: contentArray }];
+      }
+
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01'
+      };
+
+      const response = await fetch(baseUrl, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          model: selectedModel,
+          messages: anthropicMessages,
+          system: config?.systemInstruction || undefined,
+          temperature: config?.temperature ?? 0.7,
+          max_tokens: 4000
+        })
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Anthropic API Error: ${errText}`);
+      }
+
+      const resData = await response.json();
+      const text = resData.content?.[0]?.text || '';
       return res.json({ text });
     }
 

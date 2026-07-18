@@ -1,0 +1,299 @@
+[
+  {
+    "id": "ai_c1x",
+    "type": "VSAQ",
+    "topic": "Cataract",
+    "paper": "AI Generated Batch",
+    "year": "2024",
+    "questionLabel": "AI VSAQ - Cataract",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 65-year-old patient presents with gradual painless loss of vision in their right eye over the last 2 years. Glare is particularly problematic at night.\n\n![Image](https://upload.wikimedia.org/wikipedia/commons/e/ea/Cataract_in_human_eye.png)",
+      "subQuestions": [
+        { "id": "q1", "text": "What is the most likely diagnosis?", "modelAnswer": "Age-related nuclear sclerotic cataract." },
+        { "id": "q2", "text": "What is the definitive treatment?", "modelAnswer": "Phacoemulsification and intraocular lens implantation." }
+      ]
+    }
+  },
+  {
+    "id": "ai_c1y",
+    "type": "SEQ",
+    "topic": "Cataract",
+    "paper": "AI Generated Batch",
+    "year": "2024",
+    "questionLabel": "AI SEQ - Cataract",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 65-year-old patient presents with gradual painless loss of vision in their right eye over the last 2 years. Glare is particularly problematic at night. (Extended case for SEQ with further details omitted for brevity. Please refer to standard curriculum.)\n\n![Image](https://upload.wikimedia.org/wikipedia/commons/e/ea/Cataract_in_human_eye.png)",
+      "subQuestions": [
+        { "id": "q1", "text": "List 4 sight-threatening complications of cataract surgery.", "modelAnswer": "Endophthalmitis, Retinal Detachment, Dropped nucleus, Suprachoroidal hemorrhage." },
+        { "id": "q2", "text": "Describe the steps of phacoemulsification.", "modelAnswer": "Incision, capsulorhexis, hydrodissection, phacoemulsification of nucleus, cortical aspiration, intraocular lens insertion." },
+        { "id": "q3", "text": "What is the incidence of endophthalmitis post-cataract surgery?", "modelAnswer": "Approximately 0.05% to 0.1%." }
+      ]
+    }
+  },
+  {
+    "id": "ai_c2x",
+    "type": "VSAQ",
+    "topic": "Cornea and External Eye",
+    "paper": "AI Generated Batch",
+    "year": "2024",
+    "questionLabel": "AI VSAQ - Cornea and External Eye",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 30-year-old male presents with a painful red right eye, photophobia, and watering following a scratch from a twig. Slit lamp examination with fluorescein is shown.\n\n![Image](https://upload.wikimedia.org/wikipedia/commons/7/77/Herpes_simplex_keratitis_%281%29.jpg)",
+      "subQuestions": [
+        { "id": "q1", "text": "Describe the clinical sign shown.", "modelAnswer": "A dendritic ulcer with terminal bulbs, staining with fluorescein." },
+        { "id": "q2", "text": "What is the most appropriate first-line treatment?", "modelAnswer": "Topical Aciclovir or Ganciclovir ointment." }
+      ]
+    }
+  },
+  {
+    "id": "ai_c2y",
+    "type": "SEQ",
+    "topic": "Cornea and External Eye",
+    "paper": "AI Generated Batch",
+    "year": "2024",
+    "questionLabel": "AI SEQ - Cornea and External Eye",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 30-year-old male presents with a painful red right eye, photophobia, and watering following a scratch from a twig. Slit lamp examination with fluorescein is shown. (Extended case for SEQ with further details omitted for brevity. Please refer to standard curriculum.)\n\n![Image](https://upload.wikimedia.org/wikipedia/commons/7/77/Herpes_simplex_keratitis_%281%29.jpg)",
+      "subQuestions": [
+        { "id": "q1", "text": "List 3 complications of Herpes Simplex Keratitis.", "modelAnswer": "Corneal scarring, stromal keratitis, neurotrophic keratopathy." },
+        { "id": "q2", "text": "Why are topical corticosteroids contraindicated in active dendritic ulcers?", "modelAnswer": "They promote viral replication and can cause a geographic ulcer." },
+        { "id": "q3", "text": "What is the oral dose of Aciclovir for Herpes Zoster Ophthalmicus?", "modelAnswer": "800mg 5 times a day for 7 days." }
+      ]
+    }
+  },
+  {
+    "id": "ai_c3x",
+    "type": "VSAQ",
+    "topic": "Glaucoma",
+    "paper": "AI Generated Batch",
+    "year": "2024",
+    "questionLabel": "AI VSAQ - Glaucoma",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 70-year-old patient is found to have an intraocular pressure of 28 mmHg in both eyes on routine optometry review. Gonioscopy shows open angles.\n\n![Image](https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Optic_disc_with_glaucomatous_cupping.jpg/600px-Optic_disc_with_glaucomatous_cupping.jpg)",
+      "subQuestions": [
+        { "id": "q1", "text": "Describe the findings on the optic disc image.", "modelAnswer": "Increased cup-to-disc ratio, nasalization of vessels, and inferior rim thinning." },
+        { "id": "q2", "text": "What is the most likely diagnosis?", "modelAnswer": "Primary Open Angle Glaucoma (POAG)." }
+      ]
+    }
+  },
+  {
+    "id": "ai_c3y",
+    "type": "SEQ",
+    "topic": "Glaucoma",
+    "paper": "AI Generated Batch",
+    "year": "2024",
+    "questionLabel": "AI SEQ - Glaucoma",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 70-year-old patient is found to have an intraocular pressure of 28 mmHg in both eyes on routine optometry review. Gonioscopy shows open angles. (Extended case for SEQ with further details omitted for brevity. Please refer to standard curriculum.)\n\n![Image](https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Optic_disc_with_glaucomatous_cupping.jpg/600px-Optic_disc_with_glaucomatous_cupping.jpg)",
+      "subQuestions": [
+        { "id": "q1", "text": "List 4 classes of topical medication used to lower IOP.", "modelAnswer": "Prostaglandin analogues, Beta-blockers, Carbonic anhydrase inhibitors, Alpha-2 agonists." },
+        { "id": "q2", "text": "Outline the mechanism of action of prostaglandin analogues.", "modelAnswer": "Increase uveoscleral outflow of aqueous humor." },
+        { "id": "q3", "text": "What are the indications for a trabeculectomy?", "modelAnswer": "Failure of maximal medical therapy to control IOP, progression of visual field loss, poor compliance with drops." }
+      ]
+    }
+  },
+  {
+    "id": "ai_c4x",
+    "type": "VSAQ",
+    "topic": "Neuro-ophthalmology",
+    "paper": "AI Generated Batch",
+    "year": "2024",
+    "questionLabel": "AI VSAQ - Neuro-ophthalmology",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 25-year-old obese female presents with a 4-week history of headaches and transient visual obscurations. Visual acuity is 6/6 bilaterally.\n\n![Image](https://upload.wikimedia.org/wikipedia/commons/a/ab/Papilledema.jpg)",
+      "subQuestions": [
+        { "id": "q1", "text": "What clinical sign is shown in the fundus image?", "modelAnswer": "Bilateral optic disc swelling (papilledema)." },
+        { "id": "q2", "text": "What is the most likely unifying diagnosis?", "modelAnswer": "Idiopathic Intracranial Hypertension (IIH)." }
+      ]
+    }
+  },
+  {
+    "id": "ai_c4y",
+    "type": "SEQ",
+    "topic": "Neuro-ophthalmology",
+    "paper": "AI Generated Batch",
+    "year": "2024",
+    "questionLabel": "AI SEQ - Neuro-ophthalmology",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 25-year-old obese female presents with a 4-week history of headaches and transient visual obscurations. Visual acuity is 6/6 bilaterally. (Extended case for SEQ with further details omitted for brevity. Please refer to standard curriculum.)\n\n![Image](https://upload.wikimedia.org/wikipedia/commons/a/ab/Papilledema.jpg)",
+      "subQuestions": [
+        { "id": "q1", "text": "List the essential investigations for a patient presenting with papilledema.", "modelAnswer": "Neuroimaging (MRI brain and MRV), Lumbar puncture (opening pressure and CSF composition)." },
+        { "id": "q2", "text": "Describe the visual field defects seen in IIH.", "modelAnswer": "Enlarged blind spot, generalized constriction, nasal step or arcuate defects in later stages." },
+        { "id": "q3", "text": "What are the treatment options for IIH?", "modelAnswer": "Weight loss, Acetazolamide, Optic nerve sheath fenestration, VP shunt." }
+      ]
+    }
+  },
+  {
+    "id": "ai_c5x",
+    "type": "VSAQ",
+    "topic": "Ocular Inflammation",
+    "paper": "AI Generated Batch",
+    "year": "2024",
+    "questionLabel": "AI VSAQ - Ocular Inflammation",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 40-year-old male with a history of ankylosing spondylitis presents with a painful, red, and photophobic left eye.\n\n![Image](https://upload.wikimedia.org/wikipedia/commons/c/c5/Anterior_uveitis_%28hypopyon%29.jpg)",
+      "subQuestions": [
+        { "id": "q1", "text": "What is the most striking clinical sign in the anterior chamber?", "modelAnswer": "A hypopyon (layer of white blood cells)." },
+        { "id": "q2", "text": "What is the most likely diagnosis?", "modelAnswer": "Acute anterior uveitis (likely HLA-B27 associated)." }
+      ]
+    }
+  },
+  {
+    "id": "ai_c5y",
+    "type": "SEQ",
+    "topic": "Ocular Inflammation",
+    "paper": "AI Generated Batch",
+    "year": "2024",
+    "questionLabel": "AI SEQ - Ocular Inflammation",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 40-year-old male with a history of ankylosing spondylitis presents with a painful, red, and photophobic left eye. (Extended case for SEQ with further details omitted for brevity. Please refer to standard curriculum.)\n\n![Image](https://upload.wikimedia.org/wikipedia/commons/c/c5/Anterior_uveitis_%28hypopyon%29.jpg)",
+      "subQuestions": [
+        { "id": "q1", "text": "List 4 systemic conditions associated with acute anterior uveitis.", "modelAnswer": "Ankylosing spondylitis, Inflammatory bowel disease (Crohn's/UC), Psoriatic arthritis, Reactive arthritis." },
+        { "id": "q2", "text": "Describe the typical management plan.", "modelAnswer": "Intensive topical corticosteroids (e.g., Prednisolone acetate 1%) and a topical cycloplegic (e.g., Cyclopentolate 1%)." },
+        { "id": "q3", "text": "What are the complications of chronic anterior uveitis?", "modelAnswer": "Cataract, Glaucoma, Macular edema, Band keratopathy." }
+      ]
+    }
+  },
+  {
+    "id": "ai_c6x",
+    "type": "VSAQ",
+    "topic": "Ocular Motility",
+    "paper": "AI Generated Batch",
+    "year": "2024",
+    "questionLabel": "AI VSAQ - Ocular Motility",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 55-year-old diabetic male presents with acute onset horizontal diplopia, which is worse on looking to the left. The image shows his primary position.\n\n![Image](https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Left_Abducens_Nerve_Palsy_Primary_Gaze.jpg/600px-Left_Abducens_Nerve_Palsy_Primary_Gaze.jpg)",
+      "subQuestions": [
+        { "id": "q1", "text": "What cranial nerve palsy is demonstrated?", "modelAnswer": "Left sixth cranial nerve (abducens) palsy." },
+        { "id": "q2", "text": "What is the most common microvascular cause?", "modelAnswer": "Diabetes mellitus or Hypertension." }
+      ]
+    }
+  },
+  {
+    "id": "ai_c6y",
+    "type": "SEQ",
+    "topic": "Ocular Motility",
+    "paper": "AI Generated Batch",
+    "year": "2024",
+    "questionLabel": "AI SEQ - Ocular Motility",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 55-year-old diabetic male presents with acute onset horizontal diplopia, which is worse on looking to the left. The image shows his primary position. (Extended case for SEQ with further details omitted for brevity. Please refer to standard curriculum.)\n\n![Image](https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Left_Abducens_Nerve_Palsy_Primary_Gaze.jpg/600px-Left_Abducens_Nerve_Palsy_Primary_Gaze.jpg)",
+      "subQuestions": [
+        { "id": "q1", "text": "List 3 causes of a sixth nerve palsy.", "modelAnswer": "Microvascular ischemia, Raised intracranial pressure, Intracranial mass/tumor." },
+        { "id": "q2", "text": "How would you manage a microvascular sixth nerve palsy?", "modelAnswer": "Observation, control of vascular risk factors (HbA1c, BP), and Fresnel prism for symptomatic relief of diplopia." },
+        { "id": "q3", "text": "When is neuroimaging indicated?", "modelAnswer": "If it is unresolved after 3-6 months, progressive, bilateral, or associated with other neurological signs." }
+      ]
+    }
+  },
+  {
+    "id": "ai_c7x",
+    "type": "VSAQ",
+    "topic": "Oculoplastics and Orbit",
+    "paper": "AI Generated Batch",
+    "year": "2024",
+    "questionLabel": "AI VSAQ - Oculoplastics and Orbit",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 60-year-old fair-skinned male presents with a slowly growing, nodular lesion with pearly edges on his right lower eyelid.\n\n![Image](https://upload.wikimedia.org/wikipedia/commons/b/ba/Basal-cell_carcinoma_of_lower_eyelid.jpg)",
+      "subQuestions": [
+        { "id": "q1", "text": "What is the most likely diagnosis?", "modelAnswer": "Basal Cell Carcinoma (BCC)." },
+        { "id": "q2", "text": "What is the most appropriate management?", "modelAnswer": "Incisional or excisional biopsy followed by complete surgical excision with clear margins." }
+      ]
+    }
+  },
+  {
+    "id": "ai_c7y",
+    "type": "SEQ",
+    "topic": "Oculoplastics and Orbit",
+    "paper": "AI Generated Batch",
+    "year": "2024",
+    "questionLabel": "AI SEQ - Oculoplastics and Orbit",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 60-year-old fair-skinned male presents with a slowly growing, nodular lesion with pearly edges on his right lower eyelid. (Extended case for SEQ with further details omitted for brevity. Please refer to standard curriculum.)\n\n![Image](https://upload.wikimedia.org/wikipedia/commons/b/ba/Basal-cell_carcinoma_of_lower_eyelid.jpg)",
+      "subQuestions": [
+        { "id": "q1", "text": "List 3 differential diagnoses for a nodular eyelid lesion.", "modelAnswer": "Squamous cell carcinoma, Sebaceous gland carcinoma, Keratoacanthoma." },
+        { "id": "q2", "text": "Describe Mohs micrographic surgery.", "modelAnswer": "A technique where the lesion is excised in stages, with immediate microscopic examination of margins to ensure complete removal while preserving maximal healthy tissue." },
+        { "id": "q3", "text": "What are the reconstructive options for an eyelid defect?", "modelAnswer": "Direct closure, local flaps (e.g., Tenzel flap, Hughes flap), skin grafts." }
+      ]
+    }
+  },
+  {
+    "id": "ai_c8x",
+    "type": "VSAQ",
+    "topic": "Paediatrics",
+    "paper": "AI Generated Batch",
+    "year": "2024",
+    "questionLabel": "AI VSAQ - Paediatrics",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 1-year-old child is brought by their parents who noticed a white reflex in the child's left eye in photographs. The child appears otherwise well.\n\n![Image](https://upload.wikimedia.org/wikipedia/commons/1/14/Leukocoria.jpg)",
+      "subQuestions": [
+        { "id": "q1", "text": "What is the medical term for the white reflex shown?", "modelAnswer": "Leukocoria." },
+        { "id": "q2", "text": "Name one life-threatening differential diagnosis.", "modelAnswer": "Retinoblastoma." }
+      ]
+    }
+  },
+  {
+    "id": "ai_c8y",
+    "type": "SEQ",
+    "topic": "Paediatrics",
+    "paper": "AI Generated Batch",
+    "year": "2024",
+    "questionLabel": "AI SEQ - Paediatrics",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 1-year-old child is brought by their parents who noticed a white reflex in the child's left eye in photographs. The child appears otherwise well. (Extended case for SEQ with further details omitted for brevity. Please refer to standard curriculum.)\n\n![Image](https://upload.wikimedia.org/wikipedia/commons/1/14/Leukocoria.jpg)",
+      "subQuestions": [
+        { "id": "q1", "text": "List 4 causes of leukocoria in a child.", "modelAnswer": "Retinoblastoma, Congenital cataract, Coats disease, Retinopathy of prematurity." },
+        { "id": "q2", "text": "Describe the genetics of Retinoblastoma.", "modelAnswer": "Mutation in the RB1 tumor suppressor gene on chromosome 13q14. Can be heritable (germline mutation) or non-heritable (somatic mutations)." },
+        { "id": "q3", "text": "What are the treatment modalities for Retinoblastoma?", "modelAnswer": "Intra-arterial chemotherapy, systemic chemotherapy, focal therapy (cryotherapy/laser), enucleation." }
+      ]
+    }
+  },
+  {
+    "id": "ai_c9x",
+    "type": "VSAQ",
+    "topic": "Vitreoretinal",
+    "paper": "AI Generated Batch",
+    "year": "2024",
+    "questionLabel": "AI VSAQ - Vitreoretinal",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 68-year-old hypertensive male presents with sudden, painless, profound loss of vision in his right eye. The fundus image is shown.\n\n![Image](https://upload.wikimedia.org/wikipedia/commons/6/69/Central_retinal_vein_occlusion.jpg)",
+      "subQuestions": [
+        { "id": "q1", "text": "Describe the key findings in the fundus photo.", "modelAnswer": "Extensive retinal hemorrhages in all four quadrants, dilated tortuous veins, and cotton wool spots." },
+        { "id": "q2", "text": "What is the diagnosis?", "modelAnswer": "Central Retinal Vein Occlusion (CRVO)." }
+      ]
+    }
+  },
+  {
+    "id": "ai_c9y",
+    "type": "SEQ",
+    "topic": "Vitreoretinal",
+    "paper": "AI Generated Batch",
+    "year": "2024",
+    "questionLabel": "AI SEQ - Vitreoretinal",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 68-year-old hypertensive male presents with sudden, painless, profound loss of vision in his right eye. The fundus image is shown. (Extended case for SEQ with further details omitted for brevity. Please refer to standard curriculum.)\n\n![Image](https://upload.wikimedia.org/wikipedia/commons/6/69/Central_retinal_vein_occlusion.jpg)",
+      "subQuestions": [
+        { "id": "q1", "text": "List the systemic risk factors for CRVO.", "modelAnswer": "Hypertension, Hyperlipidemia, Diabetes mellitus, Smoking, Glaucoma, Pro-thrombotic states." },
+        { "id": "q2", "text": "How is non-ischemic CRVO differentiated from ischemic CRVO?", "modelAnswer": "Ischemic CRVO involves profound visual loss, RAPD, and >10 disc areas of retinal capillary non-perfusion on fundus fluorescein angiography." },
+        { "id": "q3", "text": "What are the complications of ischemic CRVO?", "modelAnswer": "Neovascularization of the iris (rubeosis iridis), neovascular glaucoma, macular edema, vitreous hemorrhage." }
+      ]
+    }
+  }
+]

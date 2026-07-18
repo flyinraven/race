@@ -1,0 +1,6 @@
+{
+  "name": "RANZCO RACE Exam Engine",
+  "description": "Moodle-like medical exam platform for ophthalmology with Gemini grading",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

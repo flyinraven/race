@@ -1,0 +1,272 @@
+[
+  {
+    "id": "a1b2c3d4e",
+    "type": "VSAQ",
+    "topic": "Oculoplastics and Orbit",
+    "questionLabel": "Paper 1 Q1 (VSAQ)",
+    "paper": "Paper 1",
+    "year": "2024",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 72-year-old Caucasian female presents with a 6-month history of a slowly enlarging, painless mass on her left lower eyelid. She reports occasional bleeding when she rubs her eye. On examination, there is a 6mm x 5mm nodular pearly lesion with central ulceration and rolled telangiectatic edges located on the central portion of the lower lid margin, involving the mucocutaneous junction. There is localized loss of eyelashes (madarosis) in the area of the lesion. Eversion of the eyelid reveals posterior extension of the mass by 2mm onto the tarsal conjunctiva. There is no palpable preauricular or submandibular lymphadenopathy. She has a history of extensive sun exposure in her youth.\n\n![Paper 1 Q1 (VSAQ)](https://upload.wikimedia.org/wikipedia/commons/1/1a/Superficial_basal_cell_carcinoma.jpg)",
+      "subQuestions": [
+        {
+          "id": "q1a",
+          "text": "a) What is the most likely diagnosis? (1 mark)",
+          "modelAnswer": "Nodular basal cell carcinoma (BCC)\n\n(Accept basal cell carcinoma). Note typical features: pearly rolled edges, central ulceration, telangiectasia, and madarosis."
+        },
+        {
+          "id": "q1b",
+          "text": "b) Name two histopathological high-risk features that would prompt a wider surgical margin or Mohs micrographic surgery. (1 mark)",
+          "modelAnswer": "1. Morpheaform (sclerosing) subtype\n2. Infiltrative subtype\n3. Basosquamous features\n4. Perineural invasion\n(Any two for 1 mark)"
+        }
+      ]
+    }
+  },
+  {
+    "id": "f5g6h7i8j",
+    "type": "SEQ",
+    "topic": "Glaucoma",
+    "questionLabel": "Paper 1 Q16 (SEQ)",
+    "paper": "Paper 1",
+    "year": "2024",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 45-year-old myopic male is referred for a routine eye exam. He is asymptomatic. Visual acuity is 6/6 in both eyes. Intraocular pressures are measured at 26 mmHg OD and 28 mmHg OS using Goldmann applanation tonometry. Central corneal thickness is 490 microns OD and 485 microns OS. Gonioscopy reveals open angles to the ciliary body band 360 degrees with normal pigmentation. Dilated fundal examination demonstrates a cup-to-disc ratio of 0.7 OD and 0.8 OS with thinning of the inferior neuroretinal rim in the left eye. An area of peripapillary atrophy (beta zone) is noted adjacent to the temporal disc margin. Optical coherence tomography (OCT) of the retinal nerve fibre layer (RNFL) confirms significant focal thinning corresponding to the clinical findings. Visual field testing (Humphrey 24-2 SITA Standard) is reliable and shows a superior paracentral defect in the left eye and a normal field in the right eye.\n\n![Paper 1 Q16 (SEQ)](https://upload.wikimedia.org/wikipedia/commons/0/07/Acute_angle_closure_glaucoma.JPG)",
+      "subQuestions": [
+        {
+          "id": "sq1",
+          "text": "a) What is the complete diagnosis? Outline the risk factors present in this patient. (5 marks)",
+          "modelAnswer": "Diagnosis: Primary Open Angle Glaucoma (POAG) in the left eye, and Ocular Hypertension (suspect POAG) in the right eye.\n\nRisk factors present in this patient:\n1. Elevated IOP (26/28 mmHg)\n2. Myopia\n3. Thin central corneal thickness (490/485 microns)\n4. Age (45 years old - early onset increases lifetime risk)\n(1 mark for correct diagnosis, 4 marks for risk factors)"
+        },
+        {
+          "id": "sq2",
+          "text": "b) How does central corneal thickness (CCT) affect Goldmann applanation tonometry (GAT) readings, and how does it independently influence glaucoma risk? (5 marks)",
+          "modelAnswer": "GAT assumes a standard CCT of approximately 520-530 microns.\n1. Thin CCT causes GAT to underestimate true IOP (the true IOP is higher than measured).\n2. Thick CCT causes GAT to overestimate true IOP.\nIndependent risk factor: The Ocular Hypertension Treatment Study (OHTS) established that a thin CCT is a strong independent predictor for the development of POAG, regardless of its effect on tonometry artifact, possibly reflecting underlying structural vulnerability of the lamina cribrosa or sclera.\n(2 marks for tonometry effect, 3 marks for OHTS/independent risk explanation)"
+        },
+        {
+          "id": "sq3",
+          "text": "c) Detail your initial management plan and target intraocular pressures for each eye. (5 marks)",
+          "modelAnswer": "Target IOP:\nLeft Eye (damage present): Target minimum 20-30% reduction from baseline. Since baseline is 28, target is < 19 mmHg, ideally < 17 mmHg given thin CCT.\nRight Eye (no VF defect yet): Target < 21 mmHg.\n\nManagement:\n1. Initiate topical prostaglandin analogue therapy (e.g., Latanoprost once daily at night) to both eyes.\n2. Provide education regarding compliance and potential side effects (hyperaemia, iris pigmentation, periorbital fat atrophy).\n3. Review in 4-6 weeks to assess efficacy and tolerability.\n4. Selective Laser Trabeculoplasty (SLT) could be offered as a primary alternative to medical therapy based on the LiGHT trial.\n(2 marks for targets, 3 marks for management plan)"
+        },
+        {
+          "id": "sq4",
+          "text": "d) Six months later, despite compliance with a prostaglandin analogue, his IOP is 24 mmHg in the left eye and visual field shows progression. What are your medical and laser treatment options? (5 marks)",
+          "modelAnswer": "1. Add a second-line topical agent. Options include:\n   - Beta-blocker (e.g., Timolol 0.5% bd), provided no respiratory/cardiac contraindications.\n   - Alpha-2 agonist (e.g., Brimonidine).\n   - Carbonic anhydrase inhibitor (e.g., Dorzolamide or Brinzolamide).\n2. Consider prescribing a fixed-dose combination eye drop to maintain adherence and reduce preservative load.\n3. Selective Laser Trabeculoplasty (SLT) 360 degrees to the left eye.\n4. If maximum medical therapy and SLT fail, list for filtration surgery (Trabeculectomy with Mitomycin C or tube shunt).\n(2 marks for adding drops, 1 mark for fixed-dose combination, 1 mark for SLT, 1 mark for surgical pathway mention)"
+        }
+      ]
+    }
+  },
+  {
+    "id": "v1w2x3y4z",
+    "type": "VSAQ",
+    "topic": "Neuro-ophthalmology",
+    "questionLabel": "Paper 2 Q1 (VSAQ)",
+    "paper": "Paper 2",
+    "year": "2024",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 32-year-old obese female presents to the emergency department with a 3-week history of worsening daily, pulsatile headaches, particularly severe upon waking. She also reports transient visual obscurations lasting seconds, often triggered by bending over or Valsalva maneuvers. She hears a 'whooshing' sound in her ears. Visual acuity is 6/6 in both eyes. Color vision (Ishihara) is 14/14 bilaterally. Confrontation visual fields display enlarged blind spots. Ocular motility is full, with the exception of a subtle limitation of abduction in the right eye. Dilated fundal examination is captured in the provided image. Her BMI is 38. Blood pressure is 125/80 mmHg.\n\n![Paper 2 Q1 (VSAQ)](https://upload.wikimedia.org/wikipedia/commons/1/1a/Papilledema.jpg)",
+      "subQuestions": [
+        {
+          "id": "q2a",
+          "text": "a) Describe the pertinent findings in the provided fundus photograph. (1 mark)",
+          "modelAnswer": "Severe bilateral optic disc swelling (papilloedema) characterized by elevated hyperaemic discs, blurring of the disc margins, obscuration of the peripapillary retinal blood vessels, flame-shaped haemorrhages, and cotton wool spots. Paton's lines (circumferential retinal folds) may also be present."
+        },
+        {
+          "id": "q2b",
+          "text": "b) What is the most crucial next diagnostic investigation to rule out a life-threatening cause? (1 mark)",
+          "modelAnswer": "Urgent neuroimaging of the brain with venography (MRI with MRV, or CT with CTV) to rule out an intracranial mass lesion or cerebral venous sinus thrombosis, prior to a lumbar puncture."
+        }
+      ]
+    }
+  },
+  {
+    "id": "k9l8m7n6o",
+    "type": "SEQ",
+    "topic": "Paediatrics",
+    "questionLabel": "Paper 2 Q16 (SEQ)",
+    "paper": "Paper 2",
+    "year": "2024",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 10-month-old infant is brought to the clinic by his anxious mother. She has noted a 'white reflection' in his right eye on flash photographs taken over the past two months. The child was born at full term without complications. There is no family history of eye disease. On examination, the child tracks the fixation target well with the left eye but poorly with the right eye. Hirschberg testing reveals a right esotropia of approximately 15 degrees. Slit-lamp examination of the anterior segment is unremarkable bilaterally, with no rubeosis. Intraocular pressures measured via rebound tonometry (iCare) are 14 mmHg OD and 12 mmHg OS. Dilated fundal examination of the right eye reveals a large, cream-colored, endophytic nodular mass involving the macula with overlying calcification. The vitreous contains multiple spheroidal seeds. The left eye fundus is entirely normal.\n\n![Paper 2 Q16 (SEQ)](https://upload.wikimedia.org/wikipedia/commons/d/d8/Rb_whiteeye.PNG)",
+      "subQuestions": [
+        {
+          "id": "sq21",
+          "text": "a) What is the most likely diagnosis and what are the main differential diagnoses for leukocoria in this age group? (5 marks)",
+          "modelAnswer": "Most likely diagnosis: Retinoblastoma (Right eye, endophytic type with vitreous seeding).\n\nDifferential diagnoses for leukocoria:\n1. Coats disease (typically exudative, yellow subretinal exudate, telangiectatic vessels)\n2. Persistent Fetal Vasculature (PFV) (typically unilateral, microphthalmic eye, retrolental membrane, prominent ciliary processes)\n3. Congenital cataract\n4. Retinopathy of Prematurity (ROP) (unlikely given full-term birth history)\n5. Toxocariasis (typically forms a granuloma)\n(1 mark for RB, 4 marks for valid differentials)"
+        },
+        {
+          "id": "sq22",
+          "text": "b) Describe the genetic basis of this disease and explain the 'two-hit hypothesis'. (5 marks)",
+          "modelAnswer": "Genetic basis:\nMutation or deletion of the RB1 tumor suppressor gene located on chromosome 13q14.\n\nKnudson's Two-Hit Hypothesis:\nFor retinoblastoma to develop, both alleles of the RB1 gene must be inactivated ('two hits').\n- Heritable (Germline) form (~40%): The first hit is a germline mutation present in all cells (inherited from a parent or de novo in the germline). The second hit is a somatic mutation occurring over time in a retinal cell. These patients often have bilateral or multifocal disease and are at risk for secondary malignancies.\n- Non-heritable (Somatic) form (~60%): Both hits occur sequentially in a single somatic retinal cell. This usually results in unilateral, unifocal disease with no increased risk of systemic secondary tumors.\n(1 mark for RB1 on 13q14, 2 marks for heritable pathway, 2 marks for non-heritable pathway)"
+        },
+        {
+          "id": "sq23",
+          "text": "c) What essential staging investigations must be performed under general anesthesia? (5 marks)",
+          "modelAnswer": "Examination Under Anesthesia (EUA):\n1. Bilateral dilated fundus examination with scleral indentation (using RetCam/drawings) to document the size, location, and number of tumors, as well as vitreous/subretinal seeds.\n2. B-scan ultrasonography to assess tumor thickness, presence of calcification, and detect any extraocular or optic nerve extension.\n3. Anterior segment examination (including gonioscopy if possible) to evaluate for angle or iris involvement (rubeosis iridis, pseudohypopyon).\n4. Ultrasound biomicroscopy (UBM) if ciliary body involvement is suspected.\nAdditional Systemic Staging: MRI Brain and Orbits with contrast to assess optic nerve invasion, scleral invasion, and rule out pineoblastoma ('trilateral retinoblastoma'). Lumbar puncture and bone marrow biopsy are reserved for cases with suspected high-risk features or extraocular spread.\n(3 marks for ocular EUA steps, 2 marks for MRI/systemic staging)"
+        },
+        {
+          "id": "sq24",
+          "text": "d) Discuss the contemporary treatment options available for this patient's right eye, given the presence of extensive vitreous seeding and macular involvement. (5 marks)",
+          "modelAnswer": "Given the extensive macular involvement, poor visual prognosis, and vitreous seeding, treatment aims to preserve life first, eye second.\n\nOptions include:\n1. Intra-arterial chemotherapy (IAC): Delivery of melphalan directly into the ophthalmic artery. Highly effective for advanced disease and may salvage the eye.\n2. Intravitreal chemotherapy: Direct injection of melphalan and topotecan into the vitreous. Excellent for active vitreous seeds unresponsive to systemic therapy, using a specialized anti-reflux technique.\n3. Systemic Intravenous Chemotherapy (Chemoreduction) (e.g., Vincristine, Etoposide, Carboplatin - VEC protocol) followed by focal consolidation therapy (cryotherapy, transpupillary thermotherapy).\n4. Enucleation: Considered if there is a massive tumor replacing the globe, anterior segment involvement, neovascular glaucoma, or if globe salvage therapies fail, maintaining a long section of optic nerve.\n(5 marks for discussing the 4 main modalities and their specific indication in this case)"
+        }
+      ]
+    }
+  },
+  {
+    "id": "a1b2c3d4f",
+    "type": "VSAQ",
+    "topic": "Ocular Inflammation",
+    "questionLabel": "Paper 3 Q1 (VSAQ)",
+    "paper": "Paper 3",
+    "year": "2024",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 28-year-old male with a known history of ankylosing spondylitis (HLA-B27 positive) presents with a 2-day history of severe sudden-onset right eye pain, photophobia, redness, and blurred vision. He has had previous similar episodes. Visual acuity is 6/18 OD. Slit-lamp examination reveals a 3+ ciliary injection, a 1mm hypopyon in the anterior chamber, massive fibrinous exudate in the pupillary area, and a miotic pupil with impending posterior synechiae. Intraocular pressure is 9 mmHg OD.\n\n![Paper 3 Q1 (VSAQ)](https://upload.wikimedia.org/wikipedia/commons/a/ab/Keratic_precipitate2.jpg)",
+      "subQuestions": [
+        {
+          "id": "q3a",
+          "text": "a) What is the diagnosis and what is the primary initial medical management to prevent permanent structural damage in this eye? (1 mark)",
+          "modelAnswer": "Diagnosis: Severe acute HLA-B27 associated anterior uveitis with hypopyon.\nManagement: Immediate intensive topical corticosteroids (e.g., Prednisolone acetate 1% every hour) and a potent topical mydriatic/cycloplegic agent (e.g., Atropine 1% or Cyclopentolate 1%) to break/prevent posterior synechiae and relieve ciliary spasm."
+        },
+        {
+          "id": "q3b",
+          "text": "b) What systemic condition should be investigated if this patient additionally presented with urethritis and mouth ulcers? (1 mark)",
+          "modelAnswer": "Reactive arthritis (Reiter's syndrome). Behcet's disease is also a valid differential for uveitis, keratouveitis, and mouth ulcers, but the severe acute fibrinous HLA-B27 typical presentation combined with urethritis strongly points to Reactive arthritis."
+        }
+      ]
+    }
+  },
+  {
+    "id": "z9y8x7w6v",
+    "type": "SEQ",
+    "topic": "Cornea and External Eye",
+    "questionLabel": "Paper 3 Q16 (SEQ)",
+    "paper": "Paper 3",
+    "year": "2024",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 40-year-old female presents with a 4-day history of extreme pain, redness, photophobia, and tearing in her left eye. She wears daily disposable soft contact lenses but admits to occasionally sleeping in them. Visual acuity is 6/60 OS. Slit-lamp examination reveals a 4mm x 4mm dense central corneal stromal infiltrate with overlying epithelial ulceration. There is an extensive area of surrounding stromal edema and an immune ring. The anterior chamber exhibits a 2mm hypopyon. A severe ciliary flush is present. You suspect a microbial keratitis.\n\n![Paper 3 Q16 (SEQ)](https://upload.wikimedia.org/wikipedia/commons/9/95/Dendritic_corneal_ulcer.jpg)",
+      "subQuestions": [
+        {
+          "id": "sq31",
+          "text": "a) Name the two most likely causative organisms in this contact-lens wearer, and describe your immediate clinic-based investigations before initiating treatment. (5 marks)",
+          "modelAnswer": "Organisms:\n1. Pseudomonas aeruginosa (most critical and rapidly destructive in contact lens wearers).\n2. Acanthamoeba species (or less commonly other gram-negative rods or Staphylococci/Streptococci).\n\nInvestigations:\n1. Corneal scraping using a sterile blade (e.g., No. 15) or spatula from the base and leading edges of the ulcer.\n2. Plating onto culture media: Blood agar (most bacteria), Chocolate agar (Haemophilus/Neisseria), Sabouraud dextrose agar (Fungi), and non-nutrient agar with E. coli overlay (Acanthamoeba if suspected).\n3. Smears onto glass slides for Gram stain (bacteria) and Giemsa stain/calcofluor white (Acanthamoeba/fungi).\n4. Send the contact lens and contact lens case to the laboratory for culture.\n(2 marks for organisms, 3 marks for scraping and media steps)"
+        },
+        {
+          "id": "sq32",
+          "text": "b) Detail your initial empirical medical treatment protocol for this patient while awaiting laboratory results. (5 marks)",
+          "modelAnswer": "The ulcer is large, central, and associated with a hypopyon, warranting aggressive, broad-spectrum topical antibiotic therapy.\n\n1. Intensive topical quinolone monotherapy (e.g., Moxifloxacin 0.5% or Ciprofloxacin 0.3% every 15-30 minutes for the first 24-48 hours).\n   OR\n2. Intensive fortified dual therapy (e.g., fortified Cephazolin 50 mg/mL for Gram-positives AND fortified Tobramycin 14 mg/mL or Gentamicin for Gram-negatives, alternated every 30 minutes).\n3. Cycloplegia: Topical cyclopentolate 1% or atropine 1% bd/tds to relieve ciliary spasm and prevent posterior synechiae.\n4. Analgesia: Oral NSAIDs or Paracetamol.\n5. Follow-up: Daily review until clinical improvement is noted (reduction in infiltrate size, epithelialization, decreased AC reaction).\n(3 marks for antibiotic regimen, 1 mark for cycloplegia, 1 mark for strict follow-up)"
+        },
+        {
+          "id": "sq33",
+          "text": "c) On day 3, the culture returns positive for Pseudomonas aeruginosa, sensitive to ciprofloxacin and gentamicin. The epithelial defect has closed, but intense anterior chamber inflammation and photophobia persist. Discuss the role and timing of topical corticosteroids. (5 marks)",
+          "modelAnswer": "The use of corticosteroids in bacterial keratitis is highly debated (e.g., SCUT trial).\n\nRole:\nSteroids suppress the host inflammatory response (PMN infiltration), reducing stromal melting, necrosis, and subsequent corneal scarring, which is critical for restoring visual acuity in central ulcers.\n\nTiming and Criteria for Initiation:\nSteroids should only be commenced when:\n1. The causative organism is identified and is sensitive to the concurrent antibiotic therapy.\n2. There is clear clinical evidence of improvement (e.g., sterilization of the ulcer, reduction in infiltrate size, or epithelialization).\n3. Ideally, at least 48-72 hours of intensive bacterial coverage has occurred.\n\nProtocol: Commence low-potency steroid (e.g., Fluorometholone 0.1% or Prednisolone 0.5% once or twice daily) while maintaining strong antibiotic coverage. Monitor closely for paradoxical worsening or thinning.\n(2 marks for role/scar reduction, 3 marks for strict initiation criteria)"
+        },
+        {
+          "id": "sq34",
+          "text": "d) Six weeks later, the ulcer has healed, leaving a dense central leukoma with significant irregular astigmatism. Her best-corrected visual acuity is 6/36 OS. Outline her optical and surgical visual rehabilitation options. (5 marks)",
+          "modelAnswer": "Optical Options:\n1. Rigid Gas Permeable (RGP) contact lenses or scleral contact lenses. These vault the irregular cornea and replace the irregular refractive surface with a smooth liquid tear lens interface, often successfully restoring excellent visual acuity without surgery.\n\nSurgical Options (if contact lenses fail or are intolerant):\n2. Phototherapeutic Keratectomy (PTK) combined with wavefront-guided PRK, though the opacity may be too deep.\n3. Deep Anterior Lamellar Keratoplasty (DALK): Ideal because the endothelium is typically healthy following a treated bacterial ulcer. Reduces rejection risk compared to PKP.\n4. Penetrating Keratoplasty (PKP): Required if the scar involves the endothelium or Descemet's membrane, or if DALK is complicated by macroperforations.\n(2 marks for Rigid/Scleral lenses, 3 marks for surgical keratoplasty options)"
+        }
+      ]
+    }
+  },
+  {
+    "id": "a2b3c4d5e",
+    "type": "OSCE",
+    "topic": "Vitreoretinal",
+    "questionLabel": "OSCE Station 1",
+    "paper": "OSCE",
+    "year": "2024",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nStation Type: Communication and Counseling.\n\nYou have 9 minutes for this station.\n\nA 65-year-old male with poorly controlled type 2 diabetes mellitus (HbA1c = 9.5%) has just been diagnosed with high-risk proliferative diabetic retinopathy (PDR) with clinically significant macular edema (CSME) in both eyes. Bilateral panretinal photocoagulation (PRP) and intravitreal anti-VEGF therapy are strongly indicated. He is highly anxious, needle-phobic, and does not understand why laser treatment is necessary if it 'won't improve his vision.'\n\n**Tasks for the Candidate:**\n1. Explain the diagnosis of PDR and the rationale for PRP laser in lay terms.\n2. Address his concerns regarding the injection and laser procedures.\n3. Explain the prognostic expectations and the critical role of systemic control.\n\n*(The confederate actor will interrupt you twice to express fear of going blind from the injections).*\n\n![OSCE Station 1](https://upload.wikimedia.org/wikipedia/commons/0/07/Fundus_-_diabetic_retinopathy.png)",
+      "subQuestions": [
+        {
+          "id": "osce1a",
+          "text": "Assess candidate's communication skills and medical knowledge translation. (20 marks)",
+          "modelAnswer": "Marking Rubric:\n- Empathetic Introduction (3 marks)\n- Explains PDR clearly: 'Abnormal, fragile blood vessels growing due to lack of oxygen, which can bleed and cause sudden blindness' (5 marks)\n- Rationale for PRP: 'The laser sacrifices the peripheral, oxygen-starved retina to save the central reading vision and prevent the abnormal vessels from growing.' (4 marks)\n- Addressed needle phobia calmly, explaining local anesthetic protocols. (4 marks)\n- Emphasizes the crucial role of HbA1c, blood pressure, and lipid control. (4 marks)"
+        }
+      ]
+    }
+  },
+  {
+    "id": "q11w22e33",
+    "type": "VSAQ",
+    "topic": "Cataract",
+    "questionLabel": "Paper 4 Q1 (VSAQ)",
+    "paper": "Paper 4",
+    "year": "2024",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 58-year-old male presents with highly symptomatic glare and halos while driving at night. Visual acuity is 6/9 in the right eye, dropping to 6/24 in the presence of a bright glare source. Slit lamp examination reveals the lens opacity shown in the retro-illumination photograph below. The rest of the examination is normal.\n\n![Paper 4 Q1 (VSAQ)](https://upload.wikimedia.org/wikipedia/commons/b/ba/Cataract_in_human_eye.png)",
+      "subQuestions": [
+        {
+          "id": "q4a",
+          "text": "a) What is the specific type of cataract shown? (1 mark)",
+          "modelAnswer": "Posterior subcapsular cataract (PSC)."
+        },
+        {
+          "id": "q4b",
+          "text": "b) Name two systemic risk factors strongly associated with the rapid development of this specific type of cataract. (1 mark)",
+          "modelAnswer": "1. Chronic systemic or topical corticosteroid use.\n2. Poorly controlled Diabetes Mellitus.\n(Also accept radiation exposure or neurofibromatosis type 2)."
+        }
+      ]
+    }
+  },
+  {
+    "id": "t9p8o7i6u",
+    "type": "SEQ",
+    "topic": "Ocular Motility",
+    "questionLabel": "Paper 4 Q16 (SEQ)",
+    "paper": "Paper 4",
+    "year": "2024",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nA 52-year-old hypertensive male presents with sudden onset horizontal diplopia that is worse when looking to the right. He reports no pain or other neurological symptoms. Visual acuity is 6/6 bilaterally. Pupillary reactions are normal. Examination of ocular motility reveals a complete inability to abduct the right eye past the midline. When looking to the left, there is no diplopia. Anterior segment and fundus exams are normal. Blood pressure in the clinic is 165/95 mmHg.\n\n![Paper 4 Q16 (SEQ)](https://upload.wikimedia.org/wikipedia/commons/2/29/Abducens_nerve1.png)",
+      "subQuestions": [
+        {
+          "id": "sq41",
+          "text": "a) What is the precise diagnosis and what is the presumed etiology? (5 marks)",
+          "modelAnswer": "Diagnosis: Right isolated sixth nerve (Abducens nerve) palsy.\nEtiology: Microvascular ischemia (vasculopathic palsy) secondary to hypertension and associated vascular risk factors.\n(3 marks for right 6th nerve palsy, 2 marks for microvascular etiology)"
+        },
+        {
+          "id": "sq42",
+          "text": "b) Outline the indications for urgent neuroimaging in isolated sixth nerve palsies. (5 marks)",
+          "modelAnswer": "Urgent neuroimaging (MRI Brain) is indicated if:\n1. The patient is under 50 years of age without significant vasculopathic risk factors.\n2. The palsy is associated with pain (other than a mild ache).\n3. There is a history of trauma, cancer, or signs of elevated ICP (papilledema).\n4. Other cranial nerve involvement or neurological signs are present (non-isolated).\n5. The palsy fails to resolve or progress after 3-6 months of observation.\n(5 marks for listing 5 correct indications)"
+        },
+        {
+          "id": "sq43",
+          "text": "c) Describe a step-wise management plan for this patient over the next 6-12 months. (5 marks)",
+          "modelAnswer": "1. Immediate: Reassurance that microvascular palsies generally recover spontaneously within 3-6 months. Prescribe an occlusive patch or a Bangerter foil over one eye to eliminate distressing diplopia.\n2. Medical optimization: Refer to GP for strict control of blood pressure, diabetes screening, and lipid management.\n3. Temporary optical: Once the angle of deviation stabilizes, consider adding temporary Fresnel prisms to his glasses to regain binocular single vision in the primary position.\n4. Follow-up: Review at 6 weeks and 3 months to monitor for resolution. If unresolved at 4-6 months, order an MRI.\n(5 marks for comprehensive conservative/optical pathway)"
+        },
+        {
+          "id": "sq44",
+          "text": "d) If the palsy proves to be permanent after 12 months with a completely paralyzed lateral rectus muscle, what definitive surgical options are available? (5 marks)",
+          "modelAnswer": "If the lateral rectus has absent force generation (complete paralysis), a simple resection/recession is inadequate. Muscle transposition surgery is required.\n1. Vertical Rectus Transposition (VRT): Transposing the full or partial insertions of the superior rectus and inferior rectus muscles temporally toward the lateral rectus insertion (e.g., Jensen, Hummelsheim, or Knapp procedures). This generates an active abducting force.\n2. Adjunctive Botulinum Toxin: Often injected into the antagonist medial rectus muscle at the time of transposition to prevent contracture.\n3. Medial Rectus Recession: May be added if medial rectus contracture is already present (verified by forced duction testing).\n(5 marks for explaining transposition surgery and antagonist management)"
+        }
+      ]
+    }
+  },
+  {
+    "id": "z999q888w",
+    "type": "OSCE",
+    "topic": "Ocular Anatomy",
+    "questionLabel": "OSCE Station 2",
+    "paper": "OSCE",
+    "year": "2024",
+    "used": false,
+    "data": {
+      "scenario": "**Clinical Scenario:**\nStation Type: Examination and Clinical Signs.\n\nYou have 9 minutes for this station.\n\nYou are provided with a patient exhibiting right-sided ptosis, miosis, and mild enophthalmos. The patient noticed the droopy lid 2 weeks ago following a severe neck pain episode during a whiplash car accident.\n\n**Tasks for the Candidate:**\n1. Perform a targeted neurological examination of the cranial nerves and pupils.\n2. Formulate the most likely diagnosis.\n3. Justify the urgent investigation required.\n\n![OSCE Station 2](https://upload.wikimedia.org/wikipedia/commons/3/37/Miosis.jpg)",
+      "subQuestions": [
+        {
+          "id": "osce2a",
+          "text": "Assess candidate's clinical examination and reasoning. (20 marks)",
+          "modelAnswer": "Marking Rubric:\n- Correctly identifies Horner's Syndrome (ptosis, miosis, anhidrosis). (5 marks)\n- Performs accurate pupillary exam (notes anisocoria greater in the dark, indicating a dilation lag). (5 marks)\n- Formulates risk of internal carotid artery profound dissection given the history of neck trauma. (5 marks)\n- Requests urgent neuroimaging: CTA or MRA of the neck and brain to rule out carotid dissection to prevent impending massive cerebral infarction. (5 marks)"
+        }
+      ]
+    }
+  }
+]

@@ -275,9 +275,7 @@ export function OsceStation({
         </div>
       </div>
     );
-  }
-
-  // QUESTIONING
+  }  // QUESTIONING
   if (phase === 'questioning') {
     const progress = (currentSubQIndex / subQuestions.length) * 100;
     return (
@@ -286,36 +284,45 @@ export function OsceStation({
         <div className="h-1 bg-slate-800">
           <div className="h-full bg-indigo-500 transition-all duration-500" style={{ width: `${progress}%` }} />
         </div>
-        <div className="flex-1 flex flex-col gap-6 max-w-3xl mx-auto w-full p-6">
-          {/* Examiner bubble */}
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-full bg-indigo-700 flex items-center justify-center flex-shrink-0 shadow-lg mt-1">
-              <User className="w-5 h-5 text-indigo-200" />
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-indigo-300 font-semibold text-sm">Examiner</span>
-                <button onClick={() => speak(currentSubQ?.text || '')} title="Read aloud" className="p-1 rounded-full text-slate-500 hover:text-indigo-400 transition">
-                  <Volume2 className="w-4 h-4" />
-                </button>
-              </div>
-              <div className="bg-slate-800 border border-slate-700 rounded-2xl rounded-tl-none px-6 py-4 shadow-lg">
-                <p className="text-white text-base leading-relaxed">{currentSubQ?.text}</p>
-              </div>
+        <div className="flex-grow flex flex-col md:flex-row gap-6 max-w-6xl mx-auto w-full p-6 overflow-hidden">
+          
+          {/* Left Column: Briefing Stem & Pictures (displayed during the entire question) */}
+          <div className="flex-1 bg-slate-850/90 border border-slate-750/80 rounded-2xl p-6 overflow-y-auto max-h-[80vh] shadow-xl text-white">
+            <h4 className="text-[11px] font-bold text-indigo-400 uppercase tracking-widest mb-3 border-b border-indigo-900/50 pb-2">Briefing & Clinical Reference</h4>
+            <div className="prose prose-sm prose-invert max-w-none">
+              <Markdown urlTransform={customUrlTransform} components={MarkdownComponents}>
+                {stationData.scenario}
+              </Markdown>
             </div>
           </div>
 
-          {currentSubQIndex > 0 && (
-            <p className="text-center text-xs text-slate-600">{currentSubQIndex} previous response{currentSubQIndex > 1 ? 's' : ''} recorded</p>
-          )}
-
-          {/* Candidate response */}
-          <div className="flex items-start gap-3 flex-1">
-            <div className="w-10 h-10 rounded-full bg-emerald-700 flex items-center justify-center flex-shrink-0 shadow-lg mt-1">
-              <MessageSquare className="w-5 h-5 text-emerald-200" />
+          {/* Right Column: Examiner Verbal Question & Candidate Response */}
+          <div className="w-full md:w-[420px] flex flex-col gap-5 flex-shrink-0">
+            {/* Examiner bubble */}
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-full bg-indigo-700 flex items-center justify-center flex-shrink-0 shadow-lg mt-1">
+                <User className="w-5 h-5 text-indigo-200" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-indigo-300 font-semibold text-sm">Examiner</span>
+                  <button onClick={() => speak(currentSubQ?.text || '')} title="Read aloud" className="p-1 rounded-full text-slate-500 hover:text-indigo-400 transition">
+                    <Volume2 className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="bg-slate-800 border border-slate-700 rounded-2xl rounded-tl-none px-5 py-3 shadow-lg">
+                  <p className="text-white text-base leading-relaxed">{currentSubQ?.text}</p>
+                </div>
+              </div>
             </div>
-            <div className="flex-1 flex flex-col gap-2">
-              <div className="flex items-center justify-between">
+
+            {currentSubQIndex > 0 && (
+              <p className="text-center text-xs text-slate-650 font-medium">{currentSubQIndex} response{currentSubQIndex > 1 ? 's' : ''} recorded</p>
+            )}
+
+            {/* Candidate response */}
+            <div className="flex items-start gap-3 flex-grow flex-col">
+              <div className="w-full flex items-center justify-between">
                 <span className="text-emerald-300 font-semibold text-sm">Your Response</span>
                 <div className="flex items-center gap-2">
                   {speechError && <span className="text-xs text-amber-400">{speechError}</span>}
@@ -326,7 +333,7 @@ export function OsceStation({
                     }`}
                   >
                     {isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
-                    {isListening ? 'Stop' : 'Speak'}
+                    {isListening ? 'Speak' : 'Speak'}
                   </button>
                 </div>
               </div>
@@ -334,13 +341,13 @@ export function OsceStation({
                 value={currentAnswer}
                 onChange={e => setCurrentAnswer(e.target.value)}
                 placeholder="Type your verbal response here as if you're speaking to the examiner..."
-                rows={7}
-                className="w-full bg-slate-800 border border-emerald-700/50 rounded-2xl rounded-tl-none px-5 py-4 text-white placeholder-slate-500 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-none text-base leading-relaxed shadow-lg"
+                rows={10}
+                className="w-full bg-slate-800 border border-emerald-700/50 rounded-2xl rounded-tl-none px-4 py-3 text-white placeholder-slate-550 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-none text-sm leading-relaxed shadow-lg flex-grow min-h-[160px]"
               />
               <button
                 onClick={handleNextSubQ}
                 disabled={!currentAnswer.trim()}
-                className="self-end bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold py-3 px-8 rounded-xl transition flex items-center gap-2 shadow-lg"
+                className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold py-3.5 px-6 rounded-xl transition flex items-center justify-center gap-2 shadow-lg text-sm"
               >
                 {currentSubQIndex < subQuestions.length - 1 ? <>Next Question <ChevronRight className="w-4 h-4" /></> : <>Submit Station <CheckCircle2 className="w-4 h-4" /></>}
               </button>

@@ -1,7 +1,0 @@
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = (import.meta as any).env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = (import.meta as any).env.VITE_SUPABASE_ANON_KEY || '';
-
-export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
-export const supabase = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseAnonKey || 'placeholder', { auth: { storageKey: 'exam-engine-auth-token', persistSession: isSupabaseConfigured, autoRefreshToken: isSupabaseConfigured, detectSessionInUrl: isSupabaseConfigured } });

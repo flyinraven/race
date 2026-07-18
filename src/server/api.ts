@@ -49,38 +49,12 @@ router.post('/auth/signup', async (req, res) => {
     const userRole = email === 'admin@txglobal.com.au' ? 'admin' : 'student';
     const joinedDate = new Date().toISOString();
     
-    // Defensive Try-Catch Insert Sequence to support both legacy (Supabase import) and clean database schemas
-    try {
-      // 1. Try Legacy/Supabase Schema format (with firstName, lastName, role, tier, joined)
-      await query(
-        `INSERT INTO profiles (id, email, "firstName", "lastName", role, tier, joined) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-        [user.id, user.email, firstName || '', lastName || '', userRole, 'free', joinedDate]
-      );
-    } catch (err1: any) {
-      console.warn("Legacy profile insert failed, trying clean snake_case schema:", err1.message);
-      try {
-        // 2. Try Clean Schema format (first_name, last_name, role, tier, joined)
-        await query(
-          `INSERT INTO profiles (id, email, first_name, last_name, role, tier, joined) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-          [user.id, user.email, firstName || '', lastName || '', userRole, 'free', joinedDate]
-        );
-      } catch (err2: any) {
-        console.warn("Snake case schema insert failed, trying fallback index_only insert:", err2.message);
-        try {
-          // 3. Try standard minimal fallback format (matching raw init_db.ts fields)
-          await query(
-            `INSERT INTO profiles (id, email, first_name, last_name) VALUES ($1, $2, $3, $4)`,
-            [user.id, user.email, firstName || '', lastName || '']
-          );
-        } catch (err3: any) {
-          // 4. Ultimate fallback: just id and email
-          await query(
-            'INSERT INTO profiles (id, email) VALUES ($1, $2)',
-            [user.id, user.email]
-          );
-        }
-      }
-    }
+    await query(
+      `INSERT INTO profiles (id, email, first_name, last_name, role, tier, joined) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       ON CONFLICT (id) DO NOTHING`,
+      [user.id, user.email, firstName || '', lastName || '', userRole, 'free', joinedDate]
+    );
 
     const token = jwt.sign({ id: user.id, email: user.email, role: userRole }, JWT_SECRET, { expiresIn: '7d' });
     res.json({ token, user: { id: user.id, email: user.email, role: userRole } });
@@ -266,15 +240,13 @@ router.get('/admin/users', authenticate, requireAdmin, async (req, res) => {
       `SELECT 
         u.id, 
         u.email, 
-        p.first_name, 
-        p.last_name, 
-        p.role, 
-        p.tier, 
-        p.tier_expiry, 
-        p.joined, 
-        p."firstName", 
-        p."lastName", 
-        p."tierExpiry" 
+        COALESCE(p.first_name, p."firstName", '') AS "firstName", 
+        COALESCE(p.last_name, p."lastName", '') AS "lastName", 
+        COALESCE(p.role, 'student') AS role, 
+        COALESCE(p.tier, 'free') AS tier, 
+        COALESCE(p.tier_expiry, p."tierExpiry") AS "tierExpiry", 
+        COALESCE(p.joined, '') AS joined,
+        u.created_at
        FROM users u 
        LEFT JOIN profiles p ON u.id = p.id`
     );
@@ -282,11 +254,11 @@ router.get('/admin/users', authenticate, requireAdmin, async (req, res) => {
       return {
         id: row.id,
         email: row.email,
-        firstName: row.firstName || row.first_name || '',
-        lastName: row.lastName || row.last_name || '',
-        role: row.role || 'student',
-        tier: row.tier || 'free',
-        tierExpiry: row.tierExpiry || row.tier_expiry || null,
+        firstName: row.firstName,
+        lastName: row.lastName,
+        role: row.role,
+        tier: row.tier,
+        tierExpiry: row.tierExpiry,
         joined: row.joined || (row.created_at ? new Date(row.created_at).toISOString().split('T')[0] : '')
       };
     });
@@ -320,24 +292,12 @@ router.post('/admin/users', authenticate, requireAdmin, async (req, res) => {
     const user = userResult.rows[0];
     const joinedDate = new Date().toISOString().split('T')[0];
     
-    try {
-      await query(
-        `INSERT INTO profiles (id, email, "firstName", "lastName", role, tier, joined) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-        [user.id, user.email, '', '', role || 'student', tier || 'free', joinedDate]
-      );
-    } catch (err1) {
-      try {
-        await query(
-          `INSERT INTO profiles (id, email, first_name, last_name, role, tier, joined) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-          [user.id, user.email, '', '', role || 'student', tier || 'free', joinedDate]
-        );
-      } catch (err2) {
-        await query(
-          `INSERT INTO profiles (id, email, first_name, last_name) VALUES ($1, $2, $3, $4)`,
-          [user.id, user.email, '', '']
-        );
-      }
-    }
+    await query(
+      `INSERT INTO profiles (id, email, first_name, last_name, role, tier, joined) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       ON CONFLICT (id) DO NOTHING`,
+      [user.id, user.email, '', '', role || 'student', tier || 'free', joinedDate]
+    );
     
     const welcomeLink = `${process.env.FRONTEND_URL || 'https://race.txglobal.com.au'}/reset-password?token=${token}`;
     
@@ -385,17 +345,16 @@ router.put('/admin/users/:id', authenticate, requireAdmin, async (req, res) => {
     const { id } = req.params;
     const { firstName, lastName, role, tier } = req.body;
     
-    try {
-      await query(
-        `UPDATE profiles SET "firstName" = $1, "lastName" = $2, role = $3, tier = $4, updated_at = NOW() WHERE id = $5`,
-        [firstName || '', lastName || '', role || 'student', tier || 'free', id]
-      );
-    } catch (e) {
-      await query(
-        `UPDATE profiles SET first_name = $1, last_name = $2, role = $3, tier = $4, updated_at = NOW() WHERE id = $5`,
-        [firstName || '', lastName || '', role || 'student', tier || 'free', id]
-      );
-    }
+    await query(
+      `UPDATE profiles SET 
+         first_name = $1, 
+         last_name = $2, 
+         role = $3, 
+         tier = $4, 
+         updated_at = NOW() 
+       WHERE id = $5`,
+      [firstName || '', lastName || '', role || 'student', tier || 'free', id]
+    );
     res.json({ success: true });
   } catch (e: any) {
     res.status(400).json({ error: e.message });
@@ -532,31 +491,12 @@ router.get('/profiles', authenticate, async (req: any, res) => {
       console.log(`Profile missing for user ${req.user.email}, generating defensively...`);
       const userRole = req.user.email === 'admin@txglobal.com.au' ? 'admin' : 'student';
       const joinedDate = new Date().toISOString();
-      try {
-        await query(
-          `INSERT INTO profiles (id, email, "firstName", "lastName", role, tier, joined) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-          [req.user.id, req.user.email, '', '', userRole, 'free', joinedDate]
-        );
-      } catch (err1: any) {
-        try {
-          await query(
-            `INSERT INTO profiles (id, email, first_name, last_name, role, tier, joined) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-            [req.user.id, req.user.email, '', '', userRole, 'free', joinedDate]
-          );
-        } catch (err2: any) {
-          try {
-            await query(
-              `INSERT INTO profiles (id, email, first_name, last_name) VALUES ($1, $2, $3, $4)`,
-              [req.user.id, req.user.email, '', '']
-            );
-          } catch (err3: any) {
-            await query(
-              'INSERT INTO profiles (id, email) VALUES ($1, $2)',
-              [req.user.id, req.user.email]
-            );
-          }
-        }
-      }
+      await query(
+        `INSERT INTO profiles (id, email, first_name, last_name, role, tier, joined) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
+         ON CONFLICT (id) DO NOTHING`,
+        [req.user.id, req.user.email, '', '', userRole, 'free', joinedDate]
+      );
       result = await query('SELECT * FROM profiles WHERE id = $1', [req.user.id]);
     }
     res.json(result.rows);

@@ -442,16 +442,33 @@ router.post('/ai/generate', authenticate, async (req: any, res) => {
     }
 
     const selectedModel = modelOverride || 'gemini-2.5-flash';
+    const maxAttempts = 3;
 
     // Route to Google GenAI SDK if google provider
     if (provider === 'google' || !provider) {
       const ai = getAiClient(apiKey);
-      const response = await ai.models.generateContent({
-        model: selectedModel,
-        contents: parts,
-        config: config
-      });
-      return res.json({ text: response.text });
+      let lastError: any = null;
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+          const response = await ai.models.generateContent({
+            model: selectedModel,
+            contents: parts,
+            config: config
+          });
+          return res.json({ text: response.text });
+        } catch (e: any) {
+          lastError = e;
+          const msg = e.message || '';
+          const isRetryable = msg.includes('503') || msg.includes('demand') || msg.includes('rate') || msg.includes('UNAVAILABLE') || msg.includes('limit') || msg.includes('overloaded');
+          if (isRetryable && attempt < maxAttempts) {
+            console.warn(`Google API call failed (Attempt ${attempt}/${maxAttempts}). Retrying in ${attempt * 2}s...`, msg);
+            await new Promise(r => setTimeout(r, attempt * 2000));
+            continue;
+          }
+          throw e;
+        }
+      }
+      throw lastError;
     }
     
     // Support OpenAI / DeepSeek / OpenRouter fallbacks
@@ -484,28 +501,44 @@ router.post('/ai/generate', authenticate, async (req: any, res) => {
       }
       messages.push({ role: 'user', content: userMessageContent });
 
-      const response = await fetch(baseUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model: selectedModel,
-          messages,
-          temperature: config?.temperature ?? 0.7,
-          response_format: config?.responseMimeType === 'application/json' ? { type: 'json_object' } : undefined
-        })
-      });
+      let lastError: any = null;
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+          const response = await fetch(baseUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+              model: selectedModel,
+              messages,
+              temperature: config?.temperature ?? 0.7,
+              response_format: config?.responseMimeType === 'application/json' ? { type: 'json_object' } : undefined
+            })
+          });
 
-      if (!response.ok) {
-        const errText = await response.text();
-        throw new Error(`${provider.toUpperCase()} API Error: ${errText}`);
+          if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(`${provider.toUpperCase()} API Error: ${errText}`);
+          }
+
+          const resData = await response.json();
+          const text = resData.choices?.[0]?.message?.content || '';
+          return res.json({ text });
+        } catch (e: any) {
+          lastError = e;
+          const msg = e.message || '';
+          const isRetryable = msg.includes('503') || msg.includes('demand') || msg.includes('rate') || msg.includes('UNAVAILABLE') || msg.includes('limit') || msg.includes('overloaded') || msg.includes('429');
+          if (isRetryable && attempt < maxAttempts) {
+            console.warn(`${provider.toUpperCase()} API call failed (Attempt ${attempt}/${maxAttempts}). Retrying in ${attempt * 2}s...`, msg);
+            await new Promise(r => setTimeout(r, attempt * 2000));
+            continue;
+          }
+          throw e;
+        }
       }
-
-      const resData = await response.json();
-      const text = resData.choices?.[0]?.message?.content || '';
-      return res.json({ text });
+      throw lastError;
     }
 
     // Support Anthropic Claude
@@ -539,26 +572,42 @@ router.post('/ai/generate', authenticate, async (req: any, res) => {
         'anthropic-version': '2023-06-01'
       };
 
-      const response = await fetch(baseUrl, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          model: selectedModel,
-          messages: anthropicMessages,
-          system: config?.systemInstruction || undefined,
-          temperature: config?.temperature ?? 0.7,
-          max_tokens: 4000
-        })
-      });
+      let lastError: any = null;
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+          const response = await fetch(baseUrl, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+              model: selectedModel,
+              messages: anthropicMessages,
+              system: config?.systemInstruction || undefined,
+              temperature: config?.temperature ?? 0.7,
+              max_tokens: 4000
+            })
+          });
 
-      if (!response.ok) {
-        const errText = await response.text();
-        throw new Error(`Anthropic API Error: ${errText}`);
+          if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(`Anthropic API Error: ${errText}`);
+          }
+
+          const resData = await response.json();
+          const text = resData.content?.[0]?.text || '';
+          return res.json({ text });
+        } catch (e: any) {
+          lastError = e;
+          const msg = e.message || '';
+          const isRetryable = msg.includes('503') || msg.includes('demand') || msg.includes('rate') || msg.includes('UNAVAILABLE') || msg.includes('limit') || msg.includes('overloaded') || msg.includes('429');
+          if (isRetryable && attempt < maxAttempts) {
+            console.warn(`Anthropic API call failed (Attempt ${attempt}/${maxAttempts}). Retrying in ${attempt * 2}s...`, msg);
+            await new Promise(r => setTimeout(r, attempt * 2000));
+            continue;
+          }
+          throw e;
+        }
       }
-
-      const resData = await response.json();
-      const text = resData.content?.[0]?.text || '';
-      return res.json({ text });
+      throw lastError;
     }
 
     res.status(400).json({ error: `Unsupported provider: ${provider}` });

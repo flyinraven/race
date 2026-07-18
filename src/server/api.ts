@@ -349,17 +349,18 @@ router.post('/admin/users', authenticate, requireAdmin, async (req, res) => {
 router.put('/admin/users/:id', authenticate, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-    const { firstName, lastName, role, tier } = req.body;
+    const { firstName, lastName, role, tier, email } = req.body;
     
     await query(
-      `UPDATE profiles SET 
-         first_name = $1, 
-         last_name = $2, 
-         role = $3, 
-         tier = $4, 
-         updated_at = NOW() 
-       WHERE id::text = $5`,
-      [firstName || '', lastName || '', role || 'student', tier || 'free', id]
+      `INSERT INTO profiles (id, email, first_name, last_name, role, tier, updated_at)
+       VALUES ($1, $2, $3, $4, $5, $6, NOW())
+       ON CONFLICT (id) DO UPDATE SET 
+         first_name = EXCLUDED.first_name, 
+         last_name = EXCLUDED.last_name, 
+         role = EXCLUDED.role, 
+         tier = EXCLUDED.tier, 
+         updated_at = NOW()`,
+      [id, email || '', firstName || '', lastName || '', role || 'student', tier || 'free']
     );
     res.json({ success: true });
   } catch (e: any) {

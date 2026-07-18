@@ -55,13 +55,11 @@ interface QuestionBankTabProps {
   isGeneratingBatch: boolean;
   batchProgress: any;
   handleCustomGenerate: () => void;
-  handleExportBank: () => void;
   
   // Upload State
   fileInputRef: React.RefObject<HTMLInputElement | null>;
   isUploading: boolean;
   handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleLoadAIBatch: () => void;
   uploadStatus: string;
   
   // Batch Simulations State
@@ -117,11 +115,9 @@ export default function QuestionBankTab({
   isGeneratingBatch,
   batchProgress,
   handleCustomGenerate,
-  handleExportBank,
   fileInputRef,
   isUploading,
   handleFileUpload,
-  handleLoadAIBatch,
   uploadStatus,
   selectedBatchType,
   setSelectedBatchType,
@@ -204,15 +200,9 @@ export default function QuestionBankTab({
             <button 
               onClick={handleCustomGenerate}
               disabled={isGeneratingCustom || isGeneratingBatch}
-              className="flex-grow bg-indigo-600 text-white px-4 py-3 rounded-lg font-medium hover:bg-indigo-700 transition disabled:opacity-50 min-w-[200px] flex items-center justify-center gap-2"
+              className="w-full bg-indigo-600 text-white px-4 py-3 rounded-lg font-medium hover:bg-indigo-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
             >
               <Cpu className="w-5 h-5" /> Generate Questions
-            </button>
-            <button 
-              onClick={handleExportBank}
-              className="flex-grow bg-emerald-600 text-white px-4 py-3 rounded-lg font-medium hover:bg-emerald-700 transition min-w-[200px] flex items-center justify-center gap-2"
-            >
-              <FileText className="w-5 h-5" /> Download Entire Question Bank (JSON)
             </button>
           </div>
           {isGeneratingCustom && (
@@ -268,25 +258,7 @@ export default function QuestionBankTab({
         </div>
       </div>
 
-      {/* Load Pre-Generated Demos */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
-          <Database className="w-6 h-6 text-indigo-600" />
-          <h3 className="text-lg font-bold text-slate-900">Load Pre-Generated Practice Sets</h3>
-        </div>
-        <div className="p-6">
-          <p className="text-slate-600 mb-6 text-sm font-normal text-slate-600 leading-relaxed">
-            Populate your exam engine immediately with a seed batch of 10 high-fidelity ophthalmology questions (covering Paper 1, 2, 3, 4 and OSCE Stations) generated according to RANZCO guidelines.
-          </p>
-          <button 
-            onClick={handleLoadAIBatch}
-            disabled={isUploading}
-            className="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition flex items-center justify-center gap-2 disabled:opacity-50 shadow-sm"
-          >
-            <Cpu className="w-5 h-5" /> Load Pre-Generated Practice Questions
-          </button>
-        </div>
-      </div>
+
 
       {/* Batch Generate Exam Simulations */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">

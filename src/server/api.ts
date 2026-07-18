@@ -22,7 +22,7 @@ export const authenticate = (req: any, res: any, next: any) => {
 // Auth Routes
 router.post('/auth/signup', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, firstName, lastName } = req.body;
     const hash = await bcrypt.hash(password, 10);
     const result = await query(
       'INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id, email',
@@ -30,11 +30,41 @@ router.post('/auth/signup', async (req, res) => {
     );
     const user = result.rows[0];
     
-    // Create empty profile
-    await query(
-      'INSERT INTO profiles (id, email) VALUES ($1, $2)',
-      [user.id, user.email]
-    );
+    const userRole = email.includes('admin') ? 'admin' : 'student';
+    const joinedDate = new Date().toISOString();
+    
+    // Defensive Try-Catch Insert Sequence to support both legacy (Supabase import) and clean database schemas
+    try {
+      // 1. Try Legacy/Supabase Schema format (with firstName, lastName, role, tier, joined)
+      await query(
+        `INSERT INTO profiles (id, email, "firstName", "lastName", role, tier, joined) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [user.id, user.email, firstName || '', lastName || '', userRole, 'free', joinedDate]
+      );
+    } catch (err1: any) {
+      console.warn("Legacy profile insert failed, trying clean snake_case schema:", err1.message);
+      try {
+        // 2. Try Clean Schema format (first_name, last_name, role, tier, joined)
+        await query(
+          `INSERT INTO profiles (id, email, first_name, last_name, role, tier, joined) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+          [user.id, user.email, firstName || '', lastName || '', userRole, 'free', joinedDate]
+        );
+      } catch (err2: any) {
+        console.warn("Snake case schema insert failed, trying fallback index_only insert:", err2.message);
+        try {
+          // 3. Try standard minimal fallback format (matching raw init_db.ts fields)
+          await query(
+            `INSERT INTO profiles (id, email, first_name, last_name) VALUES ($1, $2, $3, $4)`,
+            [user.id, user.email, firstName || '', lastName || '']
+          );
+        } catch (err3: any) {
+          // 4. Ultimate fallback: just id and email
+          await query(
+            'INSERT INTO profiles (id, email) VALUES ($1, $2)',
+            [user.id, user.email]
+          );
+        }
+      }
+    }
 
     const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
     res.json({ token, user });

@@ -85,8 +85,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const resetPassword = async (email: string) => {
-    // Requires email sending API which we might not have hooked up
-    console.warn("Reset password not implemented for custom auth yet");
+    await apiFetch('/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ email })
+    });
   };
 
   return (

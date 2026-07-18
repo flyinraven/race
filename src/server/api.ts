@@ -2,6 +2,8 @@ import { Router } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { query } from './db';
+import crypto from 'crypto';
+import nodemailer from 'nodemailer';
 
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key-change-in-prod';
@@ -127,6 +129,101 @@ router.get('/auth/session', authenticate, async (req: any, res) => {
     }
   }
   res.json({ user: { id: req.user.id, email: req.user.email, role } });
+});
+
+router.post('/auth/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+    const result = await query('SELECT * FROM users WHERE email = $1', [email]);
+    const user = result.rows[0];
+    
+    // Always return success to prevent email enumeration, but only send email if user exists
+    if (user) {
+      const token = crypto.randomBytes(32).toString('hex');
+      const expires = new Date(Date.now() + 3600000); // 1 hour expiry
+      
+      await query(
+        'UPDATE users SET reset_token = $1, reset_token_expires_at = $2 WHERE id = $3',
+        [token, expires, user.id]
+      );
+      
+      const resetLink = `${process.env.FRONTEND_URL || 'https://race.txglobal.com.au'}/reset-password?token=${token}`;
+      
+      // Configure Nodemailer SMTP Transporter
+      const smtpHost = process.env.SMTP_HOST;
+      const smtpPort = parseInt(process.env.SMTP_PORT || '587');
+      const smtpUser = process.env.SMTP_USER;
+      const smtpPass = process.env.SMTP_PASS;
+      const smtpFrom = process.env.SMTP_FROM || 'RANZCO RACE Exam Engine <noreply@txglobal.com.au>';
+      
+      if (smtpHost && smtpUser && smtpPass) {
+        const transporter = nodemailer.createTransport({
+          host: smtpHost,
+          port: smtpPort,
+          secure: smtpPort === 465, // True for port 465, false for other ports (like 587)
+          auth: {
+            user: smtpUser,
+            pass: smtpPass
+          }
+        });
+        
+        await transporter.sendMail({
+          from: smtpFrom,
+          to: user.email,
+          subject: 'Reset your RANZCO RACE Exam Engine Password',
+          text: `Hi,\n\nYou requested a password reset for your RANZCO RACE Exam Engine account.\nClick the link below to set a new password:\n\n${resetLink}\n\nThis link is valid for 1 hour.\nIf you did not request this, you can safely ignore this email.`,
+          html: `<p>Hi,</p>
+                 <p>You requested a password reset for your RANZCO RACE Exam Engine account.</p>
+                 <p>Click the link below to set a new password:</p>
+                 <p><a href="${resetLink}" style="display:inline-block;background-color:#4f46e5;color:white;padding:10px 20px;text-decoration:none;border-radius:6px;font-weight:bold;">Reset Password</a></p>
+                 <p>Alternatively, copy and paste this link into your browser:</p>
+                 <p>${resetLink}</p>
+                 <br>
+                 <p>This link is valid for 1 hour.</p>
+                 <p>If you did not request this, you can safely ignore this email.</p>`
+        });
+        console.log(`Password reset email successfully sent to ${user.email}`);
+      } else {
+        console.warn('SMTP settings are not configured. Logging reset link instead:');
+        console.log(`Password Reset Link for ${user.email}: ${resetLink}`);
+      }
+    }
+    
+    res.json({ success: true, message: 'If this email address exists in our database, a password reset link has been sent!' });
+  } catch (e: any) {
+    console.error('Forgot password error:', e);
+    res.status(400).json({ error: e.message });
+  }
+});
+
+router.post('/auth/reset-password', async (req, res) => {
+  try {
+    const { token, password } = req.body;
+    if (!token) return res.status(400).json({ error: 'Token is required.' });
+    if (!password || password.length < 6) return res.status(400).json({ error: 'Password must be at least 6 characters.' });
+    
+    // Find user with matching token that hasn't expired
+    const result = await query(
+      'SELECT * FROM users WHERE reset_token = $1 AND reset_token_expires_at > NOW()',
+      [token]
+    );
+    const user = result.rows[0];
+    if (!user) {
+      return res.status(400).json({ error: 'Invalid or expired password reset link.' });
+    }
+    
+    // Hash new password and clear the reset token fields
+    const hash = await bcrypt.hash(password, 10);
+    await query(
+      'UPDATE users SET password_hash = $1, reset_token = NULL, reset_token_expires_at = NULL WHERE id = $2',
+      [hash, user.id]
+    );
+    
+    res.json({ success: true, message: 'Password updated successfully.' });
+  } catch (e: any) {
+    console.error('Reset password error:', e);
+    res.status(400).json({ error: e.message });
+  }
 });
 
 // Profile Routes

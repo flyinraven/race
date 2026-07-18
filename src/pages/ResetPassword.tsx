@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-
+import { apiFetch } from '../lib/apiClient';
 
 export default function ResetPassword() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [token, setToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if the user has an active session or a valid access token in the URL hash
-    Promise.resolve({ data: { session: null } }).then(({ data: { session } }) => {
-      if (!session && !window.location.hash.includes('access_token')) {
-        setError("Invalid or expired password reset link.");
-      }
-    });
+    const params = new URLSearchParams(window.location.search);
+    const urlToken = params.get('token');
+    if (!urlToken) {
+      setError("Invalid or expired password reset link.");
+    } else {
+      setToken(urlToken);
+    }
   }, []);
 
   const handleResetPassword = async (e: React.FormEvent) => {
@@ -37,13 +38,10 @@ export default function ResetPassword() {
 
     setLoading(true);
     try {
-      const { error } = await Promise.resolve({
-        password: password
+      await apiFetch('/auth/reset-password', {
+        method: 'POST',
+        body: JSON.stringify({ token, password })
       });
-
-      if (error) {
-        throw error;
-      }
 
       setMessage("Password updated successfully.");
       setTimeout(() => {

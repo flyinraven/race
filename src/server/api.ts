@@ -217,9 +217,9 @@ router.post('/auth/reset-password', async (req, res) => {
 // Admin Authorization Middleware
 export const requireAdmin = async (req: any, res: any, next: any) => {
   try {
-    const userRes = await query('SELECT email FROM users WHERE id = $1', [req.user.id]);
+    const userRes = await query('SELECT email FROM users WHERE id = $1::uuid', [req.user.id]);
     const userEmail = userRes.rows[0]?.email;
-    const profileRes = await query('SELECT role FROM profiles WHERE id = $1', [req.user.id]);
+    const profileRes = await query('SELECT role FROM profiles WHERE id = $1::uuid', [req.user.id]);
     const role = profileRes.rows[0]?.role;
     if (role === 'admin' || userEmail === 'admin@txglobal.com.au' || req.user?.email === 'admin@txglobal.com.au') {
       req.user.role = 'admin';

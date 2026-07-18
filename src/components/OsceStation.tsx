@@ -173,27 +173,43 @@ export function OsceStation({
     }
   };
 
+  const customUrlTransform = (value: string) => {
+    const apiBase = import.meta.env.VITE_API_URL || '';
+    if (value.startsWith('data:image/')) return value;
+    if (value.startsWith('SEARCH_IMAGE:')) {
+      return apiBase + '/api/image-search-proxy?q=' + encodeURIComponent(value.replace('SEARCH_IMAGE:', '').replace(/\+/g, ' '));
+    }
+    return defaultUrlTransform(value);
+  };
+
   const MarkdownComponents = {
     img: ({ node, ...props }: any) => {
       if (!props.src) return null;
+      let proxySrc = props.src;
+      const apiBase = import.meta.env.VITE_API_URL || '';
+      if (proxySrc.includes('wikimedia.org')) {
+          proxySrc = apiBase + '/api/image-proxy?url=' + encodeURIComponent(proxySrc);
+      } else if (proxySrc.includes('placehold.co') && proxySrc.includes('text=')) {
+          const match = proxySrc.match(/text=([^&]+)/);
+          if (match && match[1]) {
+             let extractedQuery = decodeURIComponent(match[1]).replace(/\+/g, ' ');
+             proxySrc = apiBase + '/api/image-search-proxy?q=' + encodeURIComponent(extractedQuery);
+          }
+      }
       return (
         <img
           alt={props.alt || 'Clinical image'}
-          src={props.src}
+          src={proxySrc}
           referrerPolicy="no-referrer"
-          onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+          onError={(e) => {
+            const target = e.currentTarget as HTMLImageElement;
+            target.onerror = null;
+            target.src = 'https://placehold.co/600x400/png?text=Image+Not+Available';
+          }}
           className="max-w-full max-h-64 h-auto rounded-lg shadow border border-slate-200 my-4"
         />
       );
     }
-  };
-
-  const customUrlTransform = (value: string) => {
-    if (value.startsWith('data:image/')) return value;
-    if (value.startsWith('SEARCH_IMAGE:')) {
-      return '/api/image-search-proxy?q=' + encodeURIComponent(value.replace('SEARCH_IMAGE:', '').replace(/\+/g, ' '));
-    }
-    return defaultUrlTransform(value);
   };
 
   const timerBar = (

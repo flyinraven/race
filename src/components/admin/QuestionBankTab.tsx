@@ -74,11 +74,6 @@ interface QuestionBankTabProps {
   handleBatchGenerate: (type: any) => void;
   isPaused: boolean;
   togglePause: () => void;
-  
-  // Database Maintenance State
-  isFixingFaulty: boolean;
-  handleFixFaultyQuestions: () => void;
-  fixStatus: string;
 }
 
 export default function QuestionBankTab({
@@ -141,9 +136,6 @@ export default function QuestionBankTab({
   handleBatchGenerate,
   isPaused,
   togglePause,
-  isFixingFaulty,
-  handleFixFaultyQuestions,
-  fixStatus
 }: QuestionBankTabProps) {
   return (
     <div className="space-y-8">
@@ -250,7 +242,7 @@ export default function QuestionBankTab({
         </div>
       </div>
 
-      {/* Upload local Bank */}
+      {/* Upload to local Bank */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
           <Database className="w-6 h-6 text-purple-600" />
@@ -258,7 +250,9 @@ export default function QuestionBankTab({
         </div>
         <div className="p-6">
           <p className="text-slate-600 mb-6 text-sm leading-relaxed">
-            Upload past questions below. They are stored safely in your <strong className="text-slate-800">PostgreSQL</strong> cloud database. The file must be a JSON array or a PDF document containing exam questions. (PDF extraction uses AI and may take a moment).
+             Upload documents (past exam papers or custom question lists) from elsewhere. The AI engine will automatically scan the document, parse its questions, sub-questions, and model answers, and sort them into the appropriate curriculum topics.
+             <br /><br />
+             Supported formats: <strong className="text-slate-800">PDF (.pdf), Word (.docx), Plain Text (.txt), or JSON (.json)</strong>.
           </p>
           <div className="flex gap-4 mb-4 max-w-md">
             <div className="flex-1">
@@ -283,7 +277,7 @@ export default function QuestionBankTab({
           <div className="relative max-w-md">
             <input 
               type="file" 
-              accept=".json,.pdf"
+              accept=".json,.pdf,.docx,.txt"
               onChange={handleFileUpload}
               ref={fileInputRef}
               disabled={isUploading}
@@ -291,24 +285,34 @@ export default function QuestionBankTab({
             />
             <div className={`bg-purple-50 border border-purple-200 text-purple-700 w-full py-3 rounded-lg font-semibold transition flex items-center justify-center gap-2 pointer-events-none ${isUploading ? 'opacity-70' : 'hover:bg-purple-100'}`}>
               {isUploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Upload className="w-5 h-5" />}
-              {isUploading ? 'Processing...' : 'Select JSON or PDF Document'}
+              {isUploading ? 'Processing...' : 'Select Document (PDF, Word, TXT, JSON)'}
             </div>
-          </div>
-          <div className="mt-4 max-w-md border-t border-slate-100 pt-4">
-            <button 
-              onClick={handleLoadAIBatch}
-              disabled={isUploading}
-              className="w-full bg-slate-800 text-white py-3 rounded-lg font-semibold hover:bg-slate-700 transition flex items-center justify-center gap-2 disabled:opacity-50"
-            >
-              <Cpu className="w-5 h-5" /> Load Pre-Generated Full Exams (Paper 1-4, OSCE)
-            </button>
-            <p className="text-xs text-slate-500 mt-2 text-center">Contains 10 newly generated, highly detailed ophthalmology VSAQ & SEQ questions with images. Covers Paper 1, 2, 3, 4 and OSCE.</p>
           </div>
           {uploadStatus && (
             <div className={`mt-4 p-3 rounded text-sm max-w-md ${uploadStatus.includes('Error') ? 'bg-red-50 text-red-700' : 'bg-green-50 text-green-700'}`}>
               {uploadStatus}
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Load Pre-Generated Demos */}
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
+          <Database className="w-6 h-6 text-indigo-600" />
+          <h3 className="text-lg font-bold text-slate-900">Load Pre-Generated Practice Sets</h3>
+        </div>
+        <div className="p-6">
+          <p className="text-slate-600 mb-6 text-sm font-normal text-slate-600 leading-relaxed">
+            Populate your exam engine immediately with a seed batch of 10 high-fidelity ophthalmology questions (covering Paper 1, 2, 3, 4 and OSCE Stations) generated according to RANZCO guidelines.
+          </p>
+          <button 
+            onClick={handleLoadAIBatch}
+            disabled={isUploading}
+            className="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition flex items-center justify-center gap-2 disabled:opacity-50 shadow-sm"
+          >
+            <Cpu className="w-5 h-5" /> Load Pre-Generated Practice Questions
+          </button>
         </div>
       </div>
 
@@ -365,40 +369,6 @@ export default function QuestionBankTab({
               </button>
             </div>
           )}
-        </div>
-      </div>
-
-      {/* Database Maintenance */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col gap-3">
-          <div className="flex items-center gap-3">
-            <CheckCircle className="w-6 h-6 text-emerald-600" />
-            <h3 className="text-lg font-bold text-slate-900">Database Maintenance</h3>
-          </div>
-        </div>
-        <div className="p-6">
-          <p className="text-slate-600 mb-6 text-sm">
-            Run a scan to find and rectify any faulty questions in your bank. This will scan for missing texts or questions that failed to fetch images ("Image Not Found"). The faulty questions will be deleted and automatically regenerated with fresh AI questions to ensure your database remains clean.
-          </p>
-          <div className="flex flex-col gap-4">
-            <button 
-              onClick={handleFixFaultyQuestions}
-              disabled={isFixingFaulty}
-              className="self-start flex px-4 py-3 bg-slate-800 text-white rounded-lg font-medium hover:bg-slate-900 transition disabled:opacity-50 min-w-[200px] items-center justify-center"
-            >
-              {isFixingFaulty ? (
-                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Scanning...</>
-              ) : (
-                "Scan & Fix Faulty Questions"
-              )}
-            </button>
-            {fixStatus && (
-              <div className="p-4 bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-100 shadow-sm text-sm font-medium flex items-center gap-2">
-                {isFixingFaulty && <Loader2 className="w-4 h-4 animate-spin" />}
-                {fixStatus}
-              </div>
-            )}
-          </div>
         </div>
       </div>
 

@@ -2,8 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { LogOut, ShieldUser, Database, Upload, Users, Trash2, Loader2, Cpu, ChevronDown, ChevronUp, FileText, CheckCircle, Edit2, Mail, Save, X } from 'lucide-react';
-import { parsePDFQuestionBank, getBank, saveBank, deleteQuestions, BankQuestion, getCurriculum, saveCurriculum, updateQuestion, generateFreshQuestions, getExamGuidelines, saveExamGuidelines, generateCustomBatch } from '../services/examEngine';
+import { parsePDFQuestionBank, parseTextQuestionBank, getBank, saveBank, deleteQuestions, BankQuestion, getCurriculum, saveCurriculum, updateQuestion, generateFreshQuestions, getExamGuidelines, saveExamGuidelines, generateCustomBatch } from '../services/examEngine';
 import { getUsers, addUser, updateUser, deleteUser, UserProfile, getSubmissions, deleteSubmission, Submission } from '../services/userService';
+import { apiFetch } from '../lib/apiClient';
 import EditQuestionModal from '../components/EditQuestionModal';
 import EditUserModal from '../components/EditUserModal';
 import EditTemplateModal from '../components/EditTemplateModal';
@@ -16,10 +17,11 @@ import NotificationsTab from '../components/admin/NotificationsTab';
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 const customUrlTransform = (value: string) => {
+  const apiBase = import.meta.env.VITE_API_URL || '';
   if (value.startsWith('data:image/')) return value;
   if (value.startsWith('SEARCH_IMAGE:')) {
     const query = value.replace('SEARCH_IMAGE:', '').replace(/\+/g, ' ');
-    return 'https://placehold.co/600x400/eeeeee/888888.png?text=' + encodeURIComponent(query);
+    return apiBase + '/api/image-search-proxy?q=' + encodeURIComponent(query);
   }
   return defaultUrlTransform(value);
 };
@@ -28,14 +30,15 @@ const MarkdownComponents = {
   img: ({ node, ...props }: any) => {
     if (!props.src) return null;
     let proxySrc = props.src;
+    const apiBase = import.meta.env.VITE_API_URL || '';
     if (proxySrc.includes('wikimedia.org')) {
-        proxySrc = '/api/image-proxy?url=' + encodeURIComponent(proxySrc);
+        proxySrc = apiBase + '/api/image-proxy?url=' + encodeURIComponent(proxySrc);
     } else if (proxySrc.includes('placehold.co') && proxySrc.includes('text=')) {
         // Attempt dynamic fallback fetch from the backend proxy
         const match = proxySrc.match(/text=([^&]+)/);
         if (match && match[1]) {
            let extractedQuery = decodeURIComponent(match[1]).replace(/\+/g, ' ');
-           proxySrc = '/api/image-search-proxy?q=' + encodeURIComponent(extractedQuery);
+           proxySrc = apiBase + '/api/image-search-proxy?q=' + encodeURIComponent(extractedQuery);
         }
     }
     return (
@@ -182,14 +185,10 @@ export default function AdminDashboard() {
     setIsPaused(isPausedRef.current);
   };
 
-  const [isFixingFaulty, setIsFixingFaulty] = useState(false);
-
   const [customGenTopic, setCustomGenTopic] = useState('All');
   const [customGenVsaqCount, setCustomGenVsaqCount] = useState<number | ''>('');
   const [customGenSeqCount, setCustomGenSeqCount] = useState<number | ''>('');
   const [customGenOsceCount, setCustomGenOsceCount] = useState<number | ''>('');
-
-  const [fixStatus, setFixStatus] = useState('');
 
   // Email Templates
   const [emailTemplates, setEmailTemplates] = useState<any[]>([]);
@@ -298,7 +297,8 @@ export default function AdminDashboard() {
     setUploadStatus(`Reading ${file.name}...`);
     
     try {
-      if (file.name.toLowerCase().endsWith('.pdf')) {
+      const fileNameLower = file.name.toLowerCase();
+      if (fileNameLower.endsWith('.pdf')) {
         setUploadStatus('Extracting questions from PDF using AI (this may take a minute)...');
         const reader = new FileReader();
         
@@ -311,6 +311,41 @@ export default function AdminDashboard() {
         const base64 = await base64Promise;
         const addedItems = await parsePDFQuestionBank(base64, file.name, uploadDefaultYear, uploadDefaultPaper, setUploadStatus);
         setUploadStatus(`Successfully extracted and added ${addedItems.length} questions from PDF.`);
+      } else if (fileNameLower.endsWith('.docx')) {
+        setUploadStatus('Extracting text from Word document...');
+        const reader = new FileReader();
+        
+        const base64Promise = new Promise<string>((resolve, reject) => {
+          reader.onload = (event) => resolve(event.target?.result as string);
+          reader.onerror = (error) => reject(error);
+          reader.readAsDataURL(file);
+        });
+        
+        const base64 = await base64Promise;
+        
+        // Request backend to parse docx using mammoth
+        const response = await apiFetch('/admin/parse-docx', {
+          method: 'POST',
+          body: JSON.stringify({ fileDataB64: base64 })
+        });
+        
+        setUploadStatus('Extracting questions from Word text content using AI (this may take a minute)...');
+        const addedItems = await parseTextQuestionBank(response.text, file.name, uploadDefaultYear, uploadDefaultPaper, setUploadStatus);
+        setUploadStatus(`Successfully extracted and added ${addedItems.length} questions from Word document.`);
+      } else if (fileNameLower.endsWith('.txt')) {
+        setUploadStatus('Reading text file...');
+        const reader = new FileReader();
+        
+        const textPromise = new Promise<string>((resolve, reject) => {
+          reader.onload = (event) => resolve(event.target?.result as string);
+          reader.onerror = (error) => reject(error);
+          reader.readAsText(file);
+        });
+        
+        const textContent = await textPromise;
+        setUploadStatus('Extracting questions from text file using AI (this may take a minute)...');
+        const addedItems = await parseTextQuestionBank(textContent, file.name, uploadDefaultYear, uploadDefaultPaper, setUploadStatus);
+        setUploadStatus(`Successfully extracted and added ${addedItems.length} questions from text file.`);
       } else {
         // Assume JSON
         const reader = new FileReader();
@@ -442,7 +477,7 @@ export default function AdminDashboard() {
           specId: `spec_${Date.now()}_VSAQ_${i}_${Math.random()}`,
           type: 'VSAQ',
           topic: topicsToUse[(labelIndex - 1) % topicsToUse.length],
-          label: `Custom - VSAQ Q${i + 1}`,
+          label: `VSAQ`,
           paperName: 'Custom Generated'
         });
         labelIndex++;
@@ -454,7 +489,7 @@ export default function AdminDashboard() {
           specId: `spec_${Date.now()}_SEQ_${i}_${Math.random()}`,
           type: 'SEQ',
           topic: topicsToUse[(labelIndex - 1) % topicsToUse.length],
-          label: `Custom - SEQ Q${i + 1}`,
+          label: `SEQ`,
           paperName: 'Custom Generated'
         });
         labelIndex++;
@@ -466,7 +501,7 @@ export default function AdminDashboard() {
           specId: `spec_${Date.now()}_OSCE_${i}_${Math.random()}`,
           type: 'OSCE',
           topic: topicsToUse[(labelIndex - 1) % topicsToUse.length],
-          label: `Custom - OSCE Station ${i + 1}`,
+          label: `OSCE`,
           paperName: 'Custom Generated'
         });
         labelIndex++;
@@ -579,7 +614,7 @@ export default function AdminDashboard() {
               specId: `spec_${Date.now()}_${Math.random()}`,
               type: 'VSAQ',
               topic: TOPICS[(i + (p === 'paper3' || p === 'paper4' ? 4 : 0)) % 9],
-              label: `${paperName} - VSAQ Q${i + 1}`,
+              label: `VSAQ`,
               paperName
             });
           }
@@ -589,7 +624,7 @@ export default function AdminDashboard() {
               specId: `spec_${Date.now()}_${Math.random()}`,
               type: 'SEQ',
               topic: TOPICS[(i + 3 + (p === 'paper3' || p === 'paper4' ? 4 : 0)) % 9],
-              label: `${paperName} - SEQ Q${16 + i}`,
+              label: `SEQ`,
               paperName
             });
           }
@@ -599,7 +634,7 @@ export default function AdminDashboard() {
               specId: `spec_${Date.now()}_${Math.random()}`,
               type: 'OSCE',
               topic: TOPICS[i % 9],
-              label: `${paperName} - Station ${i + 1}`,
+              label: `OSCE`,
               paperName
             });
           }
@@ -697,147 +732,8 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleFixFaultyQuestions = async () => {
-    setIsFixingFaulty(true);
-    setFixStatus('Scanning for faulty questions...');
-    try {
-      const bank = await getBank();
-      const faultyQuestions = bank.filter(q => {
-        const scenario = q.data?.scenario || '';
-        
-        // Skip past exam questions. We only want to auto-fix AI generated questions.
-        // Past exam questions need their actual uploaded photos and shouldn't be overwritten.
-        if (q.year || (q.paper && q.paper.match(/\d{4}/))) {
-            return false; 
-        }
 
-        const missingImage = scenario.includes('Image+Not+Found') || scenario.includes('Image Not Found') || scenario.includes('placehold.co') || scenario.includes('SEARCH_IMAGE:');
-        const emptySubQuestions = !q.data?.subQuestions || q.data.subQuestions.length === 0;
-        const brokenMarkdown = scenario.match(/!\[.*?\]\(([^)]*)\)/);
-        let hasBadUrl = false;
-        let hasInappropriateImage = false;
-        if (brokenMarkdown && brokenMarkdown.length > 1) {
-            const url = brokenMarkdown[1].trim();
-            if (url === '' || url.includes('placehold') || !url.startsWith('http')) {
-               hasBadUrl = true;
-            } else if (url.includes('wikimedia.org')) {
-                // If the URL comes from wikimedia, ensure it has some medical optical terms or it might be a random fallback image (like a baby or random shape)
-                const filename = url.split('/').pop()?.toLowerCase() || '';
-                const ophthalmicTerms = ['eye', 'retina', 'fundus', 'cornea', 'cataract', 'glauc', 'optic', 'lid', 'lens', 'sclera', 'macul', 'vision', 'pupil', 'iris', 'oct', 'angiogr', 'scan', 'slit', 'lamp', 'uvei', 'kerat', 'strab', 'myop', 'hyperop', 'astigmat', 'conjunctiv', 'choroid', 'vitreous', 'ophthalm'];
-                if (!ophthalmicTerms.some(term => filename.includes(term))) {
-                    hasInappropriateImage = true;
-                }
-                if (url.endsWith('.pdf') || url.endsWith('.svg') || filename.includes('diagram') || filename.includes('icon') || filename.includes('logo')) {
-                    hasInappropriateImage = true;
-                }
-            }
-        }
-        const lacksImageTag = !scenario.includes('![');
-        const looksLikeItNeedsImage = scenario.toLowerCase().includes('the image') || scenario.toLowerCase().includes('this image') || scenario.toLowerCase().includes('figure 1') || scenario.toLowerCase().includes('clinical photograph');
-        
-        return missingImage || emptySubQuestions || hasBadUrl || hasInappropriateImage || (lacksImageTag && looksLikeItNeedsImage);
-      });
 
-      if (faultyQuestions.length === 0) {
-        setFixStatus('No faulty questions found in the bank!');
-        setTimeout(() => { setFixStatus(''); setIsFixingFaulty(false); }, 3000);
-        return;
-      }
-
-      setFixStatus(`Found ${faultyQuestions.length} faulty questions. Deleting and regenerating...`);
-      
-      const specToFaultyMap = new Map();
-      const faultySpecs = faultyQuestions.map(q => {
-        const specId = `spec_${Date.now()}_${Math.random()}`;
-        specToFaultyMap.set(specId, q.id); // Map spec to original faulty question
-        return {
-          specId,
-          type: q.type,
-          topic: q.topic,
-          label: q.questionLabel || `${q.type} - Fixed Question`,
-          paperName: q.paper || 'Generated Paper'
-        };
-      });
-
-      let remainingSpecs = faultySpecs.map(q => ({...q, attempts: 0}));
-      const chunkSize = 5;
-      
-      while (remainingSpecs.length > 0) {
-        if (isPausedRef.current) {
-          setFixStatus('Generation Paused');
-          await sleep(1000);
-          continue;
-        }
-        const chunk = remainingSpecs.slice(0, Math.min(chunkSize, remainingSpecs.length));
-        let success = false;
-        let retryCount = 0;
-        
-        while (!success && remainingSpecs.length > 0) {
-          try {
-            setFixStatus(`Regenerating chunk... (${remainingSpecs.length} remaining)`);
-            const newItems = await generateCustomBatch(chunk);
-            success = true;
-            
-            // Collect the corresponding faulty IDs for the items we successfully generated
-            const generatedSpecIds = newItems.map((item: any) => item.specId);
-            const faultyIdsToDelete = generatedSpecIds.map((id: string) => specToFaultyMap.get(id)).filter(Boolean);
-            
-            if (faultyIdsToDelete.length > 0) {
-               setFixStatus(`Deleting ${faultyIdsToDelete.length} replaced faulty questions...`);
-               await deleteQuestions(faultyIdsToDelete);
-            }
-            
-            remainingSpecs = remainingSpecs.filter(spec => {
-                if (generatedSpecIds.includes(spec.specId)) return false;
-                
-                if (chunk.some(c => c.specId === spec.specId)) {
-                   spec.attempts = (spec.attempts || 0) + 1;
-                   if (spec.attempts >= 4) {
-                       console.warn(`Spec ${spec.label} failed 3 times, skipping.`);
-                       return false; // Skip
-                   }
-                }
-                return true;
-            });
-
-            
-            if (remainingSpecs.length > 0) {
-              await new Promise(r => setTimeout(r, 2000)); // Sleep between chunks
-            }
-          } catch (err: any) {
-             const errorMessage = typeof err === 'string' ? err.toLowerCase() : JSON.stringify(err, Object.getOwnPropertyNames(err)).toLowerCase();
-             if (false) {
-                 throw new Error(`Google Cloud Billing Quota Exhausted: Please check your Google Cloud Console to increase your quota or set up billing.`);
-             } else if (errorMessage.includes('429') || errorMessage.includes('too many') || errorMessage.includes('quota')) {
-                 retryCount++;
-                 if (retryCount > 6) throw new Error("Google AI API Quota Exceeded after multiple retries. You may have hit your daily free tier limit.");
-                 const waitTime = 60 + (retryCount * 5);
-                 setFixStatus(`Rate Limit Hit. Retrying chunk ${Math.floor((faultySpecs.length - remainingSpecs.length)/chunkSize) + 1} in ${waitTime}s...`);
-                 let wait = waitTime;
-                 while(wait > 0) {
-                     setFixStatus(`Rate Limit Hit. Retrying in ${wait}s...`);
-                     wait--;
-                     await new Promise(r => setTimeout(r, 1000));
-                 }
-             } else {
-                 retryCount++;
-                 if (retryCount > 3) throw err;
-                 setFixStatus(`Regenerating chunk failed, retrying (${retryCount}/3)...`);
-                 await new Promise(r => setTimeout(r, 5000));
-             }
-          }
-        }
-      }
-      
-      setFixStatus(`Successfully replaced ${faultyQuestions.length} faulty questions.`);
-      await refreshBank();
-      setTimeout(() => { setFixStatus(''); setIsFixingFaulty(false); }, 5000);
-    } catch (e: any) {
-      console.error(e);
-      setFixStatus(`Error: ${e.message}`);
-      setIsFixingFaulty(false);
-    }
-  };
 
   const handleAddUser = async () => {
     if (!newEmail.trim()) return;
@@ -1068,9 +964,6 @@ export default function AdminDashboard() {
             handleBatchGenerate={handleBatchGenerate}
             isPaused={isPaused}
             togglePause={togglePause}
-            isFixingFaulty={isFixingFaulty}
-            handleFixFaultyQuestions={handleFixFaultyQuestions}
-            fixStatus={fixStatus}
           />
         )}
 

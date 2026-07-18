@@ -659,6 +659,96 @@ export async function parsePDFQuestionBank(pdfBase64: string, fileName: string, 
   }
 }
 
+export async function parseTextQuestionBank(textContent: string, fileName: string, defaultYear?: string, defaultPaper?: string, onProgress?: (msg: string) => void): Promise<BankQuestion[]> {
+  const timeoutPromise = new Promise<BankQuestion[]>((_, reject) => 
+    setTimeout(() => reject(new Error("Global Text processing timeout (10 minutes).")), 600000)
+  );
+
+  const processingPromise = async () => {
+    onProgress?.("Splitting text document for processing...");
+    
+    // Split by lines and chunk
+    const lines = textContent.split('\n');
+    const chunkSize = 150; // process 150 lines at a time
+    let combinedQuestions: any[] = [];
+    
+    for (let i = 0; i < lines.length; i += chunkSize) {
+      const chunkIndex = Math.floor(i / chunkSize) + 1;
+      const totalChunks = Math.ceil(lines.length / chunkSize);
+      onProgress?.(`Sending text chunk ${chunkIndex} of ${totalChunks} to AI for extraction...`);
+      
+      const chunkText = lines.slice(i, i + chunkSize).join('\n');
+      
+      const parts = [
+        `[PARSE_PDF_BANK]\nThis is a portion of a past exam paper or question bank document. Extract all questions from this text, map them to one of the 9 core topics, and format them as the specified JSON array structure.\nSource File: "${fileName}".\nDefault Year: ${defaultYear || 'AI'}. Default Paper: ${defaultPaper || 'Paper'}.\n\nText Content:\n${chunkText}`
+      ];
+      
+      const parsedText = await callAI(parts, {
+        systemInstruction: await getSystemPrompt(),
+        temperature: 0.1,
+        responseMimeType: "application/json"
+      }, getTaskModel('parsing'));
+      
+      let chunkQuestions: any[] = [];
+      try {
+        chunkQuestions = JSON.parse(parsedText || "[]");
+      } catch (e) {
+        try {
+          const repaired = jsonrepair(parsedText || "[]");
+          chunkQuestions = JSON.parse(repaired);
+        } catch (repairErr) {
+          console.warn(`Failed to parse chunk ${chunkIndex}, skipping.`, repairErr);
+        }
+      }
+      
+      if (Array.isArray(chunkQuestions)) {
+        combinedQuestions = [...combinedQuestions, ...chunkQuestions];
+      }
+    }
+    
+    onProgress?.("Embedding images for extracted questions...");
+    
+    if (Array.isArray(combinedQuestions) && combinedQuestions.length > 0) {
+      await Promise.all(combinedQuestions.map(async (qData: any) => {
+          const actualData = qData.data || qData;
+          await processSearchImages(actualData);
+      }));
+      
+      const bank = await getBank();
+      const newBankItems: BankQuestion[] = combinedQuestions.map((qData: any) => {
+        return {
+          id: Math.random().toString(36).substring(2, 15),
+          type: qData.type || 'VSAQ',
+          topic: qData.topic || 'combined',
+          paper: qData.paper || defaultPaper || 'Past Exam',
+          year: qData.year || defaultYear || 'AI',
+          questionLabel: qData.questionLabel,
+          data: qData.data || qData,
+          used: false
+        };
+      });
+      
+      const updatedBank = [...bank, ...newBankItems];
+      await saveBank(updatedBank);
+      
+      return newBankItems;
+    } else {
+      throw new Error("No valid questions were extracted from this document.");
+    }
+  };
+
+  try {
+    return await Promise.race([
+      processingPromise(),
+      timeoutPromise
+    ]);
+  } catch (err) {
+    console.error("Text parsing failed", err);
+    throw err;
+  }
+}
+
+
 export async function generateSingleQuestion(type: string, requestedTopic: string) {
   let topic = requestedTopic;
   if (topic === 'combined') {

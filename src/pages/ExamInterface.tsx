@@ -346,10 +346,11 @@ export default function ExamInterface() {
   const [zoomedImage, setZoomedImage] = useState<{src: string, alt: string} | null>(null);
 
   const customUrlTransform = (value: string) => {
+    const apiBase = import.meta.env.VITE_API_URL || '';
     if (value.startsWith('data:image/')) return value;
     if (value.startsWith('SEARCH_IMAGE:')) {
       const query = value.replace('SEARCH_IMAGE:', '').replace(/\+/g, ' ');
-      return 'https://placehold.co/600x400/eeeeee/888888.png?text=' + encodeURIComponent(query);
+      return apiBase + '/api/image-search-proxy?q=' + encodeURIComponent(query);
     }
     return defaultUrlTransform(value);
   };
@@ -358,14 +359,15 @@ export default function ExamInterface() {
   img: ({ node, ...props }: any) => {
     if (!props.src) return null;
     let proxySrc = props.src;
+    const apiBase = import.meta.env.VITE_API_URL || '';
     if (proxySrc.includes('wikimedia.org')) {
-        proxySrc = '/api/image-proxy?url=' + encodeURIComponent(proxySrc);
+        proxySrc = apiBase + '/api/image-proxy?url=' + encodeURIComponent(proxySrc);
     } else if (proxySrc.includes('placehold.co') && proxySrc.includes('text=')) {
         // Attempt dynamic fallback fetch from the backend proxy
         const match = proxySrc.match(/text=([^&]+)/);
         if (match && match[1]) {
            let extractedQuery = decodeURIComponent(match[1]).replace(/\+/g, ' ');
-           proxySrc = '/api/image-search-proxy?q=' + encodeURIComponent(extractedQuery);
+           proxySrc = apiBase + '/api/image-search-proxy?q=' + encodeURIComponent(extractedQuery);
         }
     }
       return (

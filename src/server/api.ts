@@ -408,6 +408,26 @@ router.post('/admin/upload-image', authenticate, requireAdmin, async (req, res) 
     res.status(500).json({ error: e.message });
   }
 });
+router.post('/admin/parse-docx', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const { fileDataB64 } = req.body;
+    if (!fileDataB64) {
+      return res.status(400).json({ error: 'Missing fileDataB64.' });
+    }
+    const rawB64 = fileDataB64.indexOf('base64,') > -1 ? fileDataB64.split('base64,').pop() : fileDataB64;
+    if (!rawB64) return res.status(400).json({ error: 'Invalid base64 data.' });
+    
+    const buffer = Buffer.from(rawB64, 'base64');
+    
+    const mammoth = await import('mammoth');
+    const result = await mammoth.extractRawText({ buffer });
+    
+    res.json({ text: result.value });
+  } catch (e: any) {
+    console.error('DOCX parsing error:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
 
 router.post('/ai/generate', authenticate, async (req: any, res) => {
   try {

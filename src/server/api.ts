@@ -243,11 +243,11 @@ router.get('/admin/users', authenticate, requireAdmin, async (req, res) => {
       `SELECT 
         u.id, 
         u.email, 
-        COALESCE(p.first_name, p."firstName", '') AS "firstName", 
-        COALESCE(p.last_name, p."lastName", '') AS "lastName", 
+        COALESCE(p.first_name, '') AS "firstName", 
+        COALESCE(p.last_name, '') AS "lastName", 
         COALESCE(p.role, 'student') AS role, 
         COALESCE(p.tier, 'free') AS tier, 
-        COALESCE(p.tier_expiry, p."tierExpiry") AS "tierExpiry", 
+        p.tier_expiry AS "tierExpiry", 
         COALESCE(p.joined, '') AS joined,
         u.created_at
        FROM users u 
@@ -550,7 +550,23 @@ router.post('/settings', authenticate, async (req: any, res) => {
 router.get('/questions', authenticate, async (req: any, res) => {
   try {
     const result = await query('SELECT * FROM questions');
-    res.json(result.rows);
+    const normalized = result.rows.map((row: any) => {
+      let qData = row.data;
+      if (row.data && row.data.data) {
+        qData = row.data.data;
+      }
+      return {
+        id: row.id,
+        type: row.type || (row.data && row.data.type) || 'VSAQ',
+        topic: row.topic || (row.data && row.data.topic) || 'General',
+        paper: (row.data && row.data.paper) || 'Unknown',
+        year: (row.data && row.data.year) || 'Unknown',
+        questionLabel: (row.data && row.data.questionLabel) || '',
+        data: qData,
+        used: (row.data && row.data.used) || false
+      };
+    });
+    res.json(normalized);
   } catch (e: any) {
     res.status(400).json({ error: e.message });
   }
@@ -560,9 +576,22 @@ router.post('/questions/upsert', authenticate, async (req: any, res) => {
   try {
     const bank = req.body;
     for (const q of bank) {
+      let qData = q.data;
+      if (q.data && q.data.data) {
+        qData = q.data.data;
+      }
       await query(
         'INSERT INTO questions (id, type, topic, data) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO UPDATE SET type = EXCLUDED.type, topic = EXCLUDED.topic, data = EXCLUDED.data',
-        [q.id, q.type, q.topic, JSON.stringify(q)]
+        [q.id, q.type, q.topic, JSON.stringify({
+          id: q.id,
+          type: q.type,
+          topic: q.topic,
+          paper: q.paper || 'Unknown',
+          year: q.year || 'Unknown',
+          questionLabel: q.questionLabel || '',
+          data: qData,
+          used: q.used || false
+        })]
       );
     }
     res.json({ success: true });

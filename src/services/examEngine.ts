@@ -942,7 +942,7 @@ export async function gradeAnswerMode(answer: string, pdfBase64: string | null, 
     parts.push(`[GRADE_ANSWER]\nQuestion Context: ${questionContext}\nUser's Text Answer: ${answer}\nTime Taken: ${timeTaken}\nTarget Time: ${targetTime}`);
 
     const responseText = await callAI(parts, {
-      systemInstruction: await getSystemPrompt(),
+      systemInstruction: "You are the 'RANZCO Assessor', an AI that grades fellowship-level ophthalmic written answers. Compare the candidate's text answer against the provided question context and standard model answer. Score the response using a points-based system based on the Angoff Pass Mark standard. Output details in the requested raw JSON format.",
       temperature: 0.2,
       responseMimeType: "application/json"
     }, 'gemini-2.5-flash');

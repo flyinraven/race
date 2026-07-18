@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const res = await apiFetch('/auth/session');
           if (res.user) {
             setUser({ id: res.user.id, email: res.user.email });
-            setRole(res.user.email.includes('admin') ? 'admin' : 'student');
+            setRole(res.user.email === 'admin@txglobal.com.au' ? 'admin' : 'student');
             setTier('pro');
           }
         }
@@ -52,7 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       localStorage.setItem('siteground_token', res.token);
       setUser({ id: res.user.id, email: res.user.email });
-      setRole(email.includes('admin') ? 'admin' : 'student');
+      setRole(email === 'admin@txglobal.com.au' ? 'admin' : 'student');
       setTier('pro');
       return true;
     } catch (e: any) {

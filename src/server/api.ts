@@ -30,7 +30,7 @@ router.post('/auth/signup', async (req, res) => {
     );
     const user = result.rows[0];
     
-    const userRole = email.includes('admin') ? 'admin' : 'student';
+    const userRole = email === 'admin@txglobal.com.au' ? 'admin' : 'student';
     const joinedDate = new Date().toISOString();
     
     // Defensive Try-Catch Insert Sequence to support both legacy (Supabase import) and clean database schemas
@@ -97,7 +97,38 @@ router.get('/auth/session', authenticate, (req: any, res) => {
 // Profile Routes
 router.get('/profiles', authenticate, async (req: any, res) => {
   try {
-    const result = await query('SELECT * FROM profiles WHERE id = $1', [req.user.id]);
+    let result = await query('SELECT * FROM profiles WHERE id = $1', [req.user.id]);
+    if (result.rows.length === 0) {
+      console.log(`Profile missing for user ${req.user.email}, generating defensively...`);
+      const userRole = req.user.email === 'admin@txglobal.com.au' ? 'admin' : 'student';
+      const joinedDate = new Date().toISOString();
+      try {
+        await query(
+          `INSERT INTO profiles (id, email, "firstName", "lastName", role, tier, joined) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+          [req.user.id, req.user.email, '', '', userRole, 'free', joinedDate]
+        );
+      } catch (err1: any) {
+        try {
+          await query(
+            `INSERT INTO profiles (id, email, first_name, last_name, role, tier, joined) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+            [req.user.id, req.user.email, '', '', userRole, 'free', joinedDate]
+          );
+        } catch (err2: any) {
+          try {
+            await query(
+              `INSERT INTO profiles (id, email, first_name, last_name) VALUES ($1, $2, $3, $4)`,
+              [req.user.id, req.user.email, '', '']
+            );
+          } catch (err3: any) {
+            await query(
+              'INSERT INTO profiles (id, email) VALUES ($1, $2)',
+              [req.user.id, req.user.email]
+            );
+          }
+        }
+      }
+      result = await query('SELECT * FROM profiles WHERE id = $1', [req.user.id]);
+    }
     res.json(result.rows);
   } catch (e: any) {
     res.status(400).json({ error: e.message });

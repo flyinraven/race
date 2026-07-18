@@ -1077,7 +1077,7 @@ export default function AdminDashboard() {
         {activeTab === 'settings' && (
           <SettingsTab
             curriculumText={curriculumText}
-            setCustomGenTopic={() => {}} /* Fallback for custom layouts */
+            setCustomGenTopic={() => {}}
             setCurriculumText={setCurriculumText}
             handleSaveCurriculum={handleSaveCurriculum}
             curriculumSaved={curriculumSaved}
@@ -1085,6 +1085,14 @@ export default function AdminDashboard() {
             setExamGuidelines={setExamGuidelines}
             handleSaveGuidelines={handleSaveGuidelines}
             guidelinesSaved={guidelinesSaved}
+            aiProvider={aiProvider}
+            setAiProvider={setAiProvider}
+            aiApiKey={aiApiKey}
+            setAiApiKey={setAiApiKey}
+            aiModel={aiModel}
+            setAiModel={setAiModel}
+            saveAiConfig={saveAiConfig}
+            aiConfigSaved={aiConfigSaved}
           />
         )}
 

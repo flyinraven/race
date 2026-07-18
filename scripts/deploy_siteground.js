@@ -42,7 +42,7 @@ function deploy() {
 
   // Run SCP command
   // -o StrictHostKeyChecking=no bypasses the interactive prompt to trust the host key
-  const scpCommand = `scp -P ${port} -i "${keyPath}" -o StrictHostKeyChecking=no -r dist/* "${SITEGROUND_SSH_USER}@${SITEGROUND_SSH_HOST}:${SITEGROUND_REMOTE_PATH}"`;
+  const scpCommand = `scp -P ${port} -i "${keyPath}" -o StrictHostKeyChecking=no -r dist/. "${SITEGROUND_SSH_USER}@${SITEGROUND_SSH_HOST}:${SITEGROUND_REMOTE_PATH}"`;
 
   try {
     console.log('Uploading files...');

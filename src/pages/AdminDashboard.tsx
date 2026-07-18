@@ -9,6 +9,8 @@ import EditUserModal from '../components/EditUserModal';
 import EditTemplateModal from '../components/EditTemplateModal';
 import Markdown, { defaultUrlTransform } from 'react-markdown';
 
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 const customUrlTransform = (value: string) => {
   if (value.startsWith('data:image/')) return value;
   if (value.startsWith('SEARCH_IMAGE:')) {
@@ -150,9 +152,9 @@ export default function AdminDashboard() {
   const [isFixingFaulty, setIsFixingFaulty] = useState(false);
 
   const [customGenTopic, setCustomGenTopic] = useState('All');
-  const [customGenVsaqCount, setCustomGenVsaqCount] = useState(5);
-  const [customGenSeqCount, setCustomGenSeqCount] = useState(2);
-  const [customGenOsceCount, setCustomGenOsceCount] = useState(1);
+  const [customGenVsaqCount, setCustomGenVsaqCount] = useState<number | ''>('');
+  const [customGenSeqCount, setCustomGenSeqCount] = useState<number | ''>('');
+  const [customGenOsceCount, setCustomGenOsceCount] = useState<number | ''>('');
 
   const [fixStatus, setFixStatus] = useState('');
 
@@ -396,8 +398,12 @@ export default function AdminDashboard() {
       const questionsToGenerate = [];
       let labelIndex = 1;
       
+      const vsaqCount = Number(customGenVsaqCount) || 0;
+      const seqCount = Number(customGenSeqCount) || 0;
+      const osceCount = Number(customGenOsceCount) || 0;
+      
       // VSAQs
-      for (let i = 0; i < customGenVsaqCount; i++) {
+      for (let i = 0; i < vsaqCount; i++) {
         questionsToGenerate.push({
           specId: `spec_${Date.now()}_VSAQ_${i}_${Math.random()}`,
           type: 'VSAQ',
@@ -409,7 +415,7 @@ export default function AdminDashboard() {
       }
       
       // SEQs
-      for (let i = 0; i < customGenSeqCount; i++) {
+      for (let i = 0; i < seqCount; i++) {
         questionsToGenerate.push({
           specId: `spec_${Date.now()}_SEQ_${i}_${Math.random()}`,
           type: 'SEQ',
@@ -421,7 +427,7 @@ export default function AdminDashboard() {
       }
       
       // OSCEs
-      for (let i = 0; i < customGenOsceCount; i++) {
+      for (let i = 0; i < osceCount; i++) {
         questionsToGenerate.push({
           specId: `spec_${Date.now()}_OSCE_${i}_${Math.random()}`,
           type: 'OSCE',
@@ -434,7 +440,6 @@ export default function AdminDashboard() {
 
       let remainingSpecs = questionsToGenerate.map(q => ({...q, attempts: 0}));
       
-      const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
       const chunkSize = 5;
       let generatedCount = 0;
       setBatchProgress({ current: 0, total: questionsToGenerate.length });
@@ -569,7 +574,6 @@ export default function AdminDashboard() {
 
       let remainingSpecs = questionsToGenerate.map(q => ({...q, attempts: 0}));
       
-      const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
       const chunkSize = 5;
       let generatedCount = 0;
       setBatchProgress({ current: 0, total: questionsToGenerate.length });
@@ -1077,8 +1081,9 @@ export default function AdminDashboard() {
                         min="0" 
                         max="50" 
                         value={customGenVsaqCount}
-                        onChange={(e) => setCustomGenVsaqCount(parseInt(e.target.value) || 0)}
+                        onChange={(e) => setCustomGenVsaqCount(e.target.value === '' ? '' : (parseInt(e.target.value) || 0))}
                         className="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none"
+                        placeholder="0"
                       />
                     </div>
                     <div className="flex-1">
@@ -1088,8 +1093,9 @@ export default function AdminDashboard() {
                         min="0" 
                         max="50" 
                         value={customGenSeqCount}
-                        onChange={(e) => setCustomGenSeqCount(parseInt(e.target.value) || 0)}
+                        onChange={(e) => setCustomGenSeqCount(e.target.value === '' ? '' : (parseInt(e.target.value) || 0))}
                         className="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none"
+                        placeholder="0"
                       />
                     </div>
                     <div className="flex-1">
@@ -1099,8 +1105,9 @@ export default function AdminDashboard() {
                         min="0" 
                         max="50" 
                         value={customGenOsceCount}
-                        onChange={(e) => setCustomGenOsceCount(parseInt(e.target.value) || 0)}
+                        onChange={(e) => setCustomGenOsceCount(e.target.value === '' ? '' : (parseInt(e.target.value) || 0))}
                         className="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none"
+                        placeholder="0"
                       />
                     </div>
                   </div>

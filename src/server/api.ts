@@ -226,6 +226,165 @@ router.post('/auth/reset-password', async (req, res) => {
   }
 });
 
+// Admin Authorization Middleware
+export const requireAdmin = async (req: any, res: any, next: any) => {
+  try {
+    // Read user role dynamically from profiles table
+    const profileRes = await query('SELECT role FROM profiles WHERE id = $1', [req.user.id]);
+    const role = profileRes.rows[0]?.role;
+    if (role === 'admin') {
+      req.user.role = 'admin';
+      return next();
+    }
+    return res.status(403).json({ error: 'Access denied. Administrator privileges required.' });
+  } catch (err) {
+    return res.status(403).json({ error: 'Access denied. Administrator privileges required.' });
+  }
+};
+
+// Admin User Management Routes
+router.get('/admin/users', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const result = await query(
+      `SELECT u.id, u.email, p.* FROM users u LEFT JOIN profiles p ON u.id = p.id`
+    );
+    const normalized = result.rows.map((row: any) => {
+      return {
+        id: row.id,
+        email: row.email,
+        firstName: row.firstName || row.first_name || '',
+        lastName: row.lastName || row.last_name || '',
+        role: row.role || 'student',
+        tier: row.tier || 'free',
+        tierExpiry: row.tierExpiry || row.tier_expiry || null,
+        joined: row.joined || (row.created_at ? new Date(row.created_at).toISOString().split('T')[0] : '')
+      };
+    });
+    res.json(normalized);
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+router.post('/admin/users', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const { email, role, tier } = req.body;
+    if (!email) return res.status(400).json({ error: 'Email is required.' });
+    
+    // Check if user already exists
+    const checkUser = await query('SELECT id FROM users WHERE email = $1', [email]);
+    if (checkUser.rows.length > 0) {
+      return res.status(400).json({ error: 'A user with this email already exists.' });
+    }
+
+    const tempPassword = crypto.randomBytes(16).toString('hex');
+    const hash = await bcrypt.hash(tempPassword, 10);
+    
+    const token = crypto.randomBytes(32).toString('hex');
+    const expires = new Date(Date.now() + 86400000 * 7); // 7 days welcome expiry
+    
+    const userResult = await query(
+      'INSERT INTO users (email, password_hash, reset_token, reset_token_expires_at) VALUES ($1, $2, $3, $4) RETURNING id, email',
+      [email, hash, token, expires]
+    );
+    const user = userResult.rows[0];
+    const joinedDate = new Date().toISOString().split('T')[0];
+    
+    try {
+      await query(
+        `INSERT INTO profiles (id, email, "firstName", "lastName", role, tier, joined) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [user.id, user.email, '', '', role || 'student', tier || 'free', joinedDate]
+      );
+    } catch (err1) {
+      try {
+        await query(
+          `INSERT INTO profiles (id, email, first_name, last_name, role, tier, joined) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+          [user.id, user.email, '', '', role || 'student', tier || 'free', joinedDate]
+        );
+      } catch (err2) {
+        await query(
+          `INSERT INTO profiles (id, email, first_name, last_name) VALUES ($1, $2, $3, $4)`,
+          [user.id, user.email, '', '']
+        );
+      }
+    }
+    
+    const welcomeLink = `${process.env.FRONTEND_URL || 'https://race.txglobal.com.au'}/reset-password?token=${token}`;
+    
+    // Email the user a welcome invitation link
+    const smtpHost = process.env.SMTP_HOST;
+    const smtpPort = parseInt(process.env.SMTP_PORT || '587');
+    const smtpUser = process.env.SMTP_USER;
+    const smtpPass = process.env.SMTP_PASS;
+    const smtpFrom = process.env.SMTP_FROM || 'RANZCO RACE Exam Engine <noreply@txglobal.com.au>';
+    
+    if (smtpHost && smtpUser && smtpPass) {
+      const transporter = nodemailer.createTransport({
+        host: smtpHost,
+        port: smtpPort,
+        secure: smtpPort === 465,
+        auth: { user: smtpUser, pass: smtpPass }
+      });
+      
+      await transporter.sendMail({
+        from: smtpFrom,
+        to: user.email,
+        subject: 'Welcome to RANZCO RACE Exam Engine!',
+        text: `Hi,\n\nYou have been invited to join the RANZCO RACE Exam Engine.\nClick the link below to set your password and access your account:\n\n${welcomeLink}\n\nThis link is valid for 7 days.`,
+        html: `<p>Hi,</p>
+               <p>You have been invited to join the RANZCO RACE Exam Engine.</p>
+               <p>Click the link below to set your password and access your account:</p>
+               <p><a href="${welcomeLink}" style="display:inline-block;background-color:#4f46e5;color:white;padding:10px 20px;text-decoration:none;border-radius:6px;font-weight:bold;">Set Password</a></p>
+               <br>
+               <p>This link is valid for 7 days.</p>`
+      });
+      console.log(`User invited, welcome email sent to ${user.email}`);
+    } else {
+      console.warn('SMTP not configured. Invited user welcome link:');
+      console.log(`Welcome Link for ${user.email}: ${welcomeLink}`);
+    }
+    
+    res.json({ success: true, user });
+  } catch (e: any) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
+router.put('/admin/users/:id', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { firstName, lastName, role, tier } = req.body;
+    
+    try {
+      await query(
+        `UPDATE profiles SET "firstName" = $1, "lastName" = $2, role = $3, tier = $4, updated_at = NOW() WHERE id = $5`,
+        [firstName || '', lastName || '', role || 'student', tier || 'free', id]
+      );
+    } catch (e) {
+      await query(
+        `UPDATE profiles SET first_name = $1, last_name = $2, role = $3, tier = $4, updated_at = NOW() WHERE id = $5`,
+        [firstName || '', lastName || '', role || 'student', tier || 'free', id]
+      );
+    }
+    res.json({ success: true });
+  } catch (e: any) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
+router.delete('/admin/users/:id', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (id === req.user.id) {
+      return res.status(400).json({ error: 'You cannot delete your own admin account.' });
+    }
+    await query('DELETE FROM users WHERE id = $1', [id]);
+    res.json({ success: true });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // Profile Routes
 router.get('/profiles', authenticate, async (req: any, res) => {
   try {

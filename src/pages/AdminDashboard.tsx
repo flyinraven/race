@@ -150,8 +150,9 @@ export default function AdminDashboard() {
   const [isFixingFaulty, setIsFixingFaulty] = useState(false);
 
   const [customGenTopic, setCustomGenTopic] = useState('All');
-  const [customGenType, setCustomGenType] = useState('VSAQ');
-  const [customGenCount, setCustomGenCount] = useState(5);
+  const [customGenVsaqCount, setCustomGenVsaqCount] = useState(5);
+  const [customGenSeqCount, setCustomGenSeqCount] = useState(2);
+  const [customGenOsceCount, setCustomGenOsceCount] = useState(1);
 
   const [fixStatus, setFixStatus] = useState('');
 
@@ -393,15 +394,42 @@ export default function AdminDashboard() {
       
       const topicsToUse = customGenTopic === 'All' ? TOPICS : [customGenTopic];
       const questionsToGenerate = [];
+      let labelIndex = 1;
       
-      for (let i = 0; i < customGenCount; i++) {
+      // VSAQs
+      for (let i = 0; i < customGenVsaqCount; i++) {
         questionsToGenerate.push({
-          specId: `spec_${Date.now()}_${Math.random()}`,
-          type: customGenType,
-          topic: topicsToUse[i % topicsToUse.length],
-          label: `Custom - ${customGenType} Q${i + 1}`,
+          specId: `spec_${Date.now()}_VSAQ_${i}_${Math.random()}`,
+          type: 'VSAQ',
+          topic: topicsToUse[(labelIndex - 1) % topicsToUse.length],
+          label: `Custom - VSAQ Q${i + 1}`,
           paperName: 'Custom Generated'
         });
+        labelIndex++;
+      }
+      
+      // SEQs
+      for (let i = 0; i < customGenSeqCount; i++) {
+        questionsToGenerate.push({
+          specId: `spec_${Date.now()}_SEQ_${i}_${Math.random()}`,
+          type: 'SEQ',
+          topic: topicsToUse[(labelIndex - 1) % topicsToUse.length],
+          label: `Custom - SEQ Q${i + 1}`,
+          paperName: 'Custom Generated'
+        });
+        labelIndex++;
+      }
+      
+      // OSCEs
+      for (let i = 0; i < customGenOsceCount; i++) {
+        questionsToGenerate.push({
+          specId: `spec_${Date.now()}_OSCE_${i}_${Math.random()}`,
+          type: 'OSCE',
+          topic: topicsToUse[(labelIndex - 1) % topicsToUse.length],
+          label: `Custom - OSCE Station ${i + 1}`,
+          paperName: 'Custom Generated'
+        });
+        labelIndex++;
       }
 
       let remainingSpecs = questionsToGenerate.map(q => ({...q, attempts: 0}));
@@ -480,7 +508,7 @@ export default function AdminDashboard() {
         }
       }
       
-      customAlert(`Successfully generated ${customGenCount} custom questions!`);
+      customAlert(`Successfully generated custom questions!`);
     } catch (e) {
       customAlert(`Error: ${e.message}`);
     } finally {
@@ -777,12 +805,9 @@ export default function AdminDashboard() {
     if (!newEmail.trim()) return;
     try {
       await addUser({
-        id: Math.random().toString(36).substring(2, 15),
         email: newEmail,
         role: 'student',
-        tier: 'free',
-        tierExpiry: null,
-        joined: new Date().toISOString().split('T')[0]
+        tier: 'free'
       });
       setNewEmail('');
       await refreshUsers();
@@ -1044,28 +1069,40 @@ export default function AdminDashboard() {
                       <option value="Vitreoretinal">Vitreoretinal</option>
                     </select>
                   </div>
-                  <div className="flex-1">
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Question Type</label>
-                    <select 
-                      value={customGenType}
-                      onChange={(e) => setCustomGenType(e.target.value)}
-                      className="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none"
-                    >
-                      <option value="VSAQ">VSAQ (Very Short Answer)</option>
-                      <option value="SEQ">SEQ (Short Essay)</option>
-                      <option value="OSCE">OSCE (Station)</option>
-                    </select>
-                  </div>
-                  <div className="flex-1">
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Amount</label>
-                    <input 
-                      type="number" 
-                      min="1" 
-                      max="50" 
-                      value={customGenCount}
-                      onChange={(e) => setCustomGenCount(parseInt(e.target.value) || 1)}
-                      className="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none"
-                    />
+                  <div className="flex-[2] flex flex-col sm:flex-row gap-4">
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium text-slate-700 mb-1">VSAQ Count</label>
+                      <input 
+                        type="number" 
+                        min="0" 
+                        max="50" 
+                        value={customGenVsaqCount}
+                        onChange={(e) => setCustomGenVsaqCount(parseInt(e.target.value) || 0)}
+                        className="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium text-slate-700 mb-1">SEQ Count</label>
+                      <input 
+                        type="number" 
+                        min="0" 
+                        max="50" 
+                        value={customGenSeqCount}
+                        onChange={(e) => setCustomGenSeqCount(parseInt(e.target.value) || 0)}
+                        className="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium text-slate-700 mb-1">OSCE Count</label>
+                      <input 
+                        type="number" 
+                        min="0" 
+                        max="50" 
+                        value={customGenOsceCount}
+                        onChange={(e) => setCustomGenOsceCount(parseInt(e.target.value) || 0)}
+                        className="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none"
+                      />
+                    </div>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-4">

@@ -217,9 +217,10 @@ router.post('/auth/reset-password', async (req, res) => {
 // Admin Authorization Middleware
 export const requireAdmin = async (req: any, res: any, next: any) => {
   try {
-    const userRes = await query('SELECT email FROM users WHERE id = $1::uuid', [req.user.id]);
+    // Use text cast on $1 to avoid uuid = text operator mismatch
+    const userRes = await query("SELECT email FROM users WHERE id::text = $1", [req.user.id]);
     const userEmail = userRes.rows[0]?.email;
-    const profileRes = await query('SELECT role FROM profiles WHERE id = $1::uuid', [req.user.id]);
+    const profileRes = await query("SELECT role FROM profiles WHERE id::text = $1", [req.user.id]);
     const role = profileRes.rows[0]?.role;
     if (role === 'admin' || userEmail === 'admin@txglobal.com.au' || req.user?.email === 'admin@txglobal.com.au') {
       req.user.role = 'admin';
@@ -227,7 +228,9 @@ export const requireAdmin = async (req: any, res: any, next: any) => {
       return next();
     }
     return res.status(403).json({ error: 'Access denied. Administrator privileges required.' });
-  } catch (err) {
+  } catch (err: any) {
+    console.error('requireAdmin error:', err.message);
+    // If DB query fails but the JWT email is the admin email, still allow through
     if (req.user?.email === 'admin@txglobal.com.au') {
       req.user.role = 'admin';
       return next();
@@ -251,7 +254,7 @@ router.get('/admin/users', authenticate, requireAdmin, async (req, res) => {
         COALESCE(p.joined, '') AS joined,
         u.created_at
        FROM users u 
-       LEFT JOIN profiles p ON u.id = p.id`
+       LEFT JOIN profiles p ON u.id::text = p.id::text`
     );
     const normalized = result.rows.map((row: any) => {
       return {

@@ -199,17 +199,41 @@ Execute the triggered command from the bracketed inputs:
 MODE 1: [GENERATE_QUESTION_BATCH]
 Input: Type (VSAQ/SEQ/OSCE), Topic, Count.
 Action: Generate Count unique questions for type and topic.
-Rules:
-- High difficulty fellowship standard. Include comprehensive patient history, clinical findings, investigations, and context.
-- Use "![Image](SEARCH_IMAGE:1_or_2_word_query)" for images. Broad terms only (e.g. "glaucoma", "retina").
-- Break into sub-questions with marks (e.g. "a) What is the diagnosis? (2 marks)").
-- Model answers: Detail matching a competent Australian comprehensive ophthalmologist.
+
+For VSAQ:
+- Rules: 1.5-minute fellowship question. Single-sentence clinical stem, direct factual answer expected.
+- Format: scenario = the clinical stem, one subQuestion with the question text and concise model answer.
+
+For SEQ:
+- Rules: 15-minute fellowship question. Rich multi-part case with comprehensive patient workup.
+- Use "![Image](SEARCH_IMAGE:1_or_2_word_query)" for images. Broad terms only (e.g. "glaucoma fundus", "corneal ulcer").
+- Break into 4-6 sub-questions with mark allocations (e.g. "a) What is the most likely diagnosis? (2 marks)").
+- Model answers: Detail matching a competent Australian ophthalmologist.
+
+For OSCE:
+- Rules: Simulate a real RANZCO OSCE verbal station. Each station is exactly 9 minutes, examiner-led.
+- The OSCE station MUST follow this strict real-world RANZCO format:
+  * The scenario is a PATIENT ENCOUNTER card — a brief description of who the candidate meets (e.g. "You are presented with a 72-year-old patient referred by their GP for bilateral blurred vision. Slit-lamp and fundus images are below."). NOT a full essay.
+  * Use "![Image](SEARCH_IMAGE:1_or_2_word_query)" to embed ONE relevant clinical image (e.g. fundus photo, slit-lamp image, OCT, VF).
+  * Sub-questions are asked VERBALLY by the examiner — short, direct, clinical questions.
+  * EXACTLY 4-6 sub-questions, escalating in structure: History/Examination → Diagnosis → Investigations → Management → Complications/Prognosis.
+  * Each sub-question must have mark allocation in brackets (e.g. "(2 marks)", "(4 marks)").
+  * Total marks for the station = 10-15 marks.
+  * Model answers for OSCE must be CONCISE spoken-style responses (as a candidate would say them aloud to the examiner), not long essays.
+  * Example sub-question progression for a retinal detachment station:
+    a) "What are the two most important symptoms this patient describes and why are they significant? (2 marks)"
+    b) "Describe the key findings on fundoscopy you would expect in this patient. (3 marks)"
+    c) "What is your diagnosis and the most likely underlying mechanism? (2 marks)"
+    d) "Outline your immediate management plan for this patient. (3 marks)"
+    e) "What factors would predict a poorer visual outcome after surgery? (2 marks)"
+
 Format: Raw JSON array of Question Objects:
 [
   {
-    "scenario": "**Clinical Scenario:**\\n<text>\\n\\n![Image](SEARCH_IMAGE:<query>)",
+    "scenario": "**OSCE Station — [Topic]:**\\n\\nYou are shown to a [age]-year-old [patient description]. [1-2 sentence clinical context]\\n\\n![Image](SEARCH_IMAGE:<query>)",
     "subQuestions": [
-      { "id": "q1", "text": "Question text", "modelAnswer": "Model answer..." }
+      { "id": "q1", "text": "a) [Question text]? ([N] marks)", "modelAnswer": "Concise spoken-style answer..." },
+      { "id": "q2", "text": "b) [Question text]? ([N] marks)", "modelAnswer": "Concise spoken-style answer..." }
     ]
   }
 ]
@@ -244,15 +268,15 @@ Format: Raw JSON array:
 MODE 5: [GENERATE_CUSTOM_BATCH]
 Input: JSON list of specs (specId, type, topic, label, paperName).
 Action: Generate exactly one unique question for each spec.
-Rules: Same as MODE 1.
+Rules: Same as MODE 1, including OSCE-specific rules above for OSCE type specs.
 Format: Raw JSON array (no markdown wraps, no \`\`\`json):
 [
   {
     "specId": "id",
     "data": {
-      "scenario": "**Clinical Scenario:**\\n<text>\\n\\n![Image](SEARCH_IMAGE:<query>)",
+      "scenario": "**OSCE Station — [Topic]:**\\n\\n<patient encounter card>\\n\\n![Image](SEARCH_IMAGE:<query>)",
       "subQuestions": [
-        { "id": "q1", "text": "Question text", "modelAnswer": "Model answer..." }
+        { "id": "q1", "text": "a) Question? (N marks)", "modelAnswer": "Concise spoken answer..." }
       ]
     }
   }

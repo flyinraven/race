@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { FileText, CheckCircle, Key, Cpu, Eye, EyeOff, Zap, AlertCircle, ChevronDown } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { FileText, CheckCircle, Key, Cpu, Eye, EyeOff, Zap, AlertCircle, ChevronDown, Trash2, Upload, Calendar, BookOpen, AlertTriangle } from 'lucide-react';
 import { apiFetch } from '../../lib/apiClient';
-import { TASK_MODEL_KEYS, type AiTask } from '../../services/examEngine';
+import { TASK_MODEL_KEYS, type AiTask, CurriculumDoc, getCurriculumDocs, uploadCurriculumDoc, deleteCurriculumDoc } from '../../services/examEngine';
+import * as pdfjsLib from 'pdfjs-dist';
 
 interface SettingsTabProps {
   curriculumText: string;
@@ -40,6 +41,12 @@ const OPENAI_MODELS = [
   { id: 'gpt-4-turbo', label: 'GPT-4 Turbo' },
 ];
 
+const TOPICS = [
+  "Cataract", "Cornea and External Eye", "Glaucoma",
+  "Neuro-ophthalmology", "Ocular Inflammation", "Ocular Motility",
+  "Oculoplastics and Orbit", "Paediatrics", "Vitreoretinal"
+];
+
 export default function SettingsTab({
   curriculumText,
   setCurriculumText,
@@ -63,10 +70,17 @@ export default function SettingsTab({
   const [testError, setTestError] = useState('');
   const [showPerTask, setShowPerTask] = useState(false);
 
+  // Curriculum Manager State
+  const [curriculumDocs, setCurriculumDocs] = useState<CurriculumDoc[]>([]);
+  const [uploadTopic, setUploadTopic] = useState(TOPICS[0]);
+  const [uploadYear, setUploadYear] = useState(new Date().getFullYear().toString());
+  const [isUploadingDoc, setIsUploadingDoc] = useState(false);
+  const [uploadDocStatus, setUploadDocStatus] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   // Per-task model state — read from localStorage on mount
   const taskKeys = Object.keys(TASK_MODEL_KEYS) as AiTask[];
   const [taskModels, setTaskModels] = useState<Record<AiTask, string>>(() => {
-    const global = localStorage.getItem('ranzco_ai_model') || 'gemini-2.5-flash';
     return {
       generation:   localStorage.getItem(TASK_MODEL_KEYS.generation)   || '',
       grading:      localStorage.getItem(TASK_MODEL_KEYS.grading)      || '',
@@ -74,6 +88,15 @@ export default function SettingsTab({
       optimization: localStorage.getItem(TASK_MODEL_KEYS.optimization) || '',
     };
   });
+
+  const refreshCurriculumDocs = async () => {
+    const docs = await getCurriculumDocs();
+    setCurriculumDocs(docs);
+  };
+
+  useEffect(() => {
+    refreshCurriculumDocs();
+  }, []);
 
   const savePerTaskModel = (task: AiTask, model: string) => {
     const updated = { ...taskModels, [task]: model };
@@ -83,13 +106,6 @@ export default function SettingsTab({
     } else {
       localStorage.removeItem(TASK_MODEL_KEYS[task]);
     }
-  };
-
-  const TASK_LABELS: Record<AiTask, { label: string; description: string }> = {
-    generation:   { label: 'Question Generation', description: 'Batch/custom question creation and single exam questions' },
-    grading:      { label: 'Answer Grading & Assessment', description: 'Marking candidate answers and producing rubric feedback' },
-    parsing:      { label: 'PDF / Past Paper Parsing', description: 'Extracting questions from uploaded past exam PDFs' },
-    optimization: { label: 'Model Answer Optimization', description: 'Rewriting and improving model answers in the question bank' },
   };
 
   const handleTestConnection = async () => {
@@ -122,6 +138,115 @@ export default function SettingsTab({
       setTestStatus('fail');
       setTestError(e.message || 'Connection failed.');
     }
+  };
+
+  const handleDocUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!uploadYear.trim() || !uploadYear.match(/^\d{4}$/)) {
+      setUploadDocStatus('Error: Please enter a valid 4-digit year.');
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+
+    setIsUploadingDoc(true);
+    setUploadDocStatus(`Reading ${file.name}...`);
+
+    try {
+      let textContent = '';
+      const fileNameLower = file.name.toLowerCase();
+
+      if (fileNameLower.endsWith('.pdf')) {
+        setUploadDocStatus('Reading PDF pages...');
+        const reader = new FileReader();
+        const base64Promise = new Promise<string>((resolve, reject) => {
+          reader.onload = (event) => resolve(event.target?.result as string);
+          reader.onerror = (error) => reject(error);
+          reader.readAsDataURL(file);
+        });
+        const base64 = await base64Promise;
+        const pdfData = atob(base64.split('base64,').pop() || base64);
+        const uint8Array = new Uint8Array(pdfData.length);
+        for (let i = 0; i < pdfData.length; i++) {
+            uint8Array[i] = pdfData.charCodeAt(i);
+        }
+
+        const doc = await pdfjsLib.getDocument({data: uint8Array}).promise;
+        const pageTexts: string[] = [];
+        for (let pageNum = 1; pageNum <= doc.numPages; pageNum++) {
+          setUploadDocStatus(`Extracting page ${pageNum} of ${doc.numPages}...`);
+          const page = await doc.getPage(pageNum);
+          const text = await page.getTextContent();
+          const pageText = text.items.map((item: any) => item.str).join(' ');
+          pageTexts.push(pageText);
+        }
+        textContent = pageTexts.join('\n');
+      } else if (fileNameLower.endsWith('.docx')) {
+        setUploadDocStatus('Extracting text from Word document via server...');
+        const reader = new FileReader();
+        const base64Promise = new Promise<string>((resolve, reject) => {
+          reader.onload = (event) => resolve(event.target?.result as string);
+          reader.onerror = (error) => reject(error);
+          reader.readAsDataURL(file);
+        });
+        const base64 = await base64Promise;
+        
+        const response = await apiFetch('/admin/parse-docx', {
+          method: 'POST',
+          body: JSON.stringify({ fileDataB64: base64 })
+        });
+        textContent = response.text;
+      } else if (fileNameLower.endsWith('.txt')) {
+        setUploadDocStatus('Reading text file...');
+        const reader = new FileReader();
+        const textPromise = new Promise<string>((resolve, reject) => {
+          reader.onload = (event) => resolve(event.target?.result as string);
+          reader.onerror = (error) => reject(error);
+          reader.readAsText(file);
+        });
+        textContent = await textPromise;
+      } else {
+        throw new Error('Unsupported format. Please upload PDF, Word (.docx) or Text (.txt) files.');
+      }
+
+      if (!textContent || textContent.trim().length === 0) {
+        throw new Error('No text content could be extracted from this document.');
+      }
+
+      setUploadDocStatus('Saving curriculum document to database...');
+      await uploadCurriculumDoc({
+        topic: uploadTopic,
+        filename: file.name,
+        year: uploadYear,
+        text_content: textContent
+      });
+
+      setUploadDocStatus(`Successfully uploaded curriculum doc for ${uploadTopic}.`);
+      await refreshCurriculumDocs();
+    } catch (err: any) {
+      setUploadDocStatus(`Error: ${err.message || 'Failed to extract document.'}`);
+    } finally {
+      setIsUploadingDoc(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const handleDocDelete = async (id: string, name: string) => {
+    if (!window.confirm(`Are you sure you want to delete the curriculum document "${name}"?`)) return;
+    try {
+      await deleteCurriculumDoc(id);
+      await refreshCurriculumDocs();
+    } catch (err: any) {
+      alert(`Error deleting: ${err.message}`);
+    }
+  };
+
+  const TASK_LABELS: Record<AiTask, { label: string; description: string }> = {
+    generation:   { label: 'Question Generation', description: 'Batch/custom question creation and single exam questions' },
+    grading:      { label: 'Answer Grading & Assessment', description: 'Marking candidate answers and producing rubric feedback' },
+    parsing:      { label: 'PDF / Past Paper Parsing', description: 'Extracting questions from uploaded past exam PDFs' },
+    optimization: { label: 'Model Answer Optimization', description: 'Rewriting and improving model answers in the question bank' },
   };
 
   const models = aiProvider === 'google' ? GOOGLE_MODELS : OPENAI_MODELS;
@@ -310,18 +435,118 @@ export default function SettingsTab({
         </div>
       </div>
 
-      {/* ── Curriculum Framework ── */}
+      {/* ── Topic-Based Curriculum Manager ── */}
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
+          <BookOpen className="w-6 h-6 text-purple-600" />
+          <div>
+            <h3 className="text-lg font-bold text-slate-900">Clinical Curriculum Manager</h3>
+            <p className="text-xs text-slate-500 mt-0.5">Upload syllabus documents per topic to restrict AI clinical examination boundaries.</p>
+          </div>
+        </div>
+        <div className="p-6 space-y-6">
+
+          {/* Upload panel */}
+          <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
+            <h4 className="text-sm font-bold text-slate-800 mb-3 flex items-center gap-1.5">
+              <Upload className="w-4 h-4 text-purple-600" />
+              Upload Curriculum Reference
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Target Topic</label>
+                <select
+                  value={uploadTopic}
+                  onChange={e => setUploadTopic(e.target.value)}
+                  className="w-full border border-slate-300 rounded p-2 text-sm bg-white focus:ring-1 focus:ring-purple-500"
+                >
+                  {TOPICS.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Written Year</label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    value={uploadYear}
+                    onChange={e => setUploadYear(e.target.value)}
+                    className="w-full border border-slate-300 rounded p-2 text-sm focus:ring-1 focus:ring-purple-500 pl-8 font-mono"
+                    placeholder="e.g. 2025"
+                  />
+                  <Calendar className="w-4 h-4 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                </div>
+              </div>
+            </div>
+
+            <div className="relative">
+              <input
+                type="file"
+                accept=".pdf,.docx,.txt"
+                onChange={handleDocUpload}
+                ref={fileInputRef}
+                disabled={isUploadingDoc}
+                className={`absolute inset-0 w-full h-full opacity-0 ${isUploadingDoc ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+              />
+              <div className={`bg-purple-50 border border-purple-200 text-purple-700 w-full py-3 rounded-lg font-semibold transition flex items-center justify-center gap-2 pointer-events-none ${isUploadingDoc ? 'opacity-70' : 'hover:bg-purple-100'}`}>
+                {isUploadingDoc ? <Zap className="w-5 h-5 animate-pulse" /> : <Upload className="w-5 h-5" />}
+                {isUploadingDoc ? 'Extracting document text...' : 'Select Document (PDF, Word, TXT)'}
+              </div>
+            </div>
+            {uploadDocStatus && (
+              <p className={`text-xs mt-2 font-medium ${uploadDocStatus.includes('Error') ? 'text-red-600' : 'text-purple-700 animate-pulse'}`}>
+                {uploadDocStatus}
+              </p>
+            )}
+          </div>
+
+          {/* Active Documents List */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-3">Active Curriculum Documents</label>
+            {curriculumDocs.length === 0 ? (
+              <div className="text-center py-8 border border-dashed border-slate-200 rounded-xl bg-slate-50/50">
+                <BookOpen className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                <p className="text-sm text-slate-400 font-medium">No uploaded curriculum files. Default system guidelines will be used.</p>
+              </div>
+            ) : (
+              <div className="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white divide-y divide-slate-100">
+                {curriculumDocs.map(d => (
+                  <div key={d.id} className="p-4 flex items-center justify-between gap-4 hover:bg-slate-50 transition">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-bold text-slate-900 text-sm">{d.topic}</span>
+                        <span className="text-xs bg-purple-100 text-purple-800 font-bold px-2 py-0.5 rounded">
+                          Year {d.year}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-500 mt-1 truncate" title={d.filename}>{d.filename}</p>
+                    </div>
+                    <button
+                      onClick={() => handleDocDelete(d.id, d.filename)}
+                      className="text-slate-400 hover:text-red-600 p-2 rounded-full hover:bg-red-50 transition"
+                      title="Delete document"
+                    >
+                      <Trash2 className="w-4.5 h-4.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Legacy Curriculum Fallback ── */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
           <FileText className="w-6 h-6 text-indigo-600" />
-          <h3 className="text-lg font-bold text-slate-900">Curriculum Framework</h3>
+          <h3 className="text-lg font-bold text-slate-900">Global Curriculum Fallback (Manual Paste)</h3>
         </div>
         <div className="p-6">
-          <p className="text-slate-600 mb-4 text-sm">
-            Upload or paste the curriculum framework for the exam. The AI engine will use this to set examination boundaries, verify syllabus matches when generating questions, and evaluate candidates accurately.
+          <p className="text-slate-600 mb-4 text-sm leading-relaxed">
+            This serves as a backup global text framework. If no specific topic files are uploaded above, this guide will be used by the AI engine as a backup boundary.
           </p>
           <textarea
-            className="w-full border border-slate-300 rounded-lg p-4 text-sm h-64 focus:ring-2 focus:ring-indigo-500 outline-none resize-y font-mono"
+            className="w-full border border-slate-300 rounded-lg p-4 text-sm h-32 focus:ring-2 focus:ring-indigo-500 outline-none resize-y font-mono text-xs"
             placeholder="Paste syllabus, learning objectives, or curriculum boundaries here..."
             value={curriculumText}
             onChange={e => setCurriculumText(e.target.value)}
@@ -331,7 +556,7 @@ export default function SettingsTab({
               onClick={handleSaveCurriculum}
               className="bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-indigo-700 transition text-sm"
             >
-              Save Curriculum Guide
+              Save Fallback Text
             </button>
             {curriculumSaved && (
               <span className="text-sm text-indigo-600 font-medium flex items-center gap-1">

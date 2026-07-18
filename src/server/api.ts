@@ -690,4 +690,76 @@ router.delete('/admin/submissions/:id', authenticate, requireAdmin, async (req: 
   }
 });
 
+// Curriculum Documents Routes
+router.get('/admin/curriculum-docs', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const result = await query(
+      'SELECT id, topic, filename, year, created_at FROM curriculum_documents ORDER BY topic ASC, year DESC'
+    );
+    res.json(result.rows);
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+router.post('/admin/curriculum-docs', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const { topic, filename, year, text_content } = req.body;
+    if (!topic || !filename || !year || !text_content) {
+      return res.status(400).json({ error: 'Missing required fields: topic, filename, year, text_content.' });
+    }
+    
+    // Upsert or insert (let's allow multiple documents per topic, or upsert if same name)
+    const result = await query(
+      `INSERT INTO curriculum_documents (topic, filename, year, text_content) 
+       VALUES ($1, $2, $3, $4) 
+       RETURNING id, topic, filename, year, created_at`,
+      [topic, filename, year, text_content]
+    );
+    res.json(result.rows[0]);
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+router.delete('/admin/curriculum-docs/:id', authenticate, requireAdmin, async (req, res) => {
+  try {
+    await query('DELETE FROM curriculum_documents WHERE id::text = $1', [req.params.id]);
+    res.json({ success: true });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Dynamic curriculum fetching endpoint for the AI generation
+router.get('/curriculum-text/:topic', authenticate, async (req, res) => {
+  try {
+    const { topic } = req.params;
+    // Get all documents for this topic, concatenated
+    const result = await query(
+      'SELECT text_content, year FROM curriculum_documents WHERE topic = $1 ORDER BY year DESC',
+      [topic]
+    );
+    if (result.rows.length > 0) {
+      const merged = result.rows.map(r => `--- Curriculum Outline (${r.year}) ---\n${r.text_content}`).join('\n\n');
+      return res.json({ text: merged });
+    }
+    res.json({ text: '' });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Dynamic combined curriculum fetching endpoint
+router.get('/curriculum-text', authenticate, async (req, res) => {
+  try {
+    const result = await query(
+      'SELECT topic, text_content, year FROM curriculum_documents ORDER BY topic ASC, year DESC'
+    );
+    res.json(result.rows);
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 export default router;

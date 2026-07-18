@@ -72,6 +72,18 @@ export async function initDb() {
       )
     `);
 
+    await query(`
+      CREATE TABLE IF NOT EXISTS curriculum_documents (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        topic TEXT NOT NULL,
+        filename TEXT NOT NULL,
+        year TEXT NOT NULL,
+        text_content TEXT NOT NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
     // Column migrations — each ALTER TABLE is its own call
     await query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token TEXT`);
     await query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token_expires_at TIMESTAMP WITH TIME ZONE`);

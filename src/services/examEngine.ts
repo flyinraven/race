@@ -178,6 +178,41 @@ export async function saveCurriculum(text: string) {
   }
 }
 
+export interface CurriculumDoc {
+  id: string;
+  topic: string;
+  filename: string;
+  year: string;
+  created_at: string;
+}
+
+export async function getCurriculumDocs(): Promise<CurriculumDoc[]> {
+  try {
+    return await apiFetch('/admin/curriculum-docs');
+  } catch (error) {
+    console.error('getCurriculumDocs error:', error);
+    return [];
+  }
+}
+
+export async function uploadCurriculumDoc(doc: { topic: string; filename: string; year: string; text_content: string }): Promise<CurriculumDoc> {
+  return await apiFetch('/admin/curriculum-docs', {
+    method: 'POST',
+    body: JSON.stringify(doc)
+  });
+}
+
+export async function deleteCurriculumDoc(id: string): Promise<boolean> {
+  try {
+    await apiFetch(`/admin/curriculum-docs/${id}`, { method: 'DELETE' });
+    return true;
+  } catch (error) {
+    console.error('deleteCurriculumDoc error:', error);
+    return false;
+  }
+}
+
+
 import { topicCurriculums } from '../data/curriculums';
 
 async function getSystemPrompt(topics?: string | string[]) {
@@ -186,19 +221,56 @@ async function getSystemPrompt(topics?: string | string[]) {
   
   let curriculumText = `Curriculum Core Topics: Cataract, Cornea, Glaucoma, Neuro-ophthalmology, Ocular Inflammation, Ocular Motility, Oculoplastics, Paediatrics, Vitreoretinal`;
   
-  if (Array.isArray(topics)) {
-    const matchedTopics = topics.filter(t => topicCurriculums[t]);
-    if (matchedTopics.length > 0) {
-      curriculumText = `Curriculum Framework for this batch:\n` + 
-        matchedTopics.map(t => `Topic: ${t}\n${topicCurriculums[t]}`).join('\n\n');
+  try {
+    if (Array.isArray(topics)) {
+      const outlines = await Promise.all(topics.map(async t => {
+        const dbRes = await apiFetch(`/curriculum-text/${encodeURIComponent(t)}`);
+        if (dbRes?.text && dbRes.text.trim().length > 0) {
+          return `Topic: ${t}\n${dbRes.text}`;
+        }
+        // Fallback to static data
+        if (topicCurriculums[t]) {
+          return `Topic: ${t}\n${topicCurriculums[t]}`;
+        }
+        return '';
+      }));
+      const matched = outlines.filter(Boolean);
+      if (matched.length > 0) {
+        curriculumText = `Curriculum Framework for this batch:\n\n` + matched.join('\n\n');
+      }
+    } else if (topics && topics !== 'combined' && topics !== 'All') {
+      const dbRes = await apiFetch(`/curriculum-text/${encodeURIComponent(topics)}`);
+      if (dbRes?.text && dbRes.text.trim().length > 0) {
+        curriculumText = `Curriculum Framework for ${topics}:\n${dbRes.text}`;
+      } else if (topicCurriculums[topics]) {
+        curriculumText = `Curriculum Framework for ${topics}:\n${topicCurriculums[topics]}`;
+      }
+    } else if (topics === 'combined' || topics === 'All') {
+      // Fetch all docs from backend
+      const dbDocs = await apiFetch('/curriculum-text');
+      if (Array.isArray(dbDocs) && dbDocs.length > 0) {
+        // Group by topic
+        const groups: Record<string, string[]> = {};
+        dbDocs.forEach(d => {
+          if (!groups[d.topic]) groups[d.topic] = [];
+          groups[d.topic].push(`--- (${d.year}) ---\n${d.text_content}`);
+        });
+        const compiled = Object.entries(groups).map(([t, contents]) => `Topic: ${t}\n${contents.join('\n\n')}`).join('\n\n');
+        curriculumText = `Combined Curriculum Framework:\n\n${compiled}`;
+      } else {
+        // Fallback to static combined
+        const allTopics = Object.entries(topicCurriculums).map(([k, v]) => `Topic: ${k}\n${v}`).join('\n\n');
+        curriculumText = `Combined Curriculum Framework:\n\n${allTopics}`;
+      }
+    } else if (globalCurriculum && globalCurriculum.trim().length > 0) {
+      curriculumText = `Curriculum Framework:\n${globalCurriculum}`;
     }
-  } else if (topics && topicCurriculums[topics]) {
-    curriculumText = `Curriculum Framework for ${topics}:\n${topicCurriculums[topics]}`;
-  } else if (topics === 'combined' || topics === 'All') {
-    const allTopics = Object.entries(topicCurriculums).map(([k, v]) => `Topic: ${k}\n${v}`).join('\n\n');
-    curriculumText = `Combined Curriculum Framework:\n${allTopics}`;
-  } else if (globalCurriculum && globalCurriculum.trim().length > 0) {
-    curriculumText = `Curriculum Framework:\n${globalCurriculum}`;
+  } catch (err) {
+    console.warn("Failed to retrieve dynamic curriculum outlines, using static fallbacks.", err);
+    // Simple fallback logic if backend fails
+    if (topics && topics !== 'combined' && topics !== 'All' && !Array.isArray(topics) && topicCurriculums[topics]) {
+      curriculumText = `Curriculum Framework for ${topics}:\n${topicCurriculums[topics]}`;
+    }
   }
 
   return `You are the "RANZCO RACE Exam Engine & Assessor", a backend AI generating and grading Fellowship-level Ophthalmology exams.

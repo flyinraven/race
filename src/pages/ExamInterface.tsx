@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Clock, AlertCircle, FileUp, Loader2, ArrowRight, ArrowLeft, CheckCircle2, X, Pause, Play, BookOpen, Bookmark } from 'lucide-react';
 import Markdown, { defaultUrlTransform } from 'react-markdown';
 import { generateSingleQuestion, gradeAnswerMode, getBank, isBookmarked, toggleBookmark } from '../services/examEngine';
+import { submitExam } from '../services/userService';
 
 type QuestionSpec = {
   type: string;
@@ -550,6 +551,63 @@ export default function ExamInterface() {
         }
       }
       setGradingResults(results);
+      
+      try {
+        let totalCandidateScore = 0;
+        let totalMaxPoints = 0;
+        for (let i = 0; i < plan.length; i++) {
+          const resText = results[i];
+          if (resText) {
+            try {
+              const parsed = JSON.parse(resText);
+              totalCandidateScore += Number(parsed.candidateScore) || 0;
+              totalMaxPoints += Number(parsed.totalPoints) || 0;
+            } catch (e) {
+              // Plaintxt or offline fallback
+            }
+          }
+        }
+
+        let readableExamType = 'Custom Practice Exam';
+        if (examId) {
+          if (examId.startsWith('realpast_')) {
+            readableExamType = decodeURIComponent(examId.substring('realpast_'.length));
+          } else if (examId.startsWith('realpastb64_')) {
+            try {
+              const config = JSON.parse(atob(examId.substring('realpastb64_'.length)));
+              readableExamType = `${config.y || 'Mixed'} ${config.p || 'Paper'} (${config.t || 'All Types'})`;
+            } catch (e) {
+              readableExamType = 'Past Paper Simulation';
+            }
+          } else if (examId.startsWith('combined_')) {
+            const parts = examId.split('_');
+            readableExamType = `Custom Combo (${parts[1]} Qs)`;
+          } else if (examId === 'bookmarks') {
+            readableExamType = 'Bookmarks Practice';
+          } else {
+            readableExamType = `Practice Exam - ${examId}`;
+          }
+        }
+
+        const totalTimeTakenFormatted = `${Math.floor(timeTakenTotal / 60)}m ${timeTakenTotal % 60}s`;
+
+        await submitExam({
+          exam_type: readableExamType,
+          score: totalCandidateScore.toFixed(1),
+          max_score: totalMaxPoints.toFixed(1),
+          time_taken: totalTimeTakenFormatted,
+          answers: {
+            questions: plan.map((p, idx) => ({
+              label: p.label || `Question ${idx + 1}`,
+              topic: p.topic,
+              studentAnswers: answers[idx] || {},
+              grading: results[idx] || 'N/A'
+            }))
+          }
+        });
+      } catch (submitErr) {
+        console.error("Failed to submit exam scorecard to server", submitErr);
+      }
     } catch (err) {
       console.error("Error during full grading", err);
     } finally {

@@ -602,4 +602,37 @@ router.post('/email_templates/upsert', authenticate, async (req: any, res) => {
     res.status(400).json({ error: e.message });
   }
 });
+
+// Submissions Routes
+router.post('/submissions', authenticate, async (req: any, res) => {
+  try {
+    const { exam_type, score, max_score, time_taken, answers } = req.body;
+    const result = await query(
+      'INSERT INTO submissions (user_id, email, exam_type, score, max_score, time_taken, answers) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
+      [req.user.id, req.user.email || 'unknown', exam_type, score, max_score, time_taken, JSON.stringify(answers)]
+    );
+    res.json({ success: true, id: result.rows[0].id });
+  } catch (e: any) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
+router.get('/admin/submissions', authenticate, requireAdmin, async (req: any, res) => {
+  try {
+    const result = await query('SELECT * FROM submissions ORDER BY created_at DESC');
+    res.json(result.rows);
+  } catch (e: any) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
+router.delete('/admin/submissions/:id', authenticate, requireAdmin, async (req: any, res) => {
+  try {
+    await query('DELETE FROM submissions WHERE id = $1', [req.params.id]);
+    res.json({ success: true });
+  } catch (e: any) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
 export default router;

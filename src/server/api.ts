@@ -217,10 +217,13 @@ router.post('/auth/reset-password', async (req, res) => {
 // Admin Authorization Middleware
 export const requireAdmin = async (req: any, res: any, next: any) => {
   try {
+    const userRes = await query('SELECT email FROM users WHERE id = $1', [req.user.id]);
+    const userEmail = userRes.rows[0]?.email;
     const profileRes = await query('SELECT role FROM profiles WHERE id = $1', [req.user.id]);
     const role = profileRes.rows[0]?.role;
-    if (role === 'admin' || req.user.email === 'admin@txglobal.com.au') {
+    if (role === 'admin' || userEmail === 'admin@txglobal.com.au' || req.user?.email === 'admin@txglobal.com.au') {
       req.user.role = 'admin';
+      if (req.user && userEmail) req.user.email = userEmail;
       return next();
     }
     return res.status(403).json({ error: 'Access denied. Administrator privileges required.' });

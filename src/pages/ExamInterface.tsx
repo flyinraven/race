@@ -5,6 +5,7 @@ import { Clock, AlertCircle, FileUp, Loader2, ArrowRight, ArrowLeft, CheckCircle
 import Markdown, { defaultUrlTransform } from 'react-markdown';
 import { generateSingleQuestion, gradeAnswerMode, getBank, isBookmarked, toggleBookmark } from '../services/examEngine';
 import { submitExam } from '../services/userService';
+import { OsceStation } from '../components/OsceStation';
 
 type QuestionSpec = {
   type: string;
@@ -792,6 +793,37 @@ export default function ExamInterface() {
         </div>
         {zoomedImage && <ImageModal src={zoomedImage.src} alt={zoomedImage.alt} onClose={() => setZoomedImage(null)} />}
       </div>
+    );
+  }
+
+  // OSCE Verbal Station Branch
+  if (currentSpec?.type === 'OSCE' && currentData && !isExamFinished) {
+    const osceTotal = plan.filter(p => p.type === 'OSCE').length;
+    const osceIndex = plan.slice(0, currentIndex).filter(p => p.type === 'OSCE').length;
+    return (
+      <OsceStation
+        stationLabel={currentSpec.label || `OSCE Station ${osceIndex + 1}`}
+        stationData={currentData}
+        stationIndex={osceIndex}
+        totalStations={osceTotal}
+        timeLimitSec={currentSpec.timeLimitSec}
+        onComplete={(stationAnswers, timeTaken) => {
+          // Record answers for this station and advance
+          setAnswers(prev => ({ ...prev, [currentIndex]: stationAnswers }));
+          if (currentIndex < plan.length - 1) {
+            setCurrentIndex(prev => prev + 1);
+          } else {
+            handleFinishExam();
+          }
+        }}
+        onSkip={() => {
+          if (currentIndex < plan.length - 1) {
+            setCurrentIndex(prev => prev + 1);
+          } else {
+            handleFinishExam();
+          }
+        }}
+      />
     );
   }
 

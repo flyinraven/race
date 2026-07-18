@@ -161,78 +161,82 @@ export default function SettingsTab({
   };
 
   const handleDocUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
 
     setIsUploadingDoc(true);
-    setUploadDocStatus(`Reading ${file.name}...`);
 
     try {
-      let textContent = '';
-      const fileNameLower = file.name.toLowerCase();
+      for (let fIdx = 0; fIdx < files.length; fIdx++) {
+        const file = files[fIdx];
+        const progressPrefix = `[${fIdx + 1}/${files.length}] `;
+        setUploadDocStatus(`${progressPrefix}Reading ${file.name}...`);
 
-      if (fileNameLower.endsWith('.pdf')) {
-        setUploadDocStatus('Reading PDF pages...');
-        const reader = new FileReader();
-        const base64Promise = new Promise<string>((resolve, reject) => {
-          reader.onload = (event) => resolve(event.target?.result as string);
-          reader.onerror = (error) => reject(error);
-          reader.readAsDataURL(file);
-        });
-        const base64 = await base64Promise;
-        const pdfData = atob(base64.split('base64,').pop() || base64);
-        const uint8Array = new Uint8Array(pdfData.length);
-        for (let i = 0; i < pdfData.length; i++) {
-            uint8Array[i] = pdfData.charCodeAt(i);
+        let textContent = '';
+        const fileNameLower = file.name.toLowerCase();
+
+        if (fileNameLower.endsWith('.pdf')) {
+          setUploadDocStatus(`${progressPrefix}Reading PDF pages...`);
+          const reader = new FileReader();
+          const base64Promise = new Promise<string>((resolve, reject) => {
+            reader.onload = (event) => resolve(event.target?.result as string);
+            reader.onerror = (error) => reject(error);
+            reader.readAsDataURL(file);
+          });
+          const base64 = await base64Promise;
+          const pdfData = atob(base64.split('base64,').pop() || base64);
+          const uint8Array = new Uint8Array(pdfData.length);
+          for (let i = 0; i < pdfData.length; i++) {
+              uint8Array[i] = pdfData.charCodeAt(i);
+          }
+
+          const doc = await pdfjsLib.getDocument({data: uint8Array}).promise;
+          const pageTexts: string[] = [];
+          for (let pageNum = 1; pageNum <= doc.numPages; pageNum++) {
+            setUploadDocStatus(`${progressPrefix}Extracting page ${pageNum} of ${doc.numPages}...`);
+            const page = await doc.getPage(pageNum);
+            const text = await page.getTextContent();
+            const pageText = text.items.map((item: any) => item.str).join(' ');
+            pageTexts.push(pageText);
+          }
+          textContent = pageTexts.join('\n');
+        } else if (fileNameLower.endsWith('.docx')) {
+          setUploadDocStatus(`${progressPrefix}Extracting text from Word document via server...`);
+          const reader = new FileReader();
+          const base64Promise = new Promise<string>((resolve, reject) => {
+            reader.onload = (event) => resolve(event.target?.result as string);
+            reader.onerror = (error) => reject(error);
+            reader.readAsDataURL(file);
+          });
+          const base64 = await base64Promise;
+          
+          const response = await apiFetch('/admin/parse-docx', {
+            method: 'POST',
+            body: JSON.stringify({ fileDataB64: base64 })
+          });
+          textContent = response.text;
+        } else if (fileNameLower.endsWith('.txt')) {
+          setUploadDocStatus(`${progressPrefix}Reading text file...`);
+          const reader = new FileReader();
+          const textPromise = new Promise<string>((resolve, reject) => {
+            reader.onload = (event) => resolve(event.target?.result as string);
+            reader.onerror = (error) => reject(error);
+            reader.readAsText(file);
+          });
+          textContent = await textPromise;
+        } else {
+          throw new Error('Unsupported format. Please upload PDF, Word (.docx) or Text (.txt) files.');
         }
 
-        const doc = await pdfjsLib.getDocument({data: uint8Array}).promise;
-        const pageTexts: string[] = [];
-        for (let pageNum = 1; pageNum <= doc.numPages; pageNum++) {
-          setUploadDocStatus(`Extracting page ${pageNum} of ${doc.numPages}...`);
-          const page = await doc.getPage(pageNum);
-          const text = await page.getTextContent();
-          const pageText = text.items.map((item: any) => item.str).join(' ');
-          pageTexts.push(pageText);
+        if (!textContent || textContent.trim().length === 0) {
+          throw new Error('No text content could be extracted from this document.');
         }
-        textContent = pageTexts.join('\n');
-      } else if (fileNameLower.endsWith('.docx')) {
-        setUploadDocStatus('Extracting text from Word document via server...');
-        const reader = new FileReader();
-        const base64Promise = new Promise<string>((resolve, reject) => {
-          reader.onload = (event) => resolve(event.target?.result as string);
-          reader.onerror = (error) => reject(error);
-          reader.readAsDataURL(file);
-        });
-        const base64 = await base64Promise;
+
+        setUploadDocStatus(`${progressPrefix}AI analyzing document to determine target topic and year...`);
         
-        const response = await apiFetch('/admin/parse-docx', {
-          method: 'POST',
-          body: JSON.stringify({ fileDataB64: base64 })
-        });
-        textContent = response.text;
-      } else if (fileNameLower.endsWith('.txt')) {
-        setUploadDocStatus('Reading text file...');
-        const reader = new FileReader();
-        const textPromise = new Promise<string>((resolve, reject) => {
-          reader.onload = (event) => resolve(event.target?.result as string);
-          reader.onerror = (error) => reject(error);
-          reader.readAsText(file);
-        });
-        textContent = await textPromise;
-      } else {
-        throw new Error('Unsupported format. Please upload PDF, Word (.docx) or Text (.txt) files.');
-      }
-
-      if (!textContent || textContent.trim().length === 0) {
-        throw new Error('No text content could be extracted from this document.');
-      }
-
-      setUploadDocStatus('AI analyzing document to determine target topic and year...');
-      
-      const snippet = textContent.slice(0, 4000);
-      const parts = [
-        `[CURRICULUM_ANALYSIS]
+        const snippet = textContent.slice(0, 4000);
+        const parts = [
+          `[CURRICULUM_ANALYSIS]
 Analyze the following curriculum framework document. Determine which of the 9 core topics it belongs to:
 - Cataract
 - Cornea and External Eye
@@ -254,48 +258,49 @@ You must respond ONLY with a raw JSON object matching this structure:
 
 Text snippet:
 ${snippet}`
-      ];
+        ];
 
-      const activeModel = showCustomModelInput ? customModelName : aiModel;
-      const aiResponse = await apiFetch('/ai/generate', {
-        method: 'POST',
-        body: JSON.stringify({
-          parts,
-          config: { temperature: 0.1, responseMimeType: "application/json" },
-          modelOverride: activeModel,
-          provider: aiProvider,
-          customKey: aiApiKey
-        })
-      });
+        const activeModel = showCustomModelInput ? customModelName : aiModel;
+        const aiResponse = await apiFetch('/ai/generate', {
+          method: 'POST',
+          body: JSON.stringify({
+            parts,
+            config: { temperature: 0.1, responseMimeType: "application/json" },
+            modelOverride: activeModel,
+            provider: aiProvider,
+            customKey: aiApiKey
+          })
+        });
 
-      let topic = TOPICS[0];
-      let year = '2024';
+        let topic = TOPICS[0];
+        let year = '2024';
 
-      try {
-        const parsed = JSON.parse(aiResponse?.text || '{}');
-        if (parsed.topic) topic = parsed.topic;
-        if (parsed.year) year = String(parsed.year);
-      } catch (err) {
-        console.warn("AI topic extraction failed, defaulting.", err);
+        try {
+          const parsed = JSON.parse(aiResponse?.text || '{}');
+          if (parsed.topic) topic = parsed.topic;
+          if (parsed.year) year = String(parsed.year);
+        } catch (err) {
+          console.warn("AI topic extraction failed, defaulting.", err);
+        }
+
+        // Normalize topic string
+        const matchedTopic = TOPICS.find(t => t.toLowerCase() === topic.toLowerCase() || topic.toLowerCase().includes(t.toLowerCase()));
+        if (matchedTopic) {
+          topic = matchedTopic;
+        } else {
+          topic = TOPICS[0];
+        }
+
+        setUploadDocStatus(`${progressPrefix}Saving curriculum document under topic "${topic}" and year ${year}...`);
+        await uploadCurriculumDoc({
+          topic,
+          filename: file.name,
+          year,
+          text_content: textContent
+        });
       }
 
-      // Normalize topic string
-      const matchedTopic = TOPICS.find(t => t.toLowerCase() === topic.toLowerCase() || topic.toLowerCase().includes(t.toLowerCase()));
-      if (matchedTopic) {
-        topic = matchedTopic;
-      } else {
-        topic = TOPICS[0];
-      }
-
-      setUploadDocStatus(`Saving curriculum document under topic "${topic}" and year ${year}...`);
-      await uploadCurriculumDoc({
-        topic,
-        filename: file.name,
-        year,
-        text_content: textContent
-      });
-
-      setUploadDocStatus(`Successfully analyzed and uploaded curriculum doc for ${topic} (${year}).`);
+      setUploadDocStatus(`Successfully uploaded all ${files.length} curriculum documents.`);
       await refreshCurriculumDocs();
     } catch (err: any) {
       setUploadDocStatus(`Error: ${err.message || 'Failed to extract document.'}`);
@@ -549,6 +554,7 @@ ${snippet}`
             <div className="relative">
               <input
                 type="file"
+                multiple
                 accept=".pdf,.docx,.txt"
                 onChange={handleDocUpload}
                 ref={fileInputRef}

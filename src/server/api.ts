@@ -694,7 +694,8 @@ router.get('/questions', authenticate, async (req: any, res) => {
         year: (row.data && row.data.year) || 'Unknown',
         questionLabel: (row.data && row.data.questionLabel) || '',
         data: qData,
-        used: (row.data && row.data.used) || false
+        used: (row.data && row.data.used) || false,
+        created_at: row.created_at
       };
     });
     res.json(normalized);

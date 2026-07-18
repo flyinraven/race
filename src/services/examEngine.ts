@@ -389,6 +389,7 @@ export interface BankQuestion {
   questionLabel?: string;
   data: any;
   used: boolean;
+  created_at?: string;
 }
 
 export function getBookmarks(): string[] {

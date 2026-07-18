@@ -66,10 +66,21 @@ router.post('/auth/signup', async (req, res) => {
       }
     }
 
-    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
-    res.json({ token, user });
+    const token = jwt.sign({ id: user.id, email: user.email, role: userRole }, JWT_SECRET, { expiresIn: '7d' });
+    res.json({ token, user: { id: user.id, email: user.email, role: userRole } });
   } catch (e: any) {
     res.status(400).json({ error: e.message });
+  }
+});
+
+// Reset User Route (Temporary Helper)
+router.get('/auth/reset-users', async (req, res) => {
+  try {
+    await query('DELETE FROM profiles WHERE email = $1', ['admin@txglobal.com.au']);
+    await query('DELETE FROM users WHERE email = $1', ['admin@txglobal.com.au']);
+    res.send('User admin@txglobal.com.au has been successfully deleted from your database. You can now go back to the Sign Up page and register cleanly!');
+  } catch (e: any) {
+    res.status(500).send('Error resetting user: ' + e.message);
   }
 });
 
@@ -83,15 +94,39 @@ router.post('/auth/login', async (req, res) => {
     const match = await bcrypt.compare(password, user.password_hash);
     if (!match) return res.status(401).json({ error: 'Invalid credentials' });
 
-    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
-    res.json({ token, user: { id: user.id, email: user.email } });
+    // Look up role from profiles table defensively
+    let role = 'student';
+    try {
+      const profileRes = await query('SELECT role FROM profiles WHERE id = $1', [user.id]);
+      if (profileRes.rows[0]?.role) {
+        role = profileRes.rows[0].role;
+      } else if (user.email === 'admin@txglobal.com.au') {
+        role = 'admin';
+      }
+    } catch (err) {
+      if (user.email === 'admin@txglobal.com.au') {
+        role = 'admin';
+      }
+    }
+
+    const token = jwt.sign({ id: user.id, email: user.email, role }, JWT_SECRET, { expiresIn: '7d' });
+    res.json({ token, user: { id: user.id, email: user.email, role } });
   } catch (e: any) {
     res.status(400).json({ error: e.message });
   }
 });
 
-router.get('/auth/session', authenticate, (req: any, res) => {
-  res.json({ user: req.user });
+router.get('/auth/session', authenticate, async (req: any, res) => {
+  let role = req.user.role;
+  if (!role) {
+    try {
+      const profileRes = await query('SELECT role FROM profiles WHERE id = $1', [req.user.id]);
+      role = profileRes.rows[0]?.role || (req.user.email === 'admin@txglobal.com.au' ? 'admin' : 'student');
+    } catch (err) {
+      role = req.user.email === 'admin@txglobal.com.au' ? 'admin' : 'student';
+    }
+  }
+  res.json({ user: { id: req.user.id, email: req.user.email, role } });
 });
 
 // Profile Routes

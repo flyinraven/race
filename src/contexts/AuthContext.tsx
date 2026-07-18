@@ -52,7 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       localStorage.setItem('siteground_token', res.token);
       setUser({ id: res.user.id, email: res.user.email });
-      setRole(email === 'admin@txglobal.com.au' ? 'admin' : 'student');
+      setRole(res.user.role || 'student');
       setTier('pro');
       return true;
     } catch (e: any) {
@@ -69,7 +69,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       localStorage.setItem('siteground_token', res.token);
       setUser({ id: res.user.id, email: res.user.email });
-      setRole('student');
+      setRole(res.user.role || 'student');
       setTier('pro'); // Assuming pro for now
     } catch (e: any) {
       console.error(e);

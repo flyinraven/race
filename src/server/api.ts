@@ -358,7 +358,7 @@ router.put('/admin/users/:id', authenticate, requireAdmin, async (req, res) => {
          role = $3, 
          tier = $4, 
          updated_at = NOW() 
-       WHERE id = $5`,
+       WHERE id::text = $5`,
       [firstName || '', lastName || '', role || 'student', tier || 'free', id]
     );
     res.json({ success: true });
@@ -373,7 +373,7 @@ router.delete('/admin/users/:id', authenticate, requireAdmin, async (req: any, r
     if (id === req.user.id) {
       return res.status(400).json({ error: 'You cannot delete your own admin account.' });
     }
-    await query('DELETE FROM users WHERE id = $1', [id]);
+    await query('DELETE FROM users WHERE id::text = $1', [id]);
     res.json({ success: true });
   } catch (e: any) {
     res.status(500).json({ error: e.message });

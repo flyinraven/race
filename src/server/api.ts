@@ -57,6 +57,48 @@ router.post('/auth/signup', async (req, res) => {
     );
 
     const token = jwt.sign({ id: user.id, email: user.email, role: userRole }, JWT_SECRET, { expiresIn: '7d' });
+
+    // Send email to admin notifying about new signup
+    try {
+      const smtpHost = process.env.SMTP_HOST;
+      const smtpPort = parseInt(process.env.SMTP_PORT || '587');
+      const smtpUser = process.env.SMTP_USER;
+      const smtpPass = process.env.SMTP_PASS;
+      const smtpFrom = process.env.SMTP_FROM || 'RANZCO RACE Exam Engine <noreply@txglobal.com.au>';
+      
+      if (smtpHost && smtpUser && smtpPass) {
+        const transporter = nodemailer.createTransport({
+          host: smtpHost,
+          port: smtpPort,
+          secure: smtpPort === 465,
+          auth: {
+            user: smtpUser,
+            pass: smtpPass
+          }
+        });
+        
+        await transporter.sendMail({
+          from: smtpFrom,
+          to: 'admin@txglobal.com.au',
+          subject: 'New User Registered - RANZCO RACE Exam Engine',
+          text: `Hi Admin,\n\nA new user has signed up on RANZCO RACE Exam Engine:\n\nEmail: ${user.email}\nName: ${firstName || ''} ${lastName || ''}\nRole: ${userRole}\nJoined Date: ${joinedDate}\n\nCheers,\nSystem`,
+          html: `<p>Hi Admin,</p>
+                 <p>A new user has signed up on RANZCO RACE Exam Engine:</p>
+                 <ul>
+                   <li><strong>Email:</strong> ${user.email}</li>
+                   <li><strong>Name:</strong> ${firstName || ''} ${lastName || ''}</li>
+                   <li><strong>Role:</strong> ${userRole}</li>
+                   <li><strong>Joined Date:</strong> ${joinedDate}</li>
+                 </ul>
+                 <br>
+                 <p>Cheers,<br>System</p>`
+        });
+        console.log(`Admin notification email sent for new signup: ${user.email}`);
+      }
+    } catch (mailErr: any) {
+      console.error('Failed to send admin notification email:', mailErr.message);
+    }
+
     res.json({ token, user: { id: user.id, email: user.email, role: userRole } });
   } catch (e: any) {
     res.status(400).json({ error: e.message });

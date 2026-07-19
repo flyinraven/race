@@ -240,6 +240,51 @@ function formatTime(seconds: number) {
   return `${m}:${s < 10 ? '0' : ''}${s}`;
 }
 
+interface OsceRestPageProps {
+  onProceed: () => void;
+  timeLimitSec?: number;
+}
+
+function OsceRestPage({ onProceed, timeLimitSec = 120 }: OsceRestPageProps) {
+  const [timeLeft, setTimeLeft] = React.useState(timeLimitSec);
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          onProceed();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [onProceed]);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-950 flex flex-col items-center justify-center p-6 text-white">
+      <div className="max-w-md w-full bg-slate-900/50 border border-slate-800/80 rounded-2xl p-8 shadow-2xl text-center backdrop-blur">
+        <h2 className="text-2xl font-bold mb-2 text-indigo-300">Station Rest Interval</h2>
+        <p className="text-slate-400 text-sm mb-8">Take a deep breath. Use this time to prepare for the next clinical station.</p>
+        
+        {/* Countdown Circle/Indicator */}
+        <div className="w-40 h-40 rounded-full border-4 border-indigo-500/20 border-t-indigo-400 flex flex-col items-center justify-center mx-auto mb-10 shadow-lg animate-pulse">
+          <span className="text-4xl font-mono font-bold tracking-tight text-white">{formatTime(timeLeft)}</span>
+          <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mt-1">Remaining</span>
+        </div>
+
+        <button
+          onClick={onProceed}
+          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-xl transition shadow-lg text-sm"
+        >
+          I'm ready for the next station
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function ExamInterface() {
   const { examId } = useParams();
   const navigate = useNavigate();
@@ -247,6 +292,8 @@ export default function ExamInterface() {
   
   const [plan, setPlan] = useState<QuestionSpec[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [showRestPage, setShowRestPage] = useState(false);
+  const [nextIndexToLoad, setNextIndexToLoad] = useState<number | null>(null);
   
   // Cache for generated questions
   const [questionsCache, setQuestionsCache] = useState<Record<number, QuestionData>>({});
@@ -309,20 +356,28 @@ export default function ExamInterface() {
              if ((config.p === 'Paper 1' || config.p === 'Paper 2') && config.t === 'All' && (!config.tpc || config.tpc === 'All')) {
                 fullPaperMode = true;
              }
-           } catch(e) {}
-        }
-        
-        setIsFullPaper(fullPaperMode);
-        
-        if (fullPaperMode) {
-           setExamPhase('reading');
-           setReadingTimeRemaining(15 * 60); // 15 minutes reading time
-        } else {
-           setExamPhase('writing');
-        }
-      }
-    });
-  }, [examId]);
+            } catch(e) {}
+         }
+         
+         setIsFullPaper(fullPaperMode);
+         
+         if (fullPaperMode) {
+            setExamPhase('reading');
+            setReadingTimeRemaining(15 * 60); // 15 minutes reading time
+         } else {
+            setExamPhase('writing');
+         }
+       }
+     });
+   }, [examId]);
+
+  const handleProceedToNextStation = () => {
+    if (nextIndexToLoad !== null) {
+      setCurrentIndex(nextIndexToLoad);
+      setNextIndexToLoad(null);
+    }
+    setShowRestPage(false);
+  };
 
   useEffect(() => {
     if (plan.length > 0 && !isExamFinished) {
@@ -798,6 +853,16 @@ export default function ExamInterface() {
     );
   }
 
+  // OSCE Rest Page View
+  if (showRestPage) {
+    return (
+      <OsceRestPage
+        onProceed={handleProceedToNextStation}
+        timeLimitSec={120}
+      />
+    );
+  }
+
   // OSCE Verbal Station Branch
   if (currentSpec?.type === 'OSCE' && currentData && !isExamFinished) {
     const osceTotal = plan.filter(p => p.type === 'OSCE').length;
@@ -813,14 +878,16 @@ export default function ExamInterface() {
           // Record answers for this station and advance
           setAnswers(prev => ({ ...prev, [currentIndex]: stationAnswers }));
           if (currentIndex < plan.length - 1) {
-            setCurrentIndex(prev => prev + 1);
+            setNextIndexToLoad(currentIndex + 1);
+            setShowRestPage(true);
           } else {
             handleFinishExam();
           }
         }}
         onSkip={() => {
           if (currentIndex < plan.length - 1) {
-            setCurrentIndex(prev => prev + 1);
+            setNextIndexToLoad(currentIndex + 1);
+            setShowRestPage(true);
           } else {
             handleFinishExam();
           }

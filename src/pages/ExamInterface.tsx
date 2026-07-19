@@ -190,45 +190,113 @@ function buildExamPlan(examId: string, bankItems?: any[]): QuestionSpec[] {
     const simType = examId.split('_')[1];
     
     if (simType === 'full') {
-      const papers = ['paper1', 'paper2', 'paper3', 'paper4'];
-      for (const p of papers) {
-        for (let i = 0; i < 15; i++) {
-          plan.push({ type: 'VSAQ', topic: TOPICS[(i + (p === 'paper3' || p === 'paper4' ? 4 : 0)) % 9], timeLimitSec: 90, label: `${p} Q${i + 1} (VSAQ)` });
-        }
-        const seqCount = (p === 'paper2' || p === 'paper4') ? 4 : 5;
-        for (let i = 0; i < seqCount; i++) {
-          plan.push({ type: 'SEQ', topic: TOPICS[(i + 3 + (p === 'paper3' || p === 'paper4' ? 4 : 0)) % 9], timeLimitSec: 15 * 60, label: `${p} Q${16 + i} (SEQ)` });
-        }
-      }
-      for (let i = 0; i < 9; i++) {
-        plan.push({ type: 'OSCE', topic: TOPICS[i % 9], timeLimitSec: 9 * 60, label: `OSCE Station ${i + 1}` });
+      if (bankItems && bankItems.length > 0) {
+        let vsaqs = bankItems.filter(q => q.type === 'VSAQ');
+        let seqs = bankItems.filter(q => q.type === 'SEQ');
+        let osces = bankItems.filter(q => q.type === 'OSCE');
+        
+        vsaqs = filterAndCapQuestions(vsaqs, false);
+        seqs = filterAndCapQuestions(seqs, false);
+        osces = filterAndCapQuestions(osces, true);
+        
+        let qCounter = 1;
+        const selectedVsaqs = vsaqs.slice(0, 60);
+        const selectedSeqs = seqs.slice(0, 18);
+        
+        selectedVsaqs.forEach((q) => {
+          plan.push({
+            type: 'VSAQ',
+            topic: q.topic,
+            timeLimitSec: 90,
+            label: `Question ${qCounter++} (VSAQ)`,
+            bankId: q.id
+          });
+        });
+        
+        selectedSeqs.forEach((q) => {
+          plan.push({
+            type: 'SEQ',
+            topic: q.topic,
+            timeLimitSec: 15 * 60,
+            label: `Question ${qCounter++} (SEQ)`,
+            bankId: q.id
+          });
+        });
+        
+        osces.forEach((q, i) => {
+          plan.push({
+            type: 'OSCE',
+            topic: q.topic,
+            timeLimitSec: 9 * 60,
+            label: `OSCE Station ${i + 1}`,
+            bankId: q.id
+          });
+        });
       }
     } else if (simType.startsWith('paper')) {
-      for (let i = 0; i < 15; i++) {
-         plan.push({
-           type: 'VSAQ',
-           topic: TOPICS[i % 9],
-           timeLimitSec: 90, // 1.5 mins
-           label: `Question ${i + 1} (VSAQ)`
-         });
-      }
-      const seqCount = (simType === 'paper2' || simType === 'paper4') ? 4 : 5;
-      for (let i = 0; i < seqCount; i++) {
-         plan.push({
-           type: 'SEQ',
-           topic: TOPICS[(i + 3) % 9], 
-           timeLimitSec: 15 * 60, // 15 mins
-           label: `Question ${16 + i} (SEQ)`
-         });
+      if (bankItems && bankItems.length > 0) {
+        let vsaqs = bankItems.filter(q => q.type === 'VSAQ');
+        let seqs = bankItems.filter(q => q.type === 'SEQ');
+        
+        vsaqs = filterAndCapQuestions(vsaqs, false);
+        seqs = filterAndCapQuestions(seqs, false);
+        
+        const selectedVsaqs: any[] = [];
+        for (const topic of TOPICS) {
+          const match = vsaqs.find(q => q.topic === topic && !selectedVsaqs.includes(q));
+          if (match) selectedVsaqs.push(match);
+        }
+        for (const q of vsaqs) {
+          if (selectedVsaqs.length >= 15) break;
+          if (!selectedVsaqs.includes(q)) selectedVsaqs.push(q);
+        }
+        
+        const seqCount = (simType === 'paper2' || simType === 'paper4') ? 4 : 5;
+        const selectedSeqs: any[] = [];
+        for (const topic of TOPICS) {
+          if (selectedSeqs.length >= seqCount) break;
+          const match = seqs.find(q => q.topic === topic && !selectedSeqs.includes(q));
+          if (match) selectedSeqs.push(match);
+        }
+        for (const q of seqs) {
+          if (selectedSeqs.length >= seqCount) break;
+          if (!selectedSeqs.includes(q)) selectedSeqs.push(q);
+        }
+        
+        selectedVsaqs.forEach((q, i) => {
+          plan.push({
+            type: 'VSAQ',
+            topic: q.topic,
+            timeLimitSec: 90,
+            label: `Question ${i + 1} (VSAQ)`,
+            bankId: q.id
+          });
+        });
+        
+        selectedSeqs.forEach((q, i) => {
+          plan.push({
+            type: 'SEQ',
+            topic: q.topic,
+            timeLimitSec: 15 * 60,
+            label: `Question ${15 + i + 1} (SEQ)`,
+            bankId: q.id
+          });
+        });
       }
     } else if (simType === 'osce') {
-      for (let i = 0; i < 9; i++) {
-         plan.push({
-           type: 'OSCE',
-           topic: TOPICS[i % 9], 
-           timeLimitSec: 9 * 60,
-           label: `Station ${i + 1} (OSCE)`
-         });
+      if (bankItems && bankItems.length > 0) {
+        let osces = bankItems.filter(q => q.type === 'OSCE');
+        osces = filterAndCapQuestions(osces, true);
+        
+        osces.forEach((q, i) => {
+          plan.push({
+            type: 'OSCE',
+            topic: q.topic,
+            timeLimitSec: 9 * 60,
+            label: `Station ${i + 1} (OSCE)`,
+            bankId: q.id
+          });
+        });
       }
     }
   } else if (examId.startsWith('gen_')) {

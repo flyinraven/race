@@ -140,6 +140,8 @@ router.post('/auth/login', async (req, res) => {
         tier = profileRes.rows[0].tier;
       }
     } catch (err) {
+      // ignore
+    }
     if (user.email === 'admin@txglobal.com.au') {
       role = 'admin';
       tier = 'pro';

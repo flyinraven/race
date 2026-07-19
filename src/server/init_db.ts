@@ -112,7 +112,7 @@ export async function initDb() {
           UPDATE profiles SET last_name = "lastName" WHERE last_name IS NULL;
         END IF;
         IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='profiles' AND column_name='tierExpiry') THEN
-          UPDATE profiles SET tier_expiry = "tierExpiry" WHERE tier_expiry IS NULL;
+          UPDATE profiles SET tier_expiry = "tierExpiry"::timestamp with time zone WHERE tier_expiry IS NULL;
         END IF;
       END $$
     `);

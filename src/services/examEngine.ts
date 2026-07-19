@@ -215,62 +215,66 @@ export async function deleteCurriculumDoc(id: string): Promise<boolean> {
 
 import { topicCurriculums } from '../data/curriculums';
 
-async function getSystemPrompt(topics?: string | string[]) {
-  const globalCurriculum = await getCurriculum();
+async function getSystemPrompt(topics?: string | string[], skipCurriculum: boolean = false) {
+  const globalCurriculum = skipCurriculum ? '' : await getCurriculum();
   const examGuidelines = await getExamGuidelines();
   
   let curriculumText = `Curriculum Core Topics: Cataract, Cornea, Glaucoma, Neuro-ophthalmology, Ocular Inflammation, Ocular Motility, Oculoplastics, Paediatrics, Vitreoretinal`;
   
-  try {
-    if (Array.isArray(topics)) {
-      const outlines = await Promise.all(topics.map(async t => {
-        const dbRes = await apiFetch(`/curriculum-text/${encodeURIComponent(t)}`);
+  if (!skipCurriculum) {
+    try {
+      if (Array.isArray(topics)) {
+        const outlines = await Promise.all(topics.map(async t => {
+          const dbRes = await apiFetch(`/curriculum-text/${encodeURIComponent(t)}`);
+          if (dbRes?.text && dbRes.text.trim().length > 0) {
+            return `Topic: ${t}\n${dbRes.text}`;
+          }
+          // Fallback to static data
+          if (topicCurriculums[t]) {
+            return `Topic: ${t}\n${topicCurriculums[t]}`;
+          }
+          return '';
+        }));
+        const matched = outlines.filter(Boolean);
+        if (matched.length > 0) {
+          curriculumText = `Curriculum Framework for this batch:\n\n` + matched.join('\n\n');
+        }
+      } else if (topics && topics !== 'combined' && topics !== 'All') {
+        const dbRes = await apiFetch(`/curriculum-text/${encodeURIComponent(topics)}`);
         if (dbRes?.text && dbRes.text.trim().length > 0) {
-          return `Topic: ${t}\n${dbRes.text}`;
+          curriculumText = `Curriculum Framework for ${topics}:\n${dbRes.text}`;
+        } else if (topicCurriculums[topics]) {
+          curriculumText = `Curriculum Framework for ${topics}:\n${topicCurriculums[topics]}`;
         }
-        // Fallback to static data
-        if (topicCurriculums[t]) {
-          return `Topic: ${t}\n${topicCurriculums[t]}`;
+      } else if (topics === 'combined' || topics === 'All') {
+        // Fetch all docs from backend
+        const dbDocs = await apiFetch('/curriculum-text');
+        if (Array.isArray(dbDocs) && dbDocs.length > 0) {
+          // Group by topic
+          const groups: Record<string, string[]> = {};
+          dbDocs.forEach(d => {
+            if (!groups[d.topic]) groups[d.topic] = [];
+            groups[d.topic].push(`--- (${d.year}) ---\n${d.text_content}`);
+          });
+          const compiled = Object.entries(groups).map(([t, contents]) => `Topic: ${t}\n${contents.join('\n\n')}`).join('\n\n');
+          curriculumText = `Combined Curriculum Framework:\n\n${compiled}`;
+        } else {
+          // Fallback to static combined
+          const allTopics = Object.entries(topicCurriculums).map(([k, v]) => `Topic: ${k}\n${v}`).join('\n\n');
+          curriculumText = `Combined Curriculum Framework:\n\n${allTopics}`;
         }
-        return '';
-      }));
-      const matched = outlines.filter(Boolean);
-      if (matched.length > 0) {
-        curriculumText = `Curriculum Framework for this batch:\n\n` + matched.join('\n\n');
+      } else if (globalCurriculum && globalCurriculum.trim().length > 0) {
+        curriculumText = `Curriculum Framework:\n${globalCurriculum}`;
       }
-    } else if (topics && topics !== 'combined' && topics !== 'All') {
-      const dbRes = await apiFetch(`/curriculum-text/${encodeURIComponent(topics)}`);
-      if (dbRes?.text && dbRes.text.trim().length > 0) {
-        curriculumText = `Curriculum Framework for ${topics}:\n${dbRes.text}`;
-      } else if (topicCurriculums[topics]) {
+    } catch (err) {
+      console.warn("Failed to retrieve dynamic curriculum outlines, using static fallbacks.", err);
+      // Simple fallback logic if backend fails
+      if (topics && topics !== 'combined' && topics !== 'All' && !Array.isArray(topics) && topicCurriculums[topics]) {
         curriculumText = `Curriculum Framework for ${topics}:\n${topicCurriculums[topics]}`;
       }
-    } else if (topics === 'combined' || topics === 'All') {
-      // Fetch all docs from backend
-      const dbDocs = await apiFetch('/curriculum-text');
-      if (Array.isArray(dbDocs) && dbDocs.length > 0) {
-        // Group by topic
-        const groups: Record<string, string[]> = {};
-        dbDocs.forEach(d => {
-          if (!groups[d.topic]) groups[d.topic] = [];
-          groups[d.topic].push(`--- (${d.year}) ---\n${d.text_content}`);
-        });
-        const compiled = Object.entries(groups).map(([t, contents]) => `Topic: ${t}\n${contents.join('\n\n')}`).join('\n\n');
-        curriculumText = `Combined Curriculum Framework:\n\n${compiled}`;
-      } else {
-        // Fallback to static combined
-        const allTopics = Object.entries(topicCurriculums).map(([k, v]) => `Topic: ${k}\n${v}`).join('\n\n');
-        curriculumText = `Combined Curriculum Framework:\n\n${allTopics}`;
-      }
-    } else if (globalCurriculum && globalCurriculum.trim().length > 0) {
-      curriculumText = `Curriculum Framework:\n${globalCurriculum}`;
     }
-  } catch (err) {
-    console.warn("Failed to retrieve dynamic curriculum outlines, using static fallbacks.", err);
-    // Simple fallback logic if backend fails
-    if (topics && topics !== 'combined' && topics !== 'All' && !Array.isArray(topics) && topicCurriculums[topics]) {
-      curriculumText = `Curriculum Framework for ${topics}:\n${topicCurriculums[topics]}`;
-    }
+  } else {
+    curriculumText = "RANZCO RACE Curriculum Outline (Syllabus reference skipped for efficiency).";
   }
 
   return `You are the "RANZCO RACE Exam Engine & Assessor", a backend AI generating and grading Fellowship-level Ophthalmology exams.
@@ -650,7 +654,7 @@ export async function parsePDFQuestionBank(pdfBase64: string, fileName: string, 
       }
       
       const parsedText = await callAI(parts, {
-        systemInstruction: await getSystemPrompt(),
+        systemInstruction: await getSystemPrompt(undefined, true),
         temperature: 0.1,
         responseMimeType: "application/json"
       }, getTaskModel('parsing'));
@@ -755,7 +759,7 @@ export async function parseTextQuestionBank(textContent: string, fileName: strin
       ];
       
       const parsedText = await callAI(parts, {
-        systemInstruction: await getSystemPrompt(),
+        systemInstruction: await getSystemPrompt(undefined, true),
         temperature: 0.1,
         responseMimeType: "application/json"
       }, getTaskModel('parsing'));
@@ -833,6 +837,19 @@ export async function generateSingleQuestion(type: string, requestedTopic: strin
 
   const bank = await getBank();
   let available = bank.filter(q => q.type === type && q.topic === topic && !q.used);
+
+  if (available.length === 0) {
+    const allMatching = bank.filter(q => q.type === type && q.topic === topic);
+    if (allMatching.length > 0) {
+      // Recycle: reset used flags for this set
+      bank.forEach(q => {
+        if (q.type === type && q.topic === topic) {
+          q.used = false;
+        }
+      });
+      available = allMatching;
+    }
+  }
 
   if (available.length > 0) {
     const selected = available[Math.floor(Math.random() * available.length)];
@@ -1159,7 +1176,7 @@ export async function optimizeModelAnswer(questionText: string, currentAnswer: s
       `[OPTIMIZE_MODEL_ANSWER]\nQuestion: ${questionText}\nCurrent Model Answer: ${currentAnswer}\nOptimization Request: ${optimizationPrompt}`
     ];
     let responseText = await callAI(parts, {
-      systemInstruction: await getSystemPrompt(),
+      systemInstruction: await getSystemPrompt(undefined, true),
       temperature: 0.4,
     }, getTaskModel('optimization'));
     // Strip markdown blocks if the AI somehow included them

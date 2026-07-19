@@ -1,0 +1,245 @@
+[
+  {
+    "id": "vol6_st1",
+    "type": "OSCE",
+    "topic": "Cataract",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Older adult female\n**Visual Acuity:** OD 6/24 (pinhole 6/12); OS 6/6\n**Intraocular Pressure:** OD 15 mmHg; OS 14 mmHg\n**Primary Instruction:** Examine the clinical presentation and slit-lamp findings. Identify the complications, discuss your differential diagnosis, and outline your immediate surgical and medical management plan.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume6/vol6_st1_img1.jpeg)\n![Clinical Image 2](/images/volume6/vol6_st1_img2.jpeg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Explain the optical problem and distinguish IOL rotation from incorrect power selection or corneal causes.",
+          "modelAnswer": "Definitive diagnosis: clinically significant toric intraocular lens malrotation with residual refractive \r\nastigmatism.\rApproximately one-third of toric cylinder effect is lost for each 10 degrees of misalignment; near 30 \r\ndegrees the intended cylindrical correction is effectively lost and larger errors may induce cylinder on \r\na new axis.\rCauses include large capsular bag, high axial length, retained OVD, incomplete overlap of the optic, \r\nearly postoperative rotation and later capsular contraction. Confirm regular corneal astigmatism and \r\nexclude dry eye, keratoconus, posterior corneal power error, macular disease, IOL tilt/decentration and \r\nincorrect biometry."
+        },
+        {
+          "id": "q2",
+          "text": "What clinic-based measurements are required before returning to theatre?",
+          "modelAnswer": "Repeat manifest refraction after ocular-surface optimisation; obtain keratometry/topography or \r\ntomography, optical biometry and macular OCT.\rDilate and document the current IOL axis at the slit lamp or with photography. Compare implanted \r\nmodel/power/axis with the operative record and recalculate using contemporary toric planning that \r\nincludes posterior corneal astigmatism and surgically induced astigmatism.\rUse vector analysis or a toric back-calculator to decide whether rotation alone, IOL exchange or \r\ncorneal laser enhancement best minimises residual cylinder."
+        },
+        {
+          "id": "q3",
+          "text": "Give an escalating plan, operative technique and timing considerations.",
+          "modelAnswer": "Optimise the surface and offer spectacles/contact lens if acceptable. Small stable errors can be treated \r\nwith corneal laser only after refraction stabilises and retinal/corneal suitability is confirmed.\rFor a correctly powered lens with substantial axis error, reopen the incisions, fill the chamber and bag \r\nwith OVD, carefully free capsular adhesions, rotate to the calculated axis, remove OVD completely \r\nincluding behind the optic, and confirm alignment at physiologic pressure.\rExchange the IOL if cylinder power is inappropriate or rotation cannot achieve the target. Early \r\nintervention is easier; late fibrotic fixation increases zonular/capsular injury and may require optic \r\ncapture, secondary fixation or accepting an alternative correction. Discuss rotation recurrence, PCR, \r\nCME, infection and retinal detachment."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol6_st2",
+    "type": "OSCE",
+    "topic": "Cornea and External Eye",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Adult male\n**Visual Acuity:** OD 6/12; OS counting fingers at 1 m\n**Intraocular Pressure:** OD 13 mmHg; OS digital estimate only\n**Primary Instruction:** Examine the slit-lamp findings and any corneal imaging provided. Describe the abnormalities, state the most likely diagnosis, and discuss your immediate treatment strategy.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume6/vol6_st2_img1.jpeg)\n![Clinical Image 2](/images/volume6/vol6_st2_img2.jpeg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Describe the characteristic morphology and distinguish the closest causes of peripheral thinning.",
+          "modelAnswer": "Definitive diagnosis: Terrien marginal degeneration complicated by corneal perforation.\rClassically painless, non-inflammatory superior peripheral stromal thinning spreads circumferentially \r\nwith intact epithelium, superficial radial vessels and a sharp lipid line at the central edge; progressive \r\nflattening induces against-the-rule or oblique astigmatism.\rMooren ulcer and systemic PUK are painful and inflamed with epithelial loss/overhanging edge; \r\npellucid degeneration is inferior and avascular without lipid; dellen, marginal keratitis, sclerokeratitis \r\nand infectious melt must also be excluded."
+        },
+        {
+          "id": "q2",
+          "text": "Which tests quantify severity and when is systemic work-up appropriate?",
+          "modelAnswer": "Seidel testing without pressure on the globe, slit-lamp photography, pachymetric mapping, anterior-\r\nsegment OCT and corneal tomography/topography; avoid tonometry and gonioscopy in an open globe.\rAssess both eyes and document epithelial integrity, vascularisation, lipid, extent and minimum \r\nresidual thickness. Culture any epithelial defect or infiltrate.\rTypical quiet Terrien degeneration needs no broad laboratory screen; inflammation, ulceration or \r\nscleritis warrants targeted autoimmune and infectious investigation including rheumatoid vasculitis, \r\nANCA-associated disease, syphilis and TB according to context."
+        },
+        {
+          "id": "q3",
+          "text": "Manage the perforation and subsequent optical rehabilitation.",
+          "modelAnswer": "Protect with rigid shield, nil by mouth, antiemetic/analgesia and systemic/topical antimicrobial cover; \r\navoid pressure, patching and topical steroid until infection is excluded. Small focal leaks may be \r\ntemporised with cyanoacrylate and bandage lens.\rDefinitive repair depends on size and geometry: multilayer amniotic membrane for selected defects, \r\ntectonic lamellar patch or crescentic lamellar keratoplasty, or penetrating/mini-penetrating graft when \r\nfull-thickness central extension or iris/lens involvement prevents lamellar repair.\rLater use spectacles, contact lens or carefully selected keratoplasty for irregular astigmatism. Avoid \r\ncorneal cross-linking in extremely thin tissue and provide lifelong protective eyewear and monitoring \r\nof the fellow eye."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol6_st3",
+    "type": "OSCE",
+    "topic": "Glaucoma",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Adult male\n**Visual Acuity:** OD 6/6; OS 6/18\n**Intraocular Pressure:** OD 15 mmHg; OS 54 mmHg\n**Primary Instruction:** Examine the clinical presentation and imaging findings. Identify the pathology, discuss the mechanism, and outline your immediate and long-term management plan.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume6/vol6_st3_img1.jpeg)\n![Clinical Image 2](/images/volume6/vol6_st3_img2.jpeg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Explain the disproportionate pressure rise and differentiate its important mimics.",
+          "modelAnswer": "Definitive diagnosis: Posner-Schlossman syndrome (glaucomatocyclitic crisis), with CMV anterior \r\nuveitis requiring consideration.\rRecurrent trabeculitis markedly reduces outflow despite mild cyclitis. CMV is an important association, \r\nparticularly with recurrent high IOP, coin-shaped KPs, endothelial loss or iris atrophy.\rDifferentiate HSV/VZV anterior uveitis, Fuchs uveitis, steroid response, pigment dispersion, \r\npseudoexfoliation and acute angle closure. Gonioscopy must confirm an open angle and exclude \r\nPAS/neovascularisation."
+        },
+        {
+          "id": "q2",
+          "text": "When and how will you investigate?",
+          "modelAnswer": "During an active untreated episode obtain a small aqueous sample for CMV, HSV and VZV PCR; \r\nGoldmann-Witmer coefficient may help when PCR is negative but suspicion persists. Do not delay \r\nurgent pressure control.\rDocument KPs, iris transillumination/atrophy, endothelial count and pachymetry. Perform disc \r\nphotography, OCT RNFL/GCC and fields after IOP is safer, recognising that repeated attacks can cause \r\npermanent glaucoma.\rReview steroid exposure, immune status and recurrence pattern; routine broad systemic inflammatory \r\ntesting is usually low yield unless phenotype is atypical."
+        },
+        {
+          "id": "q3",
+          "text": "Give acute treatment, virus-directed therapy and surgical escalation.",
+          "modelAnswer": "Use topical aqueous suppressants promptly; add oral acetazolamide if safe and hyperosmotic therapy \r\nfor an immediately threatened nerve. Treat inflammation with topical corticosteroid and taper \r\naccording to cells, avoiding miotics.\rFor proven/suspected CMV, involve a uveitis specialist and use topical or systemic \r\nvalganciclovir/ganciclovir according to severity, recurrence and local availability; monitor FBC and \r\nrenal function for systemic therapy and counsel about relapse after cessation.\rIf cumulative glaucomatous damage or uncontrolled IOP persists, select surgery according to angle and \r\ninflammation. Trabeculectomy with antimetabolite or a drainage implant may be required; angle \r\nsurgery is an option in selected open-angle eyes. Control viral/inflammatory activity perioperatively."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol6_st4",
+    "type": "OSCE",
+    "topic": "Ocular Inflammation",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Adult male\n**Visual Acuity:** OD 6/6; OS 6/60\n**Intraocular Pressure:** OD 14 mmHg; OS 13 mmHg\n**Primary Instruction:** Examine the clinical presentation and fundus findings. Describe the inflammatory phenotype, state the diagnosis, and outline your investigation and treatment plan.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume6/vol6_st4_img1.jpeg)\n![Clinical Image 2](/images/volume6/vol6_st4_img2.jpeg)\n![Clinical Image 3](/images/volume6/vol6_st4_img3.jpeg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Integrate the colour, autofluorescence and OCT findings and distinguish key mimics.",
+          "modelAnswer": "Definitive diagnosis: acute syphilitic posterior placoid chorioretinitis (ocular syphilis).\rA large placoid yellow-grey lesion at the posterior pole may show stippled hyperautofluorescence. OCT \r\ndemonstrates nodular/thickened RPE, disruption of ellipsoid/external limiting membrane, subretinal \r\nfluid and hyperreflective choroidal foci; changes can reverse with treatment.\rDifferentiate APMPPE/ampiginous disease, serpiginous choroiditis, VKH, central serous \r\nchorioretinopathy, lymphoma and AZOOR. Syphilis can mimic any uveitic phenotype, and steroid \r\nmonotherapy may worsen or obscure it."
+        },
+        {
+          "id": "q2",
+          "text": "Specify serology, infectious assessment and when lumbar puncture is needed.",
+          "modelAnswer": "Obtain both a treponemal test and quantitative non-treponemal titre (RPR/VDRL); a single test is \r\ninsufficient. Test for HIV and other sexually transmitted infections and involve infectious \r\ndiseases/sexual health for partner notification.\rOcular syphilis is treated as neurosyphilis irrespective of CSF findings. Lumbar puncture is indicated \r\nwhen neurologic signs are present and may establish baseline CSF abnormalities, but must not delay \r\ntherapy.\rDocument OCT, FAF and photography; FA/ICGA can support activity. Exclude TB and other infection \r\nbefore immunosuppression if the presentation is atypical."
+        },
+        {
+          "id": "q3",
+          "text": "State the definitive regimen and follow-up principles.",
+          "modelAnswer": "Give aqueous crystalline penicillin G intravenously at neurosyphilis dosing for 10–14 days; an accepted \r\nalternative is procaine penicillin plus probenecid when appropriate. Coordinate allergy \r\nevaluation/desensitisation when necessary.\rWarn about Jarisch-Herxheimer reaction. Use topical steroid/cycloplegia for anterior inflammation and \r\nreserve systemic corticosteroid for selected severe inflammation only after effective antibiotic therapy \r\nhas begun.\rFollow vision, inflammation and OCT/FAF response plus quantitative RPR/VDRL decline at \r\nrecommended intervals. Assess reinfection or treatment failure if titres fail to fall; counsel regarding \r\ntransmission, partner treatment and HIV prevention."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol6_st5",
+    "type": "OSCE",
+    "topic": "Vitreoretinal",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Older adult female\n**Visual Acuity:** OD 6/12; OS 6/24\n**Intraocular Pressure:** OD 14 mmHg; OS 15 mmHg\n**Primary Instruction:** Examine the fundus photographs and optical coherence tomography. Describe the clinical findings, discuss the mechanism of the pathology, and outline your management options.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume6/vol6_st5_img1.jpeg)\n![Clinical Image 2](/images/volume6/vol6_st5_img2.jpeg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Explain the lesion and separate it from choroidal melanoma and other pseudomelanomas.",
+          "modelAnswer": "Definitive diagnosis: peripheral exudative haemorrhagic chorioretinopathy (PEHCR).\rTypically elderly and temporal, with peripheral subretinal/sub-RPE haemorrhage, haemorrhagic or \r\nserous PED, lipid, fibrosis and RPE hyperplasia/atrophy. It may be bilateral and associated with \r\nAMD/PCV-like choroidal vasculopathy.\rMelanoma is a solid choroidal mass with low-to-medium internal reflectivity, acoustic hollowness, \r\nintrinsic vascularity, orange pigment or subretinal fluid; also consider retinal macroaneurysm, \r\nchoroidal haemangioma/metastasis, detachment and peripheral CNV."
+        },
+        {
+          "id": "q2",
+          "text": "What multimodal imaging establishes the diagnosis and what systemic factors matter?",
+          "modelAnswer": "Use widefield colour/red-free photography, peripheral OCT if technically possible, B-scan and A-scan. \r\nFA can show blockage/window defects; ICGA may reveal polypoidal lesions and helps distinguish \r\ntumour vascularity.\rDocument dimensions and serial change. Refer to ocular oncology when features are not classic, \r\ngrowth occurs or a solid mass cannot be excluded; biopsy is rarely first-line.\rReview hypertension, anticoagulants/antiplatelets and bleeding risk with the prescribing clinician—do \r\nnot stop life-saving therapy unilaterally. Examine the fellow eye and macula for AMD/PCV."
+        },
+        {
+          "id": "q3",
+          "text": "Give management according to symptoms and complications.",
+          "modelAnswer": "Observe most asymptomatic, stable peripheral lesions with serial imaging because spontaneous \r\ninvolution is common. Optimise systemic vascular risk.\rUse intravitreal anti-VEGF for macula-threatening exudation/haemorrhage or active peripheral \r\nneovascular leakage; laser or cryotherapy is selective when a discrete leaking peripheral focus is \r\nvisible and tumour has been excluded.\rFor non-clearing vitreous haemorrhage, traction/rhegmatogenous detachment or massive \r\nbreakthrough haemorrhage, perform PPV with treatment of causative lesions and tamponade as \r\nneeded. Consider pneumatic displacement/tPA strategies only for clinically significant recent \r\nsubmacular blood after individual risk assessment."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol6_st6",
+    "type": "OSCE",
+    "topic": "Neuro-ophthalmology",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Adult female\n**Visual Acuity:** OD 6/6; OS 6/36\n**Intraocular Pressure:** OD 14 mmHg; OS 13 mmHg\n**Primary Instruction:** Examine the clinical presentation and neuroimaging. Describe the abnormalities, localise the lesion, and outline your immediate investigation and management priorities.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume6/vol6_st6_img1.jpeg)\n![Clinical Image 2](/images/volume6/vol6_st6_img2.jpeg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Localise the process and distinguish inflammatory granuloma from tumour and infection.",
+          "modelAnswer": "Definitive diagnosis: optic nerve head/peripapillary granuloma due to ocular sarcoidosis causing optic \r\nneuropathy.\rDisc swelling plus an elevated peripapillary choroidal/retinal lesion, vitreous cells and subretinal fluid \r\nlocalise an infiltrative granulomatous process at the nerve head/adjacent choroid.\rDifferential includes tuberculoma, syphilis, toxocariasis, fungal infection, choroidal \r\nmelanoma/metastasis, lymphoma, optic nerve sheath meningioma and idiopathic inflammatory \r\npseudotumour. Immunosuppression before excluding infection can be catastrophic."
+        },
+        {
+          "id": "q2",
+          "text": "How will you establish the cause while protecting vision?",
+          "modelAnswer": "MRI brain/orbits with contrast and fat suppression assesses nerve, sheath, apex and CNS disease. OCT \r\nRNFL/GCC and macula, fields, colour vision, photography and B-scan establish baseline anatomy and \r\nfunction.\rChest CT, ACE/lysozyme only as supportive tests, calcium, FBC/U&E/LFT and ECG; screen for TB and \r\nsyphilis. Seek the safest tissue diagnosis—EBUS lymph-node, skin or conjunctival lesion—rather than \r\nbiopsy of the optic nerve.\rApply contemporary ocular sarcoidosis criteria and coordinate respiratory/rheumatology care. Urgent \r\nbiopsy is required if malignancy remains plausible or the response is atypical."
+        },
+        {
+          "id": "q3",
+          "text": "Give acute treatment and steroid-sparing escalation.",
+          "modelAnswer": "For sight-threatening optic nerve involvement, give high-dose systemic corticosteroid—often IV \r\nmethylprednisolone followed by oral prednisone—after appropriate infectious exclusion, with \r\ngastric/bone and metabolic prophylaxis.\rIntroduce early steroid-sparing therapy for relapse, bilateral disease or steroid toxicity: methotrexate, \r\nmycophenolate, azathioprine or biologic therapy such as adalimumab/infliximab in refractory disease, \r\nwith screening and laboratory monitoring.\rTreat associated anterior/intermediate uveitis locally as appropriate and monitor acuity, colour, fields, \r\nOCT, lesion size and systemic organ involvement. Failure to improve requires reconsideration of \r\ninfection, lymphoma or another mass."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol6_st7",
+    "type": "OSCE",
+    "topic": "Ocular Motility",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Adult male\n**Visual Acuity:** OD 6/12; OS 6/6\n**Intraocular Pressure:** OD 22 mmHg; OS 20 mmHg\n**Primary Instruction:** Examine the motility photographs and any neuroimaging provided. Describe the abnormalities, identify the clinical syndrome, and outline your immediate and long-term management.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume6/vol6_st7_img1.jpeg)\n![Clinical Image 2](/images/volume6/vol6_st7_img2.jpeg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Explain the motility pattern, disease activity and the mechanism of visual loss.",
+          "modelAnswer": "Definitive diagnosis: thyroid eye disease with restrictive strabismus and dysthyroid optic neuropathy.\rInferior rectus restriction causes hypotropia and limited elevation; medial rectus restriction causes \r\nesotropia/limited abduction. Tendon sparing and muscle-belly enlargement are typical.\rOptic neuropathy results from apical muscle crowding and/or stretch, and can occur without marked \r\nproptosis. Assess clinical activity separately from severity; reduced acuity/colour, RAPD, field loss, disc \r\nchange and apical crowding are red flags."
+        },
+        {
+          "id": "q2",
+          "text": "What measurements and investigations determine emergency treatment?",
+          "modelAnswer": "Record acuity, colour plates/red saturation, pupils, fields, optic discs/OCT, IOP in primary and upgaze, \r\ncorneal exposure, Hertel measurements, lid position, ductions and prism deviation.\rOrbital CT or MRI demonstrates muscle enlargement, apical crowding and optic nerve stretch and \r\nexcludes mass/inflammation. Check thyroid function and receptor antibodies, while recognising \r\neuthyroid disease.\rAssess smoking, diabetes and suitability for high-dose steroids; coordinate endocrinology. Corneal \r\nbreakdown or definite optic neuropathy is sight-threatening disease requiring same-day treatment."
+        },
+        {
+          "id": "q3",
+          "text": "Give the treatment sequence from optic nerve rescue to strabismus surgery.",
+          "modelAnswer": "Give IV methylprednisolone promptly for dysthyroid optic neuropathy unless contraindicated, with \r\nmonitoring of liver, cardiovascular and glucose risk. If response is inadequate or relapse occurs, \r\nperform urgent orbital decompression; orbital radiotherapy or biologic therapy is selected in specialist \r\nmultidisciplinary care.\rProtect exposure with lubrication, moisture chamber, lid closure procedures as required; stop smoking \r\nand achieve euthyroidism. Active moderate-severe disease may require immunomodulation according \r\nto current protocols.\rRehabilitative surgery waits for inactivity and stable measurements: decompression first, then \r\nrestrictive strabismus surgery using large adjustable recessions guided by forced ductions, then eyelid \r\nsurgery. Counsel that decompression can alter diplopia."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol6_st8",
+    "type": "OSCE",
+    "topic": "Paediatrics",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Young child female\n**Visual Acuity:** OD fixes and follows; OS poor fixation\n**Intraocular Pressure:** OD 18 mmHg; OS 32 mmHg under anaesthesia\n**Primary Instruction:** Examine the clinical presentation and imaging findings. State the diagnosis, outline the key risks, and discuss your investigation and treatment plan.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume6/vol6_st8_img1.jpeg)\n![Clinical Image 2](/images/volume6/vol6_st8_img2.jpeg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Explain the ocular enlargement and distinguish primary from secondary childhood glaucoma.",
+          "modelAnswer": "Definitive diagnosis: primary congenital glaucoma with buphthalmos and Haab striae, worse in the left \r\neye.\rDevelopmental trabecular outflow abnormality raises IOP while cornea and sclera remain elastic, \r\nproducing enlarged corneal diameter, axial elongation, deep chamber, Descemet tears, oedema and \r\npotentially reversible early cupping.\rExclude anterior-segment dysgenesis, aniridia, Sturge-Weber, uveitis, trauma/non-accidental injury, \r\nretinopathy of prematurity treatment, aphakia and steroid exposure. Megalocornea has clear \r\nsymmetric large corneas, normal IOP/axial length and no glaucomatous cupping."
+        },
+        {
+          "id": "q2",
+          "text": "Specify the EUA dataset and genetic/systemic assessment.",
+          "modelAnswer": "Measure IOP early under a standardised anaesthetic, horizontal corneal diameter, pachymetry, axial \r\nlength, refraction, gonioscopy, optic disc photography and corneal clarity/Haab striae in both eyes.\rAssess amblyopia, nystagmus and fixation. Repeat axial length, refraction and disc documentation to \r\njudge control because office IOP alone is unreliable.\rTake a three-generation pedigree and offer genetic counselling/testing, particularly CYP1B1 and other \r\nchildhood glaucoma genes in bilateral, familial or consanguineous cases; examine siblings and assess \r\nsystemic features when secondary syndromes are possible."
+        },
+        {
+          "id": "q3",
+          "text": "Give the operative hierarchy and visual rehabilitation plan.",
+          "modelAnswer": "Medical aqueous suppression is a bridge, not definitive primary therapy. Perform goniotomy when the \r\ncornea is clear and angle visible, or trabeculotomy ab externo/360-degree catheter trabeculotomy \r\nwhen the cornea is cloudy or disease extensive.\rRepeat/combined trabeculotomy-trabeculectomy may be required; drainage implant or \r\ncyclodestruction is reserved for refractory disease with careful lifetime complication planning. Treat \r\ncorneal oedema by controlling IOP; keratoplasty is rarely the first step.\rCorrect myopia/astigmatism promptly, institute amblyopia therapy and provide lifelong surveillance \r\nfor pressure, axial growth, cupping, cataract and surgical complications."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol6_st9",
+    "type": "OSCE",
+    "topic": "Oculoplastics and Orbit",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Adult female\n**Visual Acuity:** OD 6/6; OS 6/18\n**Intraocular Pressure:** OD 14 mmHg; OS 15 mmHg\n**Primary Instruction:** Examine the clinical presentation and orbital imaging. Describe the abnormalities, state the diagnosis, and discuss your immediate and long-term management plan.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume6/vol6_st9_img1.jpeg)\n![Clinical Image 2](/images/volume6/vol6_st9_img2.jpeg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Explain why the lesion is malignant and distinguish other lacrimal fossa masses.",
+          "modelAnswer": "Definitive diagnosis: adenoid cystic carcinoma of the lacrimal gland.\rPain from early perineural invasion, relatively rapid progression, irregular/infiltrative margins, bone \r\ndestruction and sensory change favour malignancy. Inferonasal globe displacement localises a \r\nsuperotemporal extraconal mass.\rPleomorphic adenoma is usually painless, well circumscribed and causes smooth remodelling; \r\nlymphoma moulds around structures; dacryoadenitis is inflammatory and often bilateral; consider \r\ncarcinoma ex pleomorphic adenoma, metastasis and epithelial-myoepithelial carcinoma."
+        },
+        {
+          "id": "q2",
+          "text": "Plan tissue diagnosis without compromising definitive surgery.",
+          "modelAnswer": "Obtain thin-slice contrast MRI of orbit/skull base to map perineural spread and intracranial extension \r\nplus CT for bone. Stage neck/nodes and distant disease—especially lungs—using appropriate cross-\r\nsectional or PET imaging.\rIn a lesion suspicious for adenoid cystic carcinoma, obtain a carefully planned incisional/core biopsy \r\nalong a tract that can be excised; avoid violating multiple tissue planes. By contrast, do not biopsy a \r\nclassic encapsulated pleomorphic adenoma before intact excision.\rPathology should report cribriform/solid pattern, margins and perineural invasion; multidisciplinary \r\norbital oncology, head-and-neck, radiation oncology and pathology review is essential."
+        },
+        {
+          "id": "q3",
+          "text": "Give definitive local treatment and address recurrence risk.",
+          "modelAnswer": "Treatment is en bloc surgical resection with negative margins where feasible, ranging from globe-\r\nsparing lacrimal/orbital resection to exenteration and cranio-orbital resection according to extent; \r\nsacrifice involved nerve/bone when required for oncologic clearance.\rAdjuvant radiotherapy—often proton or other highly conformal treatment—is commonly used for \r\nperineural invasion, close margins or advanced disease. Systemic therapy has limited established \r\ncurative benefit but may be used for unresectable/metastatic disease or trials.\rCounsel regarding dry eye, diplopia, sensory loss, disfigurement and radiation toxicity. Surveillance \r\nmust be prolonged with orbital/skull-base imaging and chest assessment because late local recurrence \r\nand pulmonary metastasis are characteristic."
+        }
+      ]
+    }
+  }
+]

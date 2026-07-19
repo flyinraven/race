@@ -171,30 +171,36 @@ export async function initDb() {
       }
     }
 
-    // Load and insert Volume 5 questions automatically
-    try {
-      const fs = require('fs');
-      const path = require('path');
-      let vol5Path = path.join(__dirname, '../../volume5_questions.json');
-      if (!fs.existsSync(vol5Path)) {
-        vol5Path = path.join(__dirname, '../volume5_questions.json');
-      }
-      if (fs.existsSync(vol5Path)) {
-        const vol5Data = JSON.parse(fs.readFileSync(vol5Path, 'utf-8'));
-        for (const q of vol5Data) {
-          await query(
-            `INSERT INTO questions (id, type, topic, paper, year, data)
-             VALUES ($1, $2, $3, $4, $5, $6)
-             ON CONFLICT (id) DO UPDATE 
-             SET type = EXCLUDED.type, topic = EXCLUDED.topic, paper = EXCLUDED.paper, year = EXCLUDED.year, data = EXCLUDED.data`,
-            [q.id, q.type, q.topic, q.paper, q.year, JSON.stringify(q.data)]
-          );
+    // Load and insert mock OSCE volumes automatically
+    const seedVolume = async (num: number) => {
+      try {
+        const fs = require('fs');
+        const path = require('path');
+        let volPath = path.join(__dirname, `../../volume${num}_questions.json`);
+        if (!fs.existsSync(volPath)) {
+          volPath = path.join(__dirname, `../volume${num}_questions.json`);
         }
-        console.log(`Auto-seeded ${vol5Data.length} Volume 5 OSCE questions.`);
+        if (fs.existsSync(volPath)) {
+          const volData = JSON.parse(fs.readFileSync(volPath, 'utf-8'));
+          for (const q of volData) {
+            await query(
+              `INSERT INTO questions (id, type, topic, paper, year, data)
+               VALUES ($1, $2, $3, $4, $5, $6)
+               ON CONFLICT (id) DO UPDATE 
+               SET type = EXCLUDED.type, topic = EXCLUDED.topic, paper = EXCLUDED.paper, year = EXCLUDED.year, data = EXCLUDED.data`,
+              [q.id, q.type, q.topic, q.paper, q.year, JSON.stringify(q.data)]
+            );
+          }
+          console.log(`Auto-seeded ${volData.length} Volume ${num} OSCE questions.`);
+        }
+      } catch (e) {
+        console.error(`Error auto-seeding Volume ${num} questions:`, e);
       }
-    } catch (e) {
-      console.error('Error auto-seeding Volume 5 questions:', e);
-    }
+    };
+
+    await seedVolume(5);
+    await seedVolume(6);
+    await seedVolume(7);
 
     console.log('Database tables initialized successfully.');
   } catch (err) {

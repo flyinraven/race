@@ -1,0 +1,245 @@
+[
+  {
+    "id": "vol7_st1",
+    "type": "OSCE",
+    "topic": "Cataract",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Older adult female\n**Visual Acuity:** OD 6/24 (pinhole 6/12); OS 6/6\n**Intraocular Pressure:** OD 16 mmHg; OS 14 mmHg\n**Primary Instruction:** Examine the clinical presentation and slit-lamp findings. Identify the complications, discuss your differential diagnosis, and outline your immediate surgical and medical management plan.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume7/vol7_st1_img1.jpg)\n![Clinical Image 2](/images/volume7/vol7_st1_img2.jpg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Describe the defining abnormalities, explain the mechanism and separate the closest mimics.",
+          "modelAnswer": "Definitive diagnosis: late postoperative capsular block syndrome.\n\nA sealed capsulorhexis-IOL interface traps liquefied lens epithelial material behind the IOL, distending the bag and moving the optic forward. Distinguish posterior capsular opacification, IOL power error/rotation, aqueous misdirection, pupillary block and chronic endophthalmitis; a capsular plaque, marked inflammation or pain should raise concern for infection."
+        },
+        {
+          "id": "q2",
+          "text": "Which examinations and investigations establish the diagnosis, severity and important associations?",
+          "modelAnswer": "Dilated slit-lamp retroillumination documents capsulorhexis overlap, bag distension, IOL position and trapped fluid. Perform refraction, anterior-segment OCT or UBM if anatomy is unclear, optical biometry/keratometry if refractive error is questioned, macular OCT and peripheral retinal examination. Review the operative record and exclude capsular instability."
+        },
+        {
+          "id": "q3",
+          "text": "Give a prioritised management plan, including procedural details and major safety contingencies.",
+          "modelAnswer": "Observe only mild stable asymptomatic cases. For symptomatic late block, create a posterior Nd:YAG capsulotomy to communicate the bag with vitreous, using low energy away from the IOL and counselling about IOP rise, inflammation, floaters, CME, IOL pitting and retinal tear/detachment. An anterior capsulotomy may be used selectively but can release turbid material into the anterior chamber. Use surgical aspiration/capsular opening if YAG is unsafe, fluid is unusually dense, infection is suspected or the IOL-bag complex requires revision."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol7_st2",
+    "type": "OSCE",
+    "topic": "Cornea and External Eye",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Adult male\n**Visual Acuity:** OD 6/24; OS 6/36\n**Intraocular Pressure:** OD 12 mmHg; OS 13 mmHg\n**Primary Instruction:** Examine the slit-lamp findings and any corneal imaging provided. Describe the abnormalities, state the most likely diagnosis, and discuss your immediate treatment strategy.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume7/vol7_st2_img1.jpg)\n![Clinical Image 2](/images/volume7/vol7_st2_img2.jpg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Describe the defining abnormalities, explain the mechanism and separate the closest mimics.",
+          "modelAnswer": "Definitive diagnosis: chronic ocular graft-versus-host disease with severe keratoconjunctivitis sicca.\n\nDonor immune cells attack lacrimal glands, conjunctiva, cornea and meibomian glands, producing aqueous deficiency, inflammatory epithelial disease and cicatrisation. Differentiate medication toxicity, infection, Sjögren syndrome, limbal stem-cell failure and ocular mucous-membrane pemphigoid. Reduced inflammation does not necessarily mean the surface is safe because neurotrophic disease can mask symptoms."
+        },
+        {
+          "id": "q2",
+          "text": "Which examinations and investigations establish the diagnosis, severity and important associations?",
+          "modelAnswer": "Grade symptoms and signs with staining, tear break-up, Schirmer testing, osmolarity where useful, meibomian assessment and serial photography; document symblepharon, lid closure, corneal sensation, epithelial defects, thinning and infection. Culture suspicious infiltrates. Coordinate haematology to assess systemic GVHD and immunosuppression, and monitor IOP/cataract with corticosteroid use."
+        },
+        {
+          "id": "q3",
+          "text": "Give a prioritised management plan, including procedural details and major safety contingencies.",
+          "modelAnswer": "Use frequent preservative-free lubrication, ointment, punctal occlusion after controlling inflammation, moisture chamber and lid/meibomian therapy. Add topical corticosteroid for short controlled courses, topical ciclosporin or tacrolimus, autologous serum/platelet-derived tears and scleral lenses. Treat infection promptly and avoid preserved drops. Persistent epithelial defects require prophylactic antibiotic, bandage/scleral lens, amniotic membrane, tarsorrhaphy or neurotrophic therapy. Systemic immunomodulation is coordinated with transplant specialists; keratoplasty is delayed until inflammation and surface failure are controlled because graft failure risk is high."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol7_st3",
+    "type": "OSCE",
+    "topic": "Glaucoma",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Adult female\n**Visual Acuity:** OD 6/6; OS 6/6\n**Intraocular Pressure:** OD 23 mmHg; OS 21 mmHg\n**Primary Instruction:** Examine the clinical presentation and imaging findings. Identify the pathology, discuss the mechanism, and outline your immediate and long-term management plan.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume7/vol7_st3_img1.jpg)\n![Clinical Image 2](/images/volume7/vol7_st3_img2.jpg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Describe the defining abnormalities, explain the mechanism and separate the closest mimics.",
+          "modelAnswer": "Definitive diagnosis: plateau iris syndrome with persistent iridotrabecular contact after patent iridotomy.\n\nLarge/anterior ciliary processes rotate the ciliary body forward and push the peripheral iris into the trabecular meshwork while the central chamber remains relatively deep. Configuration describes anatomy before closure; syndrome implies angle closure/pressure elevation after patent iridotomy. Distinguish residual pupillary block, lens-related crowding, iris/ciliary body cysts, aqueous misdirection and drug-induced ciliochoroidal effusion."
+        },
+        {
+          "id": "q2",
+          "text": "Which examinations and investigations establish the diagnosis, severity and important associations?",
+          "modelAnswer": "Perform dark-room gonioscopy before and after indentation in all quadrants, documenting PAS and double-hump sign; verify iridotomy patency. AS-OCT shows iridotrabecular contact but UBM best demonstrates ciliary-process position and excludes cysts. Assess optic discs, OCT RNFL/GCC and fields, lens thickness and hyperopic biometry. Provocative testing is rarely required and can be hazardous."
+        },
+        {
+          "id": "q3",
+          "text": "Give a prioritised management plan, including procedural details and major safety contingencies.",
+          "modelAnswer": "Treat acute closure with standard pressure lowering and ensure pupillary block has been relieved. Perform argon laser peripheral iridoplasty to contract the peripheral iris, using a ring of long-duration, low-power, large-spot burns as per local protocol while avoiding the pupil and angle; monitor inflammation and IOP. Use topical pressure therapy for established glaucoma. Lens extraction can deepen the angle where lens crowding contributes but may not correct pure plateau anatomy. Extensive PAS or progression may require goniosynechialysis with lens surgery, filtering surgery or drainage implant; lifelong gonioscopy is required."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol7_st4",
+    "type": "OSCE",
+    "topic": "Ocular Inflammation",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** adult female\n**Visual Acuity:** OD 6/18; OS 6/24\n**Intraocular Pressure:** OD 11 mmHg; OS 10 mmHg\n**Primary Instruction:** Examine the clinical presentation and fundus findings. Describe the inflammatory phenotype, state the diagnosis, and outline your investigation and treatment plan.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume7/vol7_st4_img1.jpg)\n![Clinical Image 2](/images/volume7/vol7_st4_img2.jpg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Describe the defining abnormalities, explain the mechanism and separate the closest mimics.",
+          "modelAnswer": "Definitive diagnosis: tubulointerstitial nephritis and uveitis syndrome.\n\nTINU is an immune-mediated association of acute tubulointerstitial nephritis with usually bilateral anterior uveitis; the renal and ocular phases may be asynchronous. Differentiate sarcoidosis, TB, syphilis, HLA-B27 disease, Behçet disease, Sjögren syndrome, SLE, ANCA vasculitis and drug-induced interstitial nephritis. Granulomatous signs, marked vitritis or choroiditis should broaden the differential."
+        },
+        {
+          "id": "q2",
+          "text": "Which examinations and investigations establish the diagnosis, severity and important associations?",
+          "modelAnswer": "Quantify cells/flare, synechiae, vitreous involvement, macular OCT and complications. Check serum creatinine/eGFR, electrolytes, urinalysis, urine protein and urinary beta-2 microglobulin, which may remain raised after creatinine normalises. Obtain FBC, inflammatory markers and directed infectious/systemic tests. Nephrology assessment and renal biopsy establish interstitial nephritis when diagnosis or severity is uncertain; review NSAIDs, antibiotics and other nephritogenic drugs."
+        },
+        {
+          "id": "q3",
+          "text": "Give a prioritised management plan, including procedural details and major safety contingencies.",
+          "modelAnswer": "Treat anterior uveitis with potent topical corticosteroid and cycloplegic, tapering slowly to activity. Periocular/systemic steroid is used for posterior involvement or refractory bilateral disease. Recurrent/chronic steroid-dependent uveitis requires steroid-sparing therapy such as methotrexate or mycophenolate with monitoring. Stop causative nephrotoxins and let nephrology manage renal disease; systemic corticosteroid is used for significant or persistent renal dysfunction. Monitor IOP, cataract, CME, renal function and urinary beta-2 microglobulin over prolonged follow-up."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol7_st5",
+    "type": "OSCE",
+    "topic": "Vitreoretinal",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Older adult male\n**Visual Acuity:** OD 6/18; OS 6/60\n**Intraocular Pressure:** OD 14 mmHg; OS 13 mmHg\n**Primary Instruction:** Examine the fundus photographs and optical coherence tomography. Describe the clinical findings, discuss the mechanism of the pathology, and outline your management options.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume7/vol7_st5_img1.jpg)\n![Clinical Image 2](/images/volume7/vol7_st5_img2.jpg)\n![Clinical Image 3](/images/volume7/vol7_st5_img3.jpg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Describe the defining abnormalities, explain the mechanism and separate the closest mimics.",
+          "modelAnswer": "Definitive diagnosis: polypoidal choroidal vasculopathy (aneurysmal type 1 neovascularisation).\n\nPCV consists of a type 1 sub-RPE branching neovascular network with aneurysmal polypoidal dilations that leak or bleed. Clues include orange nodules, recurrent haemorrhagic PED, sharply peaked/notched PEDs, sub-RPE ring sign and double-layer sign. Differentiate typical neovascular AMD, central serous/pachychoroid neovasculopathy, retinal macroaneurysm, PEHCR and choroidal tumour."
+        },
+        {
+          "id": "q2",
+          "text": "Which examinations and investigations establish the diagnosis, severity and important associations?",
+          "modelAnswer": "Use OCT with enhanced-depth choroidal assessment, colour photography and OCTA; ICGA is the diagnostic reference for the branching network and polyps, especially when haemorrhage blocks FA. FA assesses leakage but may not define polyps. Document lesion location, activity, fibrosis and haemorrhage; assess fellow-eye pachychoroid/AMD features and systemic anticoagulation without stopping it unilaterally."
+        },
+        {
+          "id": "q3",
+          "text": "Give a prioritised management plan, including procedural details and major safety contingencies.",
+          "modelAnswer": "Treat active exudation with intravitreal anti-VEGF using loading then treat-and-extend or another evidence-based regimen. For persistent polyps, recurrent haemorrhage or incomplete anti-VEGF response, combine verteporfin PDT targeted to the ICGA-defined lesion with anti-VEGF, balancing haemorrhage, RPE tear and atrophy risks. Pneumatic displacement with intravitreal/subretinal tPA and anti-VEGF may be considered for recent visually significant submacular haemorrhage; PPV is reserved for dense non-clearing vitreous haemorrhage or selected massive submacular cases. Continue OCT surveillance for recurrence."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol7_st6",
+    "type": "OSCE",
+    "topic": "Neuro-ophthalmology",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Adult female\n**Visual Acuity:** OD 6/6; OS 6/6\n**Intraocular Pressure:** OD 15 mmHg; OS 15 mmHg\n**Primary Instruction:** Examine the clinical presentation and neuroimaging. Describe the abnormalities, localise the lesion, and outline your immediate investigation and management priorities.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume7/vol7_st6_img1.jpg)\n![Clinical Image 2](/images/volume7/vol7_st6_img2.jpg)\n![Clinical Image 3](/images/volume7/vol7_st6_img3.jpg)\n![Clinical Image 4](/images/volume7/vol7_st6_img4.jpg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Describe the defining abnormalities, explain the mechanism and separate the closest mimics.",
+          "modelAnswer": "Definitive diagnosis: optic disc drusen producing pseudopapilloedema and visual field loss.\n\nCalcified hyaline deposits within a crowded nerve head become more visible with age and can compress axons/vasculature, causing arcuate field loss, peripapillary haemorrhage, NAION or CNV. Drusen favour an irregular lumpy disc, absent hyperaemia, visible vessels across the margin and chronic stability. True papilloedema has venous congestion, haemorrhages, cotton-wool spots, Paton lines and symptoms/signs of raised intracranial pressure; the two can coexist."
+        },
+        {
+          "id": "q2",
+          "text": "Which examinations and investigations establish the diagnosis, severity and important associations?",
+          "modelAnswer": "Perform neurologic and neuro-ophthalmic assessment including pupils, colour, fields and serial disc photography. Enhanced-depth OCT demonstrates hyporeflective cores with hyperreflective margins; fundus autofluorescence and B-scan detect calcified deposits, though buried drusen may be missed. OCT RNFL/GCC documents damage. If symptoms, examination or imaging cannot safely exclude true oedema, obtain urgent MRI/MRV and lumbar puncture after imaging rather than assuming pseudopapilloedema."
+        },
+        {
+          "id": "q3",
+          "text": "Give a prioritised management plan, including procedural details and major safety contingencies.",
+          "modelAnswer": "No treatment removes drusen. Monitor fields, RNFL/GCC and IOP; optimise vascular risk and avoid excessive nocturnal hypotension where possible. IOP lowering is sometimes considered for progressive field loss but evidence is limited. Treat complications specifically—anti-VEGF for peripapillary CNV and standard evaluation for associated NAION/vascular occlusion. Provide safety-net advice for headache, transient obscurations, pulsatile tinnitus, diplopia or rapid change, which require reassessment for raised ICP."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol7_st7",
+    "type": "OSCE",
+    "topic": "Ocular Motility",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Adult female\n**Visual Acuity:** OD 6/9; OS 6/6\n**Intraocular Pressure:** OD 17 mmHg; OS 15 mmHg\n**Primary Instruction:** Examine the motility photographs and any neuroimaging provided. Describe the abnormalities, identify the clinical syndrome, and outline your immediate and long-term management.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume7/vol7_st7_img1.jpg)\n![Clinical Image 2](/images/volume7/vol7_st7_img2.jpg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Describe the defining abnormalities, explain the mechanism and separate the closest mimics.",
+          "modelAnswer": "Definitive diagnosis: idiopathic orbital myositis affecting the right medial rectus.\n\nInflammation of an extraocular muscle and tendon produces pain with movement, restrictive diplopia, injection over the insertion and sometimes proptosis. Tendon involvement and acute pain favour myositis over thyroid orbitopathy, which usually spares tendons and is often bilateral. Exclude orbital cellulitis, IgG4-related disease, sarcoid, GPA, lymphoma/metastasis, CCF, Tolosa-Hunt and infectious myositis."
+        },
+        {
+          "id": "q2",
+          "text": "Which examinations and investigations establish the diagnosis, severity and important associations?",
+          "modelAnswer": "Measure deviations in all gazes, ductions, saccades, torsion, forced duction when appropriate, pupils, optic nerve function, proptosis and corneal exposure. Contrast CT/MRI maps muscle/tendon and orbital apex disease and excludes abscess or mass. Check FBC/CRP, thyroid tests/antibodies and directed autoimmune/infectious studies. Biopsy atypical, recurrent, steroid-resistant or mass-like disease before prolonged immunosuppression."
+        },
+        {
+          "id": "q3",
+          "text": "Give a prioritised management plan, including procedural details and major safety contingencies.",
+          "modelAnswer": "Urgently treat optic neuropathy, exposure or severe orbital inflammation. After infection is excluded, use systemic corticosteroid with a sufficiently slow taper; rapid response supports but does not prove the diagnosis. NSAIDs may suffice in mild disease. Recurrence/steroid dependence requires tissue diagnosis and steroid-sparing therapy such as methotrexate, mycophenolate, radiotherapy or biologic treatment in multidisciplinary care. Use temporary prism/occlusion for diplopia; defer strabismus surgery until inflammation has been inactive and measurements stable."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol7_st8",
+    "type": "OSCE",
+    "topic": "Paediatrics",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** \n**Visual Acuity:** OD 6/6; OS counting fingers\n**Intraocular Pressure:** OD 14 mmHg; OS 12 mmHg\n**Primary Instruction:** Examine the clinical presentation and imaging findings. State the diagnosis, outline the key risks, and discuss your investigation and treatment plan.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume7/vol7_st8_img1.jpg)\n![Clinical Image 2](/images/volume7/vol7_st8_img2.jpg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Describe the defining abnormalities, explain the mechanism and separate the closest mimics.",
+          "modelAnswer": "Definitive diagnosis: Coats disease with extensive exudation and exudative retinal detachment.\n\nIdiopathic retinal telangiectasia with aneurysmal vessels and blood-retinal barrier failure produces intraretinal/subretinal lipid and exudative detachment, typically unilateral in boys. The critical mimic is retinoblastoma; also distinguish FEVR, ROP, PFV, retinal capillary haemangioblastoma, toxocariasis and facioscapulohumeral muscular dystrophy-associated retinopathy."
+        },
+        {
+          "id": "q2",
+          "text": "Which examinations and investigations establish the diagnosis, severity and important associations?",
+          "modelAnswer": "Perform EUA with scleral depression and widefield photography/FA to map nonperfusion, telangiectasia, aneurysms and leakage in both eyes. OCT assesses macular exudation; B-scan confirms detachment and excludes a solid calcified mass. CT is generally avoided solely to diagnose retinoblastoma because of radiation; MRI is preferred when tumour remains possible. Review prematurity, family history and systemic phenotype; bilateral disease should prompt reconsideration/genetic assessment."
+        },
+        {
+          "id": "q3",
+          "text": "Give a prioritised management plan, including procedural details and major safety contingencies.",
+          "modelAnswer": "Ablate abnormal vessels and avascular retina with FA-guided laser; use staged cryotherapy when peripheral retina is inaccessible. Anti-VEGF or periocular/intravitreal steroid may reduce severe exudation but is adjunctive and can worsen vitreoretinal fibrosis/traction. Drain subretinal fluid with buckle or vitrectomy only in advanced detachments that prevent ablation, protecting the lens. Painful blind neovascular end-stage eyes may require enucleation after excluding retinoblastoma. Treat amblyopia and maintain long surveillance for reactivation."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol7_st9",
+    "type": "OSCE",
+    "topic": "Oculoplastics and Orbit",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Older adult female\n**Visual Acuity:** OD 6/12; OS 6/6\n**Intraocular Pressure:** OD 16 mmHg; OS 15 mmHg\n**Primary Instruction:** Examine the clinical presentation and orbital imaging. Describe the abnormalities, state the diagnosis, and discuss your immediate and long-term management plan.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume7/vol7_st9_img1.jpg)\n![Clinical Image 2](/images/volume7/vol7_st9_img2.jpg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Describe the defining abnormalities, explain the mechanism and separate the closest mimics.",
+          "modelAnswer": "Definitive diagnosis: localized orbital AL amyloidosis with extraocular muscle involvement.\n\nMisfolded immunoglobulin light-chain fibrils deposit extracellularly in muscle, conjunctiva, lacrimal gland or orbital soft tissue, producing slowly progressive infiltrative mass effect, ptosis, proptosis and restriction. Differentiate thyroid eye disease, lymphoma, IgG4-related disease, idiopathic inflammation, sarcoid and metastatic disease. Histology requires Congo red with apple-green birefringence and amyloid typing; localized disease may arise from a local plasma-cell clone but systemic AL must be excluded."
+        },
+        {
+          "id": "q2",
+          "text": "Which examinations and investigations establish the diagnosis, severity and important associations?",
+          "modelAnswer": "Document acuity, pupils/colour/fields, proptosis, lid function, motility, corneal exposure and IOP. Contrast MRI/CT maps muscle, apex and bone involvement. Obtain a representative biopsy for Congo red, electron microscopy/immunohistochemistry or mass-spectrometry typing and clonality assessment. Screen systemic amyloid/plasma-cell disease with FBC, renal/liver profile, urine protein, serum and urine immunofixation, free light chains, cardiac biomarkers/imaging and haematology review; biopsy fat pad/bone marrow as directed."
+        },
+        {
+          "id": "q3",
+          "text": "Give a prioritised management plan, including procedural details and major safety contingencies.",
+          "modelAnswer": "Observe stable localized disease without visual threat. Debulk accessible symptomatic deposits and correct ptosis/strabismus cautiously, recognising infiltrative tissue, haemorrhage, incomplete excision and recurrence; orbital radiotherapy may help selected progressive localized AL deposits. Protect exposure and treat glaucoma/optic neuropathy urgently. Systemic AL requires clone-directed haematologic therapy rather than local surgery alone. Maintain long-term orbital and systemic surveillance because apparently localized disease can recur and rare systemic evolution must not be missed."
+        }
+      ]
+    }
+  }
+]

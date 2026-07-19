@@ -89,6 +89,8 @@ export async function initDb() {
     await query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token_expires_at TIMESTAMP WITH TIME ZONE`);
     await query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS welcome_token TEXT`);
     await query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS welcome_token_expires_at TIMESTAMP WITH TIME ZONE`);
+    await query(`ALTER TABLE questions ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP`);
+    await query(`ALTER TABLE questions ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP`);
 
     // Normalize profiles columns (critical — these are what admin user list queries use)
     await query(`ALTER TABLE profiles ADD COLUMN IF NOT EXISTS first_name TEXT`);

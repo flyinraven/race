@@ -445,7 +445,11 @@ export default function QuestionBankTab({
                         <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between cursor-pointer" onClick={() => setExpandedQuestionId(isExpanded ? null : q.id)}>
                           <div className="flex items-center gap-3 flex-wrap">
                             {q.questionLabel && <span className="font-bold text-slate-900 text-sm">{q.questionLabel}</span>}
-                            <span className={`px-2 py-0.5 text-xs font-bold rounded ${q.type === 'SEQ' ? 'bg-orange-100 text-orange-800' : 'bg-blue-100 text-blue-800'}`}>{q.type}</span>
+                            <span className={`px-2 py-0.5 text-xs font-bold rounded ${
+                              q.type === 'OSCE' ? 'bg-indigo-100 text-indigo-800' :
+                              q.type === 'SEQ' ? 'bg-orange-100 text-orange-800' :
+                              'bg-blue-100 text-blue-800'
+                            }`}>{q.type}</span>
                             <span className="text-sm font-medium text-slate-800">{q.topic}</span>
                             {q.year && q.year !== 'Unknown' && <span className="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded">{q.year}</span>}
                             {q.created_at && (

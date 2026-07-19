@@ -206,7 +206,9 @@ export function OsceStation({
             target.onerror = null;
             target.src = 'https://placehold.co/600x400/png?text=Image+Not+Available';
           }}
-          className="max-w-full max-h-64 h-auto rounded-lg shadow border border-slate-200 my-4"
+          className={`max-w-full max-h-64 h-auto rounded-lg shadow border border-slate-200 my-4 ${
+            phase === 'questioning' ? 'md:block hidden' : ''
+          }`}
         />
       );
     }
@@ -278,13 +280,51 @@ export function OsceStation({
   }  // QUESTIONING
   if (phase === 'questioning') {
     const progress = (currentSubQIndex / subQuestions.length) * 100;
+
+    // Extract image url for sticky rendering on mobile
+    const imgMatch = stationData.scenario.match(/!\[.*?\]\((.*?)\)/);
+    const imageUrl = imgMatch ? imgMatch[1] : null;
+    let extractedImageSrc = null;
+    if (imageUrl) {
+      extractedImageSrc = imageUrl;
+      const apiBase = import.meta.env.VITE_API_URL || '';
+      if (extractedImageSrc.startsWith('SEARCH_IMAGE:')) {
+        extractedImageSrc = apiBase + '/api/image-search-proxy?q=' + encodeURIComponent(extractedImageSrc.replace('SEARCH_IMAGE:', '').replace(/\+/g, ' '));
+      } else if (extractedImageSrc.includes('wikimedia.org')) {
+        extractedImageSrc = apiBase + '/api/image-proxy?url=' + encodeURIComponent(extractedImageSrc);
+      } else if (extractedImageSrc.includes('placehold.co') && extractedImageSrc.includes('text=')) {
+        const match = extractedImageSrc.match(/text=([^&]+)/);
+        if (match && match[1]) {
+           let extractedQuery = decodeURIComponent(match[1]).replace(/\+/g, ' ');
+           extractedImageSrc = apiBase + '/api/image-search-proxy?q=' + encodeURIComponent(extractedQuery);
+        }
+      }
+    }
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-950 flex flex-col">
         {stationHeader(`Question ${currentSubQIndex + 1} of ${subQuestions.length}`)}
         <div className="h-1 bg-slate-800">
           <div className="h-full bg-indigo-500 transition-all duration-500" style={{ width: `${progress}%` }} />
         </div>
-        <div className="flex-grow flex flex-col md:flex-row gap-6 max-w-6xl mx-auto w-full p-6 overflow-hidden">
+
+        {/* Mobile Sticky Image Header */}
+        {extractedImageSrc && (
+          <div className="md:hidden w-full bg-slate-900/95 backdrop-blur border-b border-slate-800 p-3 sticky top-0 z-10 flex justify-center shadow-lg">
+            <img
+              src={extractedImageSrc}
+              alt="Clinical reference"
+              className="max-h-52 w-auto rounded-lg border border-slate-700 shadow-md"
+              onError={(e) => {
+                const target = e.currentTarget as HTMLImageElement;
+                target.onerror = null;
+                target.src = 'https://placehold.co/600x400/png?text=Image+Not+Available';
+              }}
+            />
+          </div>
+        )}
+
+        <div className="flex-grow flex flex-col md:flex-row gap-6 max-w-6xl mx-auto w-full p-6 md:overflow-hidden overflow-y-auto">
           
           {/* Left Column: Briefing Stem & Pictures (displayed during the entire question) */}
           <div className="flex-1 bg-slate-850/90 border border-slate-750/80 rounded-2xl p-6 overflow-y-auto max-h-[80vh] shadow-xl text-white">

@@ -74,10 +74,22 @@ export function OsceStation({
   const [gradingResult, setGradingResult] = useState<GradingResult | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [speechError, setSpeechError] = useState('');
+  const [hasCommenced, setHasCommenced] = useState(false);
   const recognitionRef = useRef<any>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const answersRef = useRef<Record<string, string>>({});
   answersRef.current = answers;
+
+  useEffect(() => {
+    setPhase('briefing');
+    setCurrentSubQIndex(0);
+    setAnswers({});
+    setCurrentAnswer('');
+    setTimeRemaining(timeLimitSec);
+    setTimeTaken(0);
+    setGradingResult(null);
+    setHasCommenced(false);
+  }, [stationIndex, timeLimitSec]);
 
   const subQuestions = stationData?.subQuestions || [];
   const currentSubQ = subQuestions[currentSubQIndex];
@@ -143,11 +155,19 @@ export function OsceStation({
     }
     const recognition = new SpeechRecognition();
     recognition.lang = 'en-AU';
-    recognition.interimResults = false;
+    recognition.continuous = true;
+    recognition.interimResults = true;
     recognition.maxAlternatives = 1;
     recognition.onresult = (event: any) => {
-      const transcript = event.results[0][0].transcript;
-      setCurrentAnswer(prev => prev ? prev + ' ' + transcript : transcript);
+      let finalTranscript = '';
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript + ' ';
+        }
+      }
+      if (finalTranscript) {
+        setCurrentAnswer(prev => prev ? prev.trim() + ' ' + finalTranscript.trim() : finalTranscript.trim());
+      }
     };
     recognition.onerror = () => setIsListening(false);
     recognition.onend = () => setIsListening(false);
@@ -160,6 +180,18 @@ export function OsceStation({
     recognitionRef.current?.stop();
     setIsListening(false);
   }, []);
+
+  useEffect(() => {
+    if (phase === 'questioning' && hasCommenced) {
+      const t = setTimeout(() => {
+        startListening();
+      }, 500);
+      return () => {
+        clearTimeout(t);
+        stopListening();
+      };
+    }
+  }, [currentSubQIndex, hasCommenced, phase, startListening, stopListening]);
 
   const handleNextSubQ = () => {
     if (!currentSubQ) return;
@@ -338,60 +370,80 @@ export function OsceStation({
 
           {/* Right Column: Examiner Verbal Question & Candidate Response */}
           <div className="w-full md:w-[420px] flex flex-col gap-5 flex-shrink-0">
-            {/* Examiner bubble */}
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-indigo-700 flex items-center justify-center flex-shrink-0 shadow-lg mt-1">
-                <User className="w-5 h-5 text-indigo-200" />
+            {!hasCommenced ? (
+              <div className="bg-slate-850/90 border border-slate-750/80 rounded-2xl p-6 shadow-xl flex-grow flex flex-col justify-center items-center gap-4 text-center text-white">
+                <MessageSquare className="w-12 h-12 text-indigo-400 mb-2 animate-bounce" />
+                <p className="text-white text-lg font-semibold leading-relaxed">
+                  Tap commence to start.
+                </p>
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  Speech to text function will turn on automatically when you commence.
+                </p>
+                <button
+                  onClick={() => setHasCommenced(true)}
+                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-6 rounded-xl transition shadow-lg text-sm mt-4"
+                >
+                  Commence
+                </button>
               </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-indigo-300 font-semibold text-sm">Examiner</span>
-                  <button onClick={() => speak(currentSubQ?.text || '')} title="Read aloud" className="p-1 rounded-full text-slate-500 hover:text-indigo-400 transition">
-                    <Volume2 className="w-4 h-4" />
-                  </button>
+            ) : (
+              <>
+                {/* Examiner bubble */}
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-indigo-700 flex items-center justify-center flex-shrink-0 shadow-lg mt-1">
+                    <User className="w-5 h-5 text-indigo-200" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-indigo-300 font-semibold text-sm">Examiner</span>
+                      <button onClick={() => speak(currentSubQ?.text || '')} title="Read aloud" className="p-1 rounded-full text-slate-500 hover:text-indigo-400 transition">
+                        <Volume2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <div className="bg-slate-800 border border-slate-700 rounded-2xl rounded-tl-none px-5 py-3 shadow-lg">
+                      <p className="text-white text-base leading-relaxed">{currentSubQ?.text}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="bg-slate-800 border border-slate-700 rounded-2xl rounded-tl-none px-5 py-3 shadow-lg">
-                  <p className="text-white text-base leading-relaxed">{currentSubQ?.text}</p>
-                </div>
-              </div>
-            </div>
 
-            {currentSubQIndex > 0 && (
-              <p className="text-center text-xs text-slate-650 font-medium">{currentSubQIndex} response{currentSubQIndex > 1 ? 's' : ''} recorded</p>
-            )}
+                {currentSubQIndex > 0 && (
+                  <p className="text-center text-xs text-slate-655 font-medium">{currentSubQIndex} response{currentSubQIndex > 1 ? 's' : ''} recorded</p>
+                )}
 
-            {/* Candidate response */}
-            <div className="flex items-start gap-3 flex-grow flex-col">
-              <div className="w-full flex items-center justify-between">
-                <span className="text-emerald-300 font-semibold text-sm">Your Response</span>
-                <div className="flex items-center gap-2">
-                  {speechError && <span className="text-xs text-amber-400">{speechError}</span>}
+                {/* Candidate response */}
+                <div className="flex items-start gap-3 flex-grow flex-col">
+                  <div className="w-full flex items-center justify-between">
+                    <span className="text-emerald-300 font-semibold text-sm">Your Response</span>
+                    <div className="flex items-center gap-2">
+                      {speechError && <span className="text-xs text-amber-400">{speechError}</span>}
+                      <button
+                        onClick={isListening ? stopListening : startListening}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition ${
+                          isListening ? 'bg-red-600 text-white animate-pulse' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                        }`}
+                      >
+                        {isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
+                        {isListening ? 'Listening' : 'Speak'}
+                      </button>
+                    </div>
+                  </div>
+                  <textarea
+                    value={currentAnswer}
+                    onChange={e => setCurrentAnswer(e.target.value)}
+                    placeholder="Type your verbal response here as if you're speaking to the examiner..."
+                    rows={10}
+                    className="w-full bg-slate-800 border border-emerald-700/50 rounded-2xl rounded-tl-none px-4 py-3 text-white placeholder-slate-550 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-none text-sm leading-relaxed shadow-lg flex-grow min-h-[160px]"
+                  />
                   <button
-                    onClick={isListening ? stopListening : startListening}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition ${
-                      isListening ? 'bg-red-600 text-white animate-pulse' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
-                    }`}
+                    onClick={handleNextSubQ}
+                    disabled={!currentAnswer.trim()}
+                    className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold py-3.5 px-6 rounded-xl transition flex items-center justify-center gap-2 shadow-lg text-sm"
                   >
-                    {isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
-                    {isListening ? 'Speak' : 'Speak'}
+                    {currentSubQIndex < subQuestions.length - 1 ? <>Next Question <ChevronRight className="w-4 h-4" /></> : <>Submit Station <CheckCircle2 className="w-4 h-4" /></>}
                   </button>
                 </div>
-              </div>
-              <textarea
-                value={currentAnswer}
-                onChange={e => setCurrentAnswer(e.target.value)}
-                placeholder="Type your verbal response here as if you're speaking to the examiner..."
-                rows={10}
-                className="w-full bg-slate-800 border border-emerald-700/50 rounded-2xl rounded-tl-none px-4 py-3 text-white placeholder-slate-550 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-none text-sm leading-relaxed shadow-lg flex-grow min-h-[160px]"
-              />
-              <button
-                onClick={handleNextSubQ}
-                disabled={!currentAnswer.trim()}
-                className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold py-3.5 px-6 rounded-xl transition flex items-center justify-center gap-2 shadow-lg text-sm"
-              >
-                {currentSubQIndex < subQuestions.length - 1 ? <>Next Question <ChevronRight className="w-4 h-4" /></> : <>Submit Station <CheckCircle2 className="w-4 h-4" /></>}
-              </button>
-            </div>
+              </>
+            )}
           </div>
         </div>
       </div>

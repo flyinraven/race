@@ -217,27 +217,7 @@ export default function Login() {
               </div>
             </div>
 
-            {view === 'signup' && (
-              <div className="pt-2">
-                <label className="block text-sm font-medium text-slate-700 mb-2">Choose Plan</label>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setPlan('free')}
-                    className={`border rounded-lg p-3 text-sm font-medium transition ${plan === 'free' ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}
-                  >
-                    Free Trial
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPlan('pro')}
-                    className={`border rounded-lg p-3 text-sm font-medium transition ${plan === 'pro' ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}
-                  >
-                    Premium ($29/mo)
-                  </button>
-                </div>
-              </div>
-            )}
+
 
             {view === 'signin' && (
               <div className="flex justify-end pt-1">

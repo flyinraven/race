@@ -63,7 +63,8 @@ const OPENROUTER_MODELS = [
 const TOPICS = [
   "Cataract", "Cornea and External Eye", "Glaucoma",
   "Neuro-ophthalmology", "Ocular Inflammation", "Ocular Motility",
-  "Oculoplastics and Orbit", "Paediatrics", "Vitreoretinal"
+  "Oculoplastics and Orbit", "Paediatrics", "Vitreoretinal",
+  "Ophthalmic Trauma", "Refractive Surgery"
 ];
 
 export default function SettingsTab({

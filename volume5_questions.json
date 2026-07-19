@@ -1,0 +1,245 @@
+[
+  {
+    "id": "vol5_st1",
+    "type": "OSCE",
+    "topic": "Cataract",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Older adult male\n**Visual Acuity:** OD 6/6; OS 6/9\n**Intraocular Pressure:** OD 15 mmHg; OS 14 mmHg\n**Primary Instruction:** Examine the clinical presentation and slit-lamp findings. Identify the complications, discuss your differential diagnosis, and outline your immediate surgical and medical management plan.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume5/image1.gif)\n![Clinical Image 2](/images/volume5/image2.jpg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Explain the Maddox-rod effect and distinguish other pseudophakic dysphotopsias.",
+          "modelAnswer": "Definitive diagnosis: Symptomatic posterior capsular fold producing a Maddox-rod effect.\n\nA linear fold acts like a cylindrical optical element: the perceived light streak is perpendicular to the fold. Differentiate positive arcs/haloes from IOL edge reflections, negative temporal shadow, corneal astigmatism, decentration/tilt and retinal photopsia."
+        },
+        {
+          "id": "q2",
+          "text": "What examination confirms that the fold is causal?",
+          "modelAnswer": "Retroillumination after dilation, refraction/topography, IOL centration and tilt assessment, macular OCT and symptom correlation with fold orientation. Exclude retinal traction or tear in new photopsia."
+        },
+        {
+          "id": "q3",
+          "text": "Give an escalating treatment plan and counsel about irreversible steps.",
+          "modelAnswer": "Observe early mild symptoms because capsular configuration and neuroadaptation may improve. Optimise refraction and ocular surface. If persistent and clearly correlated, perform carefully targeted Nd:YAG posterior capsulotomy to release the fold, discussing floaters, IOP rise, CME, IOL damage and retinal tear/detachment; recognise that YAG makes later IOL exchange more complex."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol5_st2",
+    "type": "OSCE",
+    "topic": "Cornea and External Eye",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Adult male\n**Visual Acuity:** OD hand movements; OS 6/6\n**Intraocular Pressure:** OD 21 mmHg; OS 14 mmHg\n**Primary Instruction:** Examine the slit-lamp findings and any corneal imaging provided. Describe the abnormalities, state the most likely diagnosis, and discuss your immediate treatment strategy.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume5/image3.jpg)\n![Clinical Image 2](/images/volume5/image4.jpg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Explain the mechanism and separate it from its closest mimics.",
+          "modelAnswer": "Definitive diagnosis: Severe alkali ocular surface burn with high risk of total limbal stem-cell deficiency.\n\nAlkali saponifies cell membranes and penetrates rapidly, damaging limbal stem cells, trabecular meshwork and anterior segment. Limbal ischaemia and conjunctival involvement predict failure; thermal injury and infection are differentials but do not alter immediate irrigation."
+        },
+        {
+          "id": "q2",
+          "text": "Which investigations change management or prognosis?",
+          "modelAnswer": "Immediate serial pH and double-eversion/fornix sweep for particles; after neutralisation document epithelial defect, limbal ischaemia, IOP and posterior segment. Use Roper-Hall/Dua grading, serial photography and AS-OCT; assess renal function/G6PD when systemic agents require it."
+        },
+        {
+          "id": "q3",
+          "text": "Give an escalating plan with procedural detail and safety contingencies.",
+          "modelAnswer": "Immediate copious irrigation with topical anaesthetic until sustained neutral pH. Then intensive preservative-free steroid early, topical antibiotic, cycloplegia, ascorbate and citrate, oral doxycycline, lubrication and IOP control. Early amniotic membrane/tenonplasty for severe ischaemia; later manage symblepharon, glaucoma and LSCD with staged surface reconstruction before keratoplasty."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol5_st3",
+    "type": "OSCE",
+    "topic": "Glaucoma",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Adult female\n**Visual Acuity:** OD 6/24; OS 6/6\n**Intraocular Pressure:** OD 36 mmHg; OS 14 mmHg\n**Primary Instruction:** Examine the clinical presentation and imaging findings. Identify the pathology, discuss the mechanism, and outline your immediate and long-term management plan.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume5/image5.jpg)\n![Clinical Image 2](/images/volume5/image6.jpg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Explain the mechanism and separate it from its closest mimics.",
+          "modelAnswer": "Definitive diagnosis: Iridocorneal endothelial syndrome causing secondary angle-closure glaucoma.\n\nAbnormal epithelial-like endothelium migrates across angle and iris; membrane contraction produces PAS, corectopia, holes/nodules and progressive outflow closure. Distinguish PPMD and Axenfeld-Rieger, which are usually bilateral/familial or developmental."
+        },
+        {
+          "id": "q2",
+          "text": "Which investigations change management or prognosis?",
+          "modelAnswer": "Gonioscopy documenting PAS, specular/confocal microscopy, pachymetry and endothelial count; optic nerve OCT/fields and serial IOP. UBM assesses angle and iris; exclude posterior lesion if iris distortion is atypical."
+        },
+        {
+          "id": "q3",
+          "text": "Give an escalating plan with procedural detail and safety contingencies.",
+          "modelAnswer": "Use aqueous suppressants; avoid relying on miotics where synechial closure dominates. Trabeculectomy has high scarring/closure risk, so antimetabolite modulation or drainage implant is often required; cyclodestruction for refractory poor-potential eyes. Treat endothelial failure with EK, recognising recurrent abnormal membrane and graft/IOP interaction."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol5_st4",
+    "type": "OSCE",
+    "topic": "Ocular Inflammation",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Adult female\n**Visual Acuity:** OD 6/60; OS 6/36\n**Intraocular Pressure:** OD 12 mmHg; OS 11 mmHg\n**Primary Instruction:** Examine the clinical presentation and fundus findings. Describe the inflammatory phenotype, state the diagnosis, and outline your investigation and treatment plan.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume5/image7.jpg)\n![Clinical Image 2](/images/volume5/image8.jpg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Explain the mechanism and separate it from its closest mimics.",
+          "modelAnswer": "Definitive diagnosis: Acute Vogt-Koyanagi-Harada disease.\n\nAutoimmune inflammation targets melanocyte-associated antigens in choroid, meninges, inner ear and skin. Sympathetic ophthalmia requires penetrating trauma; posterior scleritis produces pain and a T-sign; central serous chorioretinopathy lacks inflammatory leakage/meningism."
+        },
+        {
+          "id": "q2",
+          "text": "Which investigations change management or prognosis?",
+          "modelAnswer": "EDI-OCT, FA with multiple pinpoint leaks and disc leakage, ICGA and B-scan; audiology and neurologic assessment. CSF lymphocytic pleocytosis can support early disease. Exclude syphilis, TB and masquerade before prolonged immunosuppression."
+        },
+        {
+          "id": "q3",
+          "text": "Give an escalating plan with procedural detail and safety contingencies.",
+          "modelAnswer": "Start immediate high-dose IV or oral corticosteroid followed by a slow taper of at least months, and introduce early steroid-sparing immunomodulation for severe/recurrent disease. Treat anterior inflammation locally, monitor OCT/IOP and systemic toxicities; rapid inadequate taper promotes chronic recurrent disease, sunset-glow fundus, cataract, glaucoma and CNV."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol5_st5",
+    "type": "OSCE",
+    "topic": "Vitreoretinal",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Young adult male\n**Visual Acuity:** OD 6/60; OS 6/6\n**Intraocular Pressure:** OD 10 mmHg; OS 14 mmHg\n**Primary Instruction:** Examine the fundus photographs and optical coherence tomography. Describe the clinical findings, discuss the mechanism of the pathology, and outline your management options.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume5/image9.jpg)\n![Clinical Image 2](/images/volume5/image10.jpg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Explain the lesion and distinguish it from a giant retinal tear.",
+          "modelAnswer": "Definitive diagnosis: Traumatic retinal dialysis with associated rhegmatogenous retinal detachment.\n\nA dialysis is circumferential separation of retina from the non-pigmented ciliary epithelium at the ora, commonly inferotemporal after blunt trauma. A giant retinal tear lies posterior to the ora with a mobile posterior flap."
+        },
+        {
+          "id": "q2",
+          "text": "What associated injuries and occult pathology must be sought?",
+          "modelAnswer": "Scleral-depressed examination of both eyes, widefield photography and B-scan when view is limited; assess macular status, vitreous base avulsion, additional tears, commotio, choroidal rupture, angle recession, lens injury and open globe/IOFB when relevant."
+        },
+        {
+          "id": "q3",
+          "text": "Choose a procedure and explain key technical points.",
+          "modelAnswer": "For an anterior dialysis with limited PVR, scleral buckle with cryopexy supports the entire dialysis and vitreous base; place an encircling element when extent/traction warrants. Add PPV for significant vitreous haemorrhage, posterior breaks, PVR or poor visualisation. Avoid excessive cryotherapy, drain subretinal fluid selectively and monitor later angle-recession glaucoma and fellow-eye pathology."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol5_st6",
+    "type": "OSCE",
+    "topic": "Neuro-ophthalmology",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Adult female\n**Visual Acuity:** OD 6/60; OS 6/6\n**Intraocular Pressure:** OD 14 mmHg; OS 14 mmHg\n**Primary Instruction:** Examine the clinical presentation and neuroimaging. Describe the abnormalities, localise the lesion, and outline your immediate investigation and management priorities.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume5/image11.jpg)\n![Clinical Image 2](/images/volume5/image12.jpg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Explain the mechanism and separate it from its closest mimics.",
+          "modelAnswer": "Definitive diagnosis: Optic nerve sheath meningioma causing compressive optic neuropathy.\n\nArachnoid cap-cell tumour encases the nerve, producing tram-track enhancement and chronic venous obstruction with optociliary shunts. Optic neuritis is painful/acute and intraneural; glioma expands the nerve and is usually paediatric."
+        },
+        {
+          "id": "q2",
+          "text": "Which investigations change management or prognosis?",
+          "modelAnswer": "Thin-slice contrast MRI orbits with fat suppression plus CT for calcification/hyperostosis; acuity, colour, pupils, fields, OCT RNFL/GCC and exophthalmometry. Avoid biopsy in typical cases because it can destroy remaining vision; assess NF2 when bilateral/multiple."
+        },
+        {
+          "id": "q3",
+          "text": "Give an escalating plan with procedural detail and safety contingencies.",
+          "modelAnswer": "Observe selected stable patients with useful vision using serial function/imaging. Fractionated stereotactic radiotherapy is standard for progressive visual loss/growth. Surgery is reserved for blind painful/disfiguring eyes, intracranial extension or diagnostic uncertainty because nerve-preserving excision is rarely possible."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol5_st7",
+    "type": "OSCE",
+    "topic": "Ocular Motility",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Adult male\n**Visual Acuity:** OD 6/6; OS 6/6\n**Intraocular Pressure:** OD 16 mmHg; OS 16 mmHg\n**Primary Instruction:** Examine the motility photographs and any neuroimaging provided. Describe the abnormalities, identify the clinical syndrome, and outline your immediate and long-term management.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume5/image13.jpg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Explain the dysinnervation and classify the motility pattern.",
+          "modelAnswer": "Definitive diagnosis: Type III Duane retraction syndrome of the left eye.\n\nAbsent/hypoplastic sixth-nerve innervation with anomalous oculomotor innervation of lateral rectus causes co-contraction on adduction, globe retraction and up/downshoot. Distinguish sixth palsy, Moebius syndrome and mechanical restriction."
+        },
+        {
+          "id": "q2",
+          "text": "What examination and systemic assessment are required?",
+          "modelAnswer": "Measure primary deviation, head posture, ductions, fissure change and up/downshoot; assess amblyopia, refraction and binocular function. Image atypical/acquired cases and assess hearing, spine, radial ray and syndromic associations."
+        },
+        {
+          "id": "q3",
+          "text": "Set out conservative and surgical options without promising normal motility.",
+          "modelAnswer": "Correct refractive error and amblyopia; observe if primary alignment and head posture are acceptable. Recess involved horizontal rectus muscles for significant primary deviation/head posture; add Y-splitting or vertical rectus transposition selectively for severe shoots/abduction deficit, with anterior-segment ischaemia precautions. Surgery improves alignment/head posture but cannot normalise innervation."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol5_st8",
+    "type": "OSCE",
+    "topic": "Paediatrics",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Premature infant\n**Visual Acuity:** OD neonatal assessment; OS neonatal assessment\n**Intraocular Pressure:** IOP not routinely measured\n**Primary Instruction:** Examine the clinical presentation and imaging findings. State the diagnosis, outline the key risks, and discuss your investigation and treatment plan.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume5/image14.png)\n![Clinical Image 2](/images/volume5/image15.jpg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Explain the mechanism and separate it from its closest mimics.",
+          "modelAnswer": "Definitive diagnosis: Aggressive retinopathy of prematurity in zone I with plus disease.\n\nAggressive ROP can progress rapidly without classic staged ridge evolution. Posterior location, plus disease and flat neovascularisation distinguish it; FEVR occurs in term infants and requires family/genetic assessment."
+        },
+        {
+          "id": "q2",
+          "text": "Which investigations change management or prognosis?",
+          "modelAnswer": "Record gestational age, birth weight and postmenstrual age; indirect ophthalmoscopy/RetCam with zone, stage, clock-hours and plus/pre-plus in both eyes. Review oxygen/medical course and follow current Australian/New Zealand screening intervals."
+        },
+        {
+          "id": "q3",
+          "text": "Give an escalating plan with procedural detail and safety contingencies.",
+          "modelAnswer": "Treat urgently—typically intravitreal anti-VEGF for posterior zone I disease or confluent laser to avascular retina depending anatomy and follow-up reliability. Use weight/eye-appropriate dosing and sterile technique. Anti-VEGF requires prolonged surveillance for late reactivation and later laser; operate with lens-sparing vitrectomy for progressive tractional stages."
+        }
+      ]
+    }
+  },
+  {
+    "id": "vol5_st9",
+    "type": "OSCE",
+    "topic": "Oculoplastics and Orbit",
+    "paper": "OSCE",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** Older adult female\n**Visual Acuity:** OD 6/9; OS 6/6\n**Intraocular Pressure:** OD 14 mmHg; OS 14 mmHg\n**Primary Instruction:** Examine the clinical presentation and orbital imaging. Describe the abnormalities, state the diagnosis, and discuss your immediate and long-term management plan.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume5/image16.jpg)\n![Clinical Image 2](/images/volume5/image17.jpg)",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Explain the mechanism and separate it from its closest mimics.",
+          "modelAnswer": "Definitive diagnosis: Sebaceous carcinoma of the eyelid with possible pagetoid conjunctival spread.\n\nTumour arises from meibomian/Zeis glands and can masquerade as chalazion or unilateral blepharitis. Intraepithelial pagetoid migration creates multifocal surface disease; squamous/BCC and Merkel cell carcinoma are differentials."
+        },
+        {
+          "id": "q2",
+          "text": "Which investigations change management or prognosis?",
+          "modelAnswer": "Full lid eversion, double eversion, fornix and node examination; full-thickness incisional biopsy including tarsus and request lipid/sebaceous immunohistochemistry. Conjunctival map biopsies when spread is suspected; MRI orbit and nodal/systemic staging according to risk. Consider Muir-Torre/Lynch evaluation."
+        },
+        {
+          "id": "q3",
+          "text": "Give an escalating plan with procedural detail and safety contingencies.",
+          "modelAnswer": "Excise with margin control (Mohs or frozen/permanent en-face methods) while preserving tumour planes; treat pagetoid disease with map-guided excision/cryotherapy and selected topical chemotherapy. Advanced orbital disease may require exenteration; perform sentinel node/nodal management and oncology therapy by stage, with long-term regional and systemic surveillance."
+        }
+      ]
+    }
+  }
+]

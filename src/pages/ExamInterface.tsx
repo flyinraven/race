@@ -455,7 +455,8 @@ export default function ExamInterface() {
   const [isGrading, setIsGrading] = useState(false);
   const [gradingResults, setGradingResults] = useState<Record<number, string>>({});
 
-  const [examPhase, setExamPhase] = useState<'reading' | 'writing'>('writing');
+  const [examPhase, setExamPhase] = useState<'login' | 'reading' | 'writing'>('writing');
+  const [loginTimeRemaining, setLoginTimeRemaining] = useState(0);
   const [readingTimeRemaining, setReadingTimeRemaining] = useState(0);
   const [isTimerPaused, setIsTimerPaused] = useState(false);
   const [isFullPaper, setIsFullPaper] = useState(false);
@@ -509,9 +510,10 @@ export default function ExamInterface() {
          }
          
          setIsFullPaper(fullPaperMode);
-         
+          
          if (fullPaperMode) {
-            setExamPhase('reading');
+            setExamPhase('login');
+            setLoginTimeRemaining(5 * 60); // 5 minutes login phase
             setReadingTimeRemaining(15 * 60); // 15 minutes reading time
          } else {
             setExamPhase('writing');
@@ -638,7 +640,15 @@ export default function ExamInterface() {
     if (isExamFinished || isTimerPaused) return;
     
     const timerId = setInterval(() => {
-      if (examPhase === 'reading') {
+      if (examPhase === 'login') {
+        setLoginTimeRemaining((prev) => {
+          if (prev <= 1) {
+            setExamPhase('reading');
+            return 0;
+          }
+          return prev - 1;
+        });
+      } else if (examPhase === 'reading') {
         setReadingTimeRemaining((prev) => {
           if (prev <= 1) {
             setExamPhase('writing');
@@ -1023,6 +1033,24 @@ export default function ExamInterface() {
     );
   }
 
+  // Pre-Exam Log In Phase View
+  if (examPhase === 'login' && !isExamFinished) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white px-6">
+        <div className="text-center w-full max-w-md bg-slate-800 p-8 rounded-2xl border border-slate-700 shadow-2xl space-y-6">
+          <Loader2 className="w-16 h-16 text-blue-400 animate-spin mx-auto" />
+          <h2 className="text-2xl font-bold tracking-tight text-white">Pre-Exam Log In</h2>
+          <p className="text-slate-400 text-sm leading-relaxed">
+            You are in the pre-exam verification phase. Candidates cannot look at the questions during this time. Please wait for the reading phase to begin.
+          </p>
+          <div className="text-4xl font-mono font-bold bg-slate-900/60 py-4 rounded-xl text-blue-400 border border-slate-900">
+            {formatTime(loginTimeRemaining)}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // OSCE Rest Page View
   if (showRestPage) {
     return (
@@ -1101,8 +1129,13 @@ export default function ExamInterface() {
             </button>
           )}
 
-          {examPhase === 'reading' ? (
-            <div className="flex items-center gap-3 px-4 py-2 rounded-lg font-mono text-xl font-bold bg-amber-100 text-amber-800">
+          {examPhase === 'login' ? (
+            <div className="flex items-center gap-3 px-4 py-2 rounded-lg font-mono text-xl font-bold bg-blue-100 text-blue-800 animate-pulse">
+              <Clock className="w-6 h-6" />
+              <span>Log In: {formatTime(loginTimeRemaining)}</span>
+            </div>
+          ) : examPhase === 'reading' ? (
+            <div className="flex items-center gap-3 px-4 py-2 rounded-lg font-mono text-xl font-bold bg-amber-100 text-amber-800 animate-pulse">
               <BookOpen className="w-6 h-6" />
               <span>Reading: {formatTime(readingTimeRemaining)}</span>
             </div>

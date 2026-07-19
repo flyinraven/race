@@ -171,6 +171,31 @@ export async function initDb() {
       }
     }
 
+    // Load and insert Volume 5 questions automatically
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      let vol5Path = path.join(__dirname, '../../volume5_questions.json');
+      if (!fs.existsSync(vol5Path)) {
+        vol5Path = path.join(__dirname, '../volume5_questions.json');
+      }
+      if (fs.existsSync(vol5Path)) {
+        const vol5Data = JSON.parse(fs.readFileSync(vol5Path, 'utf-8'));
+        for (const q of vol5Data) {
+          await query(
+            `INSERT INTO questions (id, type, topic, paper, year, data)
+             VALUES ($1, $2, $3, $4, $5, $6)
+             ON CONFLICT (id) DO UPDATE 
+             SET type = EXCLUDED.type, topic = EXCLUDED.topic, paper = EXCLUDED.paper, year = EXCLUDED.year, data = EXCLUDED.data`,
+            [q.id, q.type, q.topic, q.paper, q.year, JSON.stringify(q.data)]
+          );
+        }
+        console.log(`Auto-seeded ${vol5Data.length} Volume 5 OSCE questions.`);
+      }
+    } catch (e) {
+      console.error('Error auto-seeding Volume 5 questions:', e);
+    }
+
     console.log('Database tables initialized successfully.');
   } catch (err) {
     console.error('Error initializing database tables:', err);

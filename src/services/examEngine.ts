@@ -293,7 +293,7 @@ For VSAQ:
 
 For SEQ:
 - Rules: 15-minute fellowship question. Rich multi-part case with comprehensive patient workup.
-- Use "![Image](SEARCH_IMAGE:1_or_2_word_query)" for images. Broad terms only (e.g. "glaucoma fundus", "corneal ulcer").
+- Use "![Image](SEARCH_IMAGE:<pathology_name>)" for clinical images. The search query MUST be the specific name of the eye pathology (e.g. "nuclear cataract lens", "corneal ulcer", "disc cupping"). NEVER include words like "examination", "slit lamp", "performing", "doctor", "testing", or "procedure" as they retrieve stock photos of machines and people.
 - Break into 4-6 sub-questions with mark allocations (e.g. "a) What is the most likely diagnosis? (2 marks)").
 - Model answers: Detail matching a competent Australian ophthalmologist.
 
@@ -301,7 +301,7 @@ For OSCE:
 - Rules: Simulate a real RANZCO OSCE verbal station. Each station is exactly 9 minutes, examiner-led.
 - The OSCE station MUST follow this strict real-world RANZCO format:
   * The scenario is a PATIENT ENCOUNTER card. It describes the patient history (age, gender, optometrist findings) and states the examiner's initial instructions to the candidate, e.g. "Examiner: This is Julie, a 48-year-old female. Please perform a posterior segment examination and verbally state your findings."
-  * Use "![Image](SEARCH_IMAGE:1_or_2_word_query)" to embed ONE relevant clinical image (e.g. fundus photo, slit-lamp, OCT, VF, FFA) to examine.
+  * Use "![Image](SEARCH_IMAGE:<pathology_name>)" to embed ONE relevant clinical image (e.g. "papilledema disc", "toxoplasmosis scar", "thyroid proptosis", "angioid streaks"). The search query MUST target the specific clinical pathology/findings directly. NEVER include generic procedure words like "examination", "slit-lamp", "performing", "doctor", or "testing" as they fetch stock photos of clinical rooms instead of the pathological eye signs.
   * Sub-questions are asked VERBALLY by the examiner and represent the following strict clinical progression:
     a) Description of findings: Candidate's verbal list of signs (e.g. "What key findings do you see, and what negative signs differentiate this from choroidal melanoma?") [3 marks]
     b) Differential Diagnosis & Primary Diagnosis (e.g. "What is your diagnosis and the key differentials?") [2 marks]
@@ -315,7 +315,7 @@ For OSCE:
 Format: Raw JSON array of Question Objects:
 [
   {
-    "scenario": "**OSCE Station — [Topic]:**\\n\\n**Patient History:** [age]-year-old [gender] presenting with [history].\\n\\n**Examiner Instructions:** \\\"This is [Name]. Please perform a [examination type] segment examination and verbally state your findings.\\\"\\n\\n![Image](SEARCH_IMAGE:<query>)",
+    "scenario": "**OSCE Station — [Topic]:**\\n\\n**Patient History:** [age]-year-old [gender] presenting with [history].\\n\\n**Examiner Instructions:** \\\"This is [Name]. Please perform a [examination type] segment examination and verbally state your findings.\\\"\\n\\n![Image](SEARCH_IMAGE:<pathology_query>)",
     "subQuestions": [
       { "id": "q1", "text": "a) [Question text]? ([N] marks)", "modelAnswer": "Concise spoken-style answer..." },
       { "id": "q2", "text": "b) [Question text]? ([N] marks)", "modelAnswer": "Concise spoken-style answer..." }

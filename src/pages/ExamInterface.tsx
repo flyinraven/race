@@ -488,7 +488,13 @@ export default function ExamInterface() {
         const generatedPlan = buildExamPlan(examId, bank);
         setPlan(generatedPlan);
         setCurrentIndex(0);
-        setTotalTimeRemaining(generatedPlan.reduce((acc, q) => acc + q.timeLimitSec, 0));
+        if (examId === 'sim_paper1' || examId === 'sim_paper3') {
+          setTotalTimeRemaining(100 * 60);
+        } else if (examId === 'sim_paper2' || examId === 'sim_paper4') {
+          setTotalTimeRemaining(80 * 60);
+        } else {
+          setTotalTimeRemaining(generatedPlan.reduce((acc, q) => acc + q.timeLimitSec, 0));
+        }
         
         let fullPaperMode = false;
         

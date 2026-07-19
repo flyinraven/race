@@ -118,6 +118,59 @@ export async function initDb() {
     `);
     await query("UPDATE questions SET paper = 'OSCE' WHERE type = 'OSCE'");
 
+    // Standardize OSCE instructions
+    const osceRes = await query("SELECT id, topic, data FROM questions WHERE type = 'OSCE'");
+    const INSTRUCTIONS_BY_TOPIC = {
+      "Cataract": "Examine the clinical presentation and slit-lamp findings. Identify the complications, discuss your differential diagnosis, and outline your immediate surgical and medical management plan.",
+      "Cornea and External Eye": "Examine the slit-lamp findings and any corneal imaging provided. Describe the abnormalities, state the most likely diagnosis, and discuss your immediate treatment strategy.",
+      "Glaucoma": "Examine the clinical presentation and imaging findings. Identify the pathology, discuss the mechanism, and outline your immediate and long-term management plan.",
+      "Ocular Inflammation": "Examine the clinical presentation and fundus findings. Describe the inflammatory phenotype, state the diagnosis, and outline your investigation and treatment plan.",
+      "Vitreoretinal": "Examine the fundus photographs and optical coherence tomography. Describe the clinical findings, discuss the mechanism of the pathology, and outline your management options.",
+      "Neuro-ophthalmology": "Examine the clinical presentation and neuroimaging. Describe the abnormalities, localise the lesion, and outline your immediate investigation and management priorities.",
+      "Ocular Motility": "Examine the motility photographs and any neuroimaging provided. Describe the abnormalities, identify the clinical syndrome, and outline your immediate and long-term management.",
+      "Paediatrics": "Examine the clinical presentation and imaging findings. State the diagnosis, outline the key risks, and discuss your investigation and treatment plan.",
+      "Oculoplastics and Orbit": "Examine the clinical presentation and orbital imaging. Describe the abnormalities, state the diagnosis, and discuss your immediate and long-term management plan."
+    };
+
+    for (const row of osceRes.rows) {
+      const qData = row.data;
+      if (qData && qData.scenario) {
+        let demographics = "";
+        let va = "";
+        let iop = "";
+        let images = "";
+        
+        const lines = qData.scenario.split('\n');
+        for (const line of lines) {
+          const lower = line.toLowerCase();
+          if (lower.includes('demographics:')) {
+            demographics = line.replace(/\*\*Demographics:\*\*/i, '').trim();
+          } else if (lower.includes('visual acuity:')) {
+            va = line.replace(/\*\*Visual Acuity:\*\*/i, '').trim();
+          } else if (lower.includes('intraocular pressure:')) {
+            iop = line.replace(/\*\*Intraocular Pressure:\*\*/i, '').trim();
+          } else if (line.trim().startsWith('!') || line.trim().startsWith('[')) {
+            images += line + '\n';
+          }
+        }
+        
+        const topic = row.topic || "Cataract";
+        const instruction = INSTRUCTIONS_BY_TOPIC[topic] || INSTRUCTIONS_BY_TOPIC["Cataract"];
+        
+        let newScenario = "";
+        if (demographics) newScenario += `**Demographics:** ${demographics}\n`;
+        if (va) newScenario += `**Visual Acuity:** ${va}\n`;
+        if (iop) newScenario += `**Intraocular Pressure:** ${iop}\n`;
+        newScenario += `**Primary Instruction:** ${instruction}\n\n`;
+        if (images) {
+          newScenario += `**Clinical Images:**\n${images.trim()}`;
+        }
+        
+        qData.scenario = newScenario.trim();
+        await query("UPDATE questions SET data = $1 WHERE id = $2", [JSON.stringify(qData), row.id]);
+      }
+    }
+
     console.log('Database tables initialized successfully.');
   } catch (err) {
     console.error('Error initializing database tables:', err);

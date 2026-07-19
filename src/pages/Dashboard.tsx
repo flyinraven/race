@@ -71,14 +71,14 @@ export default function Dashboard() {
       title: 'OSCE Station Simulation',
       description: '9 clinical OSCE stations (one from each curriculum topic) with a 2-minute rest interval between stations.',
       details: '9 Stations | 9 Minutes Per Station | 2 Min Rests',
-      badge: 'Highly Recommended',
-      badgeColor: 'bg-indigo-100 text-indigo-800'
+      badge: '',
+      badgeColor: ''
     },
     {
       id: 'sim_paper1',
       title: 'Paper 1 Simulation',
       description: 'Standard written exam containing 15 Visual Single Answer Questions (VSAQs) and 5 Short Essay Questions (SEQs).',
-      details: '20 Questions | 1h 37.5m Total Time',
+      details: '20 Questions | 1h 40m Total Time',
       badge: 'Day 1 Morning',
       badgeColor: 'bg-blue-100 text-blue-800'
     },
@@ -86,7 +86,7 @@ export default function Dashboard() {
       id: 'sim_paper2',
       title: 'Paper 2 Simulation',
       description: 'Standard written exam containing 15 Visual Single Answer Questions (VSAQs) and 4 Short Essay Questions (SEQs).',
-      details: '19 Questions | 1h 22.5m Total Time',
+      details: '19 Questions | 1h 20m Total Time',
       badge: 'Day 1 Afternoon',
       badgeColor: 'bg-blue-100 text-blue-800'
     },
@@ -94,7 +94,7 @@ export default function Dashboard() {
       id: 'sim_paper3',
       title: 'Paper 3 Simulation',
       description: 'Standard written exam containing 15 Visual Single Answer Questions (VSAQs) and 5 Short Essay Questions (SEQs).',
-      details: '20 Questions | 1h 37.5m Total Time',
+      details: '20 Questions | 1h 40m Total Time',
       badge: 'Day 2 Morning',
       badgeColor: 'bg-blue-100 text-blue-800'
     },
@@ -102,7 +102,7 @@ export default function Dashboard() {
       id: 'sim_paper4',
       title: 'Paper 4 Simulation',
       description: 'Standard written exam containing 15 Visual Single Answer Questions (VSAQs) and 4 Short Essay Questions (SEQs).',
-      details: '19 Questions | 1h 22.5m Total Time',
+      details: '19 Questions | 1h 20m Total Time',
       badge: 'Day 2 Afternoon',
       badgeColor: 'bg-blue-100 text-blue-800'
     }

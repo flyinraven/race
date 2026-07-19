@@ -128,41 +128,13 @@ export default function Dashboard() {
       <main className="max-w-4xl mx-auto p-6 mt-8">
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
           
-          {/* Mode Selector */}
-          <div className="flex border-b border-slate-200 bg-slate-50/50">
-            <button
-              onClick={() => setMode('past')}
-              className={`flex-1 py-4 flex items-center justify-center gap-2 font-semibold text-sm transition-colors ${
-                mode === 'past' 
-                  ? 'bg-white text-blue-700 border-b-2 border-blue-600' 
-                  : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
-              }`}
-            >
-              <FileText className="w-5 h-5" />
-              Past Exams
-            </button>
-            <button
-              onClick={() => setMode('generate')}
-              className={`flex-1 py-4 flex items-center justify-center gap-2 font-semibold text-sm transition-colors ${
-                mode === 'generate' 
-                  ? 'bg-white text-blue-700 border-b-2 border-blue-600' 
-                  : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
-              }`}
-            >
-              <Settings className="w-5 h-5" />
-              Generate Paper
-            </button>
-          </div>
-
           <div className="p-8">
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-slate-800 mb-2">
-                {mode === 'past' ? 'Select a Past Exam' : 'Configure Custom Paper'}
+                Select a Past Exam
               </h2>
               <p className="text-slate-500">
-                {mode === 'past' 
-                  ? 'Choose a previously administered exam to test your knowledge.' 
-                  : 'AI will dynamically generate a balanced paper based on your preferences.'}
+                Choose a previously administered exam to test your knowledge.
               </p>
             </div>
 

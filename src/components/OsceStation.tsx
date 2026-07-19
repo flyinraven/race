@@ -97,39 +97,11 @@ export function OsceStation({
   const timerWarning = timeRemaining < 60;
   const timerCritical = timeRemaining < 30;
 
-  const handleFinishStation = useCallback(async (finalAnswers: Record<string, string>) => {
+  const handleFinishStation = useCallback((finalAnswers: Record<string, string>) => {
     clearInterval(timerRef.current!);
-    setPhase('grading');
-    try {
-      // Build a combined answer string for all sub-questions
-      const combinedAnswer = subQuestions.map(sq =>
-        `Q: ${sq.text}\nA: ${finalAnswers[sq.id] || '(No answer provided)'}`
-      ).join('\n\n');
-      const questionContext = stationData.scenario + '\n\n' +
-        subQuestions.map(sq => `${sq.text}\nModel Answer: ${sq.modelAnswer || ''}`).join('\n\n');
-      const timeTakenStr = `${Math.floor(timeTaken / 60)}m ${timeTaken % 60}s`;
-      const targetTimeStr = `${Math.floor(timeLimitSec / 60)}m`;
-      const rawResult = await gradeAnswerMode(
-        combinedAnswer,
-        null,
-        timeTakenStr,
-        targetTimeStr,
-        questionContext
-      );
-      try {
-        const parsed = typeof rawResult === 'string' ? JSON.parse(jsonrepair(rawResult)) : rawResult;
-        setGradingResult(parsed);
-      } catch {
-        // If parse fails, show a basic result
-        setGradingResult(null);
-      }
-    } catch (err) {
-      console.error('Grading error:', err);
-      setGradingResult(null);
-    } finally {
-      setPhase('results');
-    }
-  }, [subQuestions, stationData, timeTaken, timeLimitSec]);
+    stopListening();
+    onComplete(finalAnswers, timeTaken);
+  }, [onComplete, timeTaken, stopListening]);
 
   useEffect(() => {
     if (phase !== 'questioning' && phase !== 'briefing') return;
@@ -450,104 +422,3 @@ export function OsceStation({
     );
   }
 
-  // GRADING
-  if (phase === 'grading') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-950 flex items-center justify-center">
-        <div className="text-center px-6">
-          <Loader2 className="w-16 h-16 text-indigo-400 animate-spin mx-auto mb-6" />
-          <p className="text-white text-2xl font-bold">Marking your responses...</p>
-          <p className="text-slate-400 mt-2">The examiner is reviewing your answers against the Angoff standard.</p>
-        </div>
-      </div>
-    );
-  }
-
-  // RESULTS
-  const passed = gradingResult?.passed;
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-950">
-      <div className="max-w-3xl mx-auto p-6 space-y-4">
-        {/* Score */}
-        <div className={`rounded-2xl p-6 text-center shadow-2xl border ${
-          passed ? 'bg-emerald-900/50 border-emerald-700' : 'bg-red-900/50 border-red-700'
-        }`}>
-          <p className={`text-5xl font-black mb-2 ${passed ? 'text-emerald-300' : 'text-red-300'}`}>
-            {gradingResult?.candidateScore ?? '—'} / {gradingResult?.totalPoints ?? '—'}
-          </p>
-          <p className={`text-lg font-semibold ${passed ? 'text-emerald-400' : 'text-red-400'}`}>
-            {passed ? '✓ Pass' : '✗ Below Pass Mark'} — Angoff pass mark: {gradingResult?.angoffPassMark ?? '—'}
-          </p>
-          <p className="text-slate-300 text-sm mt-2">{stationLabel}</p>
-        </div>
-
-        {gradingResult?.timeCritique && (
-          <div className="bg-slate-800 border border-slate-700 rounded-xl p-4">
-            <p className="text-slate-300 text-sm"><span className="text-slate-400 font-semibold">Time: </span>{gradingResult.timeCritique}</p>
-          </div>
-        )}
-
-        {/* Q&A + model answers */}
-        {subQuestions.map((sq) => (
-          <div key={sq.id} className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
-            <div className="bg-slate-700/50 px-5 py-3">
-              <p className="text-white font-semibold text-sm">{sq.text}</p>
-            </div>
-            <div className="p-5 space-y-3">
-              <div>
-                <p className="text-xs font-semibold text-emerald-400 uppercase tracking-wide mb-1">Your Answer</p>
-                <p className="text-slate-300 text-sm bg-slate-900/50 rounded-lg px-4 py-3 leading-relaxed">
-                  {answers[sq.id] || <em className="text-slate-500">No answer provided</em>}
-                </p>
-              </div>
-              {sq.modelAnswer && (
-                <div>
-                  <p className="text-xs font-semibold text-indigo-400 uppercase tracking-wide mb-1">Model Answer</p>
-                  <p className="text-slate-300 text-sm bg-indigo-950/30 border border-indigo-900/40 rounded-lg px-4 py-3 leading-relaxed">{sq.modelAnswer}</p>
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
-
-        {/* Rubric */}
-        {gradingResult?.detailedRubric && gradingResult.detailedRubric.length > 0 && (
-          <div className="bg-slate-800 border border-slate-700 rounded-xl p-5">
-            <p className="text-white font-bold mb-3">Marking Rubric</p>
-            <div className="space-y-3">
-              {gradingResult.detailedRubric.map((item, i) => (
-                <div key={i} className="flex gap-3">
-                  <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-0.5 ${item.checked ? 'bg-emerald-600' : 'bg-slate-600'}`}>
-                    {item.checked ? <CheckCircle2 className="w-4 h-4 text-white" /> : <X className="w-3 h-3 text-slate-400" />}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <p className="text-slate-200 text-sm font-medium">{item.criterion}</p>
-                      <span className="text-xs font-mono text-slate-400">{item.points}/{item.maxPoints}</span>
-                    </div>
-                    {item.feedback && <p className="text-slate-400 text-xs mt-0.5">{item.feedback}</p>}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Feedback */}
-        {gradingResult?.generalFeedback && (
-          <div className="bg-indigo-900/30 border border-indigo-700/50 rounded-xl p-5">
-            <p className="text-indigo-300 font-bold mb-2">Examiner Feedback</p>
-            <p className="text-slate-300 text-sm leading-relaxed">{gradingResult.generalFeedback}</p>
-          </div>
-        )}
-
-        <button
-          onClick={() => onComplete(answers, timeTaken)}
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition shadow-lg flex items-center justify-center gap-2 text-lg"
-        >
-          {stationIndex < totalStations - 1 ? <>Next Station <ChevronRight className="w-5 h-5" /></> : <>Complete OSCE Exam <CheckCircle2 className="w-5 h-5" /></>}
-        </button>
-      </div>
-    </div>
-  );
-}

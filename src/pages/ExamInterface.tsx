@@ -50,6 +50,44 @@ const TOPICS = [
   "Oculoplastics and Orbit", "Paediatrics", "Vitreoretinal"
 ];
 
+function filterAndCapQuestions(questions: any[], isOsceOnly: boolean): any[] {
+  // 1. Enforce max 9 OSCE stations with unique topics if it is OSCE only
+  if (isOsceOnly) {
+    const uniqueTopicQuestions: any[] = [];
+    const seenTopics = new Set<string>();
+    for (const q of questions) {
+      if (q.type === 'OSCE') {
+        if (!seenTopics.has(q.topic)) {
+          seenTopics.add(q.topic);
+          uniqueTopicQuestions.push(q);
+        }
+      }
+      if (uniqueTopicQuestions.length >= 9) break;
+    }
+    questions = uniqueTopicQuestions;
+  }
+
+  // 2. Load completed question IDs from localStorage
+  let completedIds: string[] = [];
+  try {
+    completedIds = JSON.parse(localStorage.getItem('completed_questions') || '[]');
+  } catch (e) {}
+
+  // 3. Filter out completed questions
+  let uncompleted = questions.filter(q => !completedIds.includes(q.id));
+
+  // 4. If all matching questions are completed, reset counter by clearing them from localStorage
+  if (uncompleted.length === 0 && questions.length > 0) {
+    completedIds = completedIds.filter(id => !questions.some(q => q.id === id));
+    try {
+      localStorage.setItem('completed_questions', JSON.stringify(completedIds));
+    } catch (e) {}
+    uncompleted = questions; // Reset to all
+  }
+
+  return uncompleted;
+}
+
 function buildExamPlan(examId: string, bankItems?: any[]): QuestionSpec[] {
   const plan: QuestionSpec[] = [];
   if (examId.startsWith('realpastb64_')) {
@@ -59,7 +97,7 @@ function buildExamPlan(examId: string, bankItems?: any[]): QuestionSpec[] {
     } catch(e) {}
     
     if (bankItems && bankItems.length > 0) {
-      const paperQuestions = bankItems.filter(q => {
+      let paperQuestions = bankItems.filter(q => {
         if (config.y && config.y !== 'All' && String(q.year) !== config.y) return false;
         if (config.p && config.p !== 'All' && q.paper !== config.p && q.questionLabel !== config.p) return false;
         if (config.t && config.t !== 'All' && q.type !== config.t) return false;
@@ -67,6 +105,9 @@ function buildExamPlan(examId: string, bankItems?: any[]): QuestionSpec[] {
         return true;
       });
       
+      const isOsceOnly = config.t === 'OSCE' || (paperQuestions.length > 0 && paperQuestions.every(q => q.type === 'OSCE'));
+      paperQuestions = filterAndCapQuestions(paperQuestions, isOsceOnly);
+
       const getNum = (str: string) => {
         const match = str?.match(/\d+/);
         return match ? parseInt(match[0], 10) : 0;
@@ -90,8 +131,11 @@ function buildExamPlan(examId: string, bankItems?: any[]): QuestionSpec[] {
     
     // We should have passed bankItems to buildExamPlan
     if (bankItems && bankItems.length > 0) {
-      const paperQuestions = bankItems.filter(q => q.paper === paperName || q.questionLabel === paperName);
+      let paperQuestions = bankItems.filter(q => q.paper === paperName || q.questionLabel === paperName);
       
+      const isOsceOnly = paperQuestions.length > 0 && paperQuestions.every(q => q.type === 'OSCE');
+      paperQuestions = filterAndCapQuestions(paperQuestions, isOsceOnly);
+
       const getNum = (str: string) => {
         const match = str?.match(/\d+/);
         return match ? parseInt(match[0], 10) : 0;
@@ -156,7 +200,7 @@ function buildExamPlan(examId: string, bankItems?: any[]): QuestionSpec[] {
           plan.push({ type: 'SEQ', topic: TOPICS[(i + 3 + (p === 'paper3' || p === 'paper4' ? 4 : 0)) % 9], timeLimitSec: 15 * 60, label: `${p} Q${16 + i} (SEQ)` });
         }
       }
-      for (let i = 0; i < 18; i++) {
+      for (let i = 0; i < 9; i++) {
         plan.push({ type: 'OSCE', topic: TOPICS[i % 9], timeLimitSec: 9 * 60, label: `OSCE Station ${i + 1}` });
       }
     } else if (simType.startsWith('paper')) {
@@ -178,7 +222,7 @@ function buildExamPlan(examId: string, bankItems?: any[]): QuestionSpec[] {
          });
       }
     } else if (simType === 'osce') {
-      for (let i = 0; i < 18; i++) {
+      for (let i = 0; i < 9; i++) {
          plan.push({
            type: 'OSCE',
            topic: TOPICS[i % 9], 
@@ -551,6 +595,13 @@ export default function ExamInterface() {
     setIsExamFinished(true);
     setIsGrading(true);
 
+    // Save completed question IDs to localStorage
+    try {
+      const completedIds = JSON.parse(localStorage.getItem('completed_questions') || '[]');
+      const newCompleted = [...new Set([...completedIds, ...plan.map(p => p.bankId).filter(Boolean)])];
+      localStorage.setItem('completed_questions', JSON.stringify(newCompleted));
+    } catch (e) {}
+
     const targetTimeFormattedTotal = plan.reduce((acc, q) => acc + q.timeLimitSec, 0);
     const timeTakenTotal = targetTimeFormattedTotal - totalTimeRemaining;
     
@@ -571,7 +622,21 @@ export default function ExamInterface() {
            continue;
         }
 
-        const answerJson = JSON.stringify(qAnswers);
+        let answerText = '';
+        let questionContextText = '';
+
+        if (spec.type === 'OSCE') {
+          answerText = qData.subQuestions.map((sq: any) =>
+            `Q: ${sq.text}\nA: ${qAnswers[sq.id] || '(No answer provided)'}`
+          ).join('\n\n');
+
+          questionContextText = qData.scenario + '\n\n' +
+            qData.subQuestions.map((sq: any) => `${sq.text}\nModel Answer: ${sq.modelAnswer || ''}`).join('\n\n');
+        } else {
+          answerText = JSON.stringify(qAnswers);
+          questionContextText = qData.scenario + "\n" + qData.subQuestions.map(sq => sq.text).join("\n");
+        }
+
         const targetTimeQ = `${Math.floor(spec.timeLimitSec / 60)}m`;
         const timeTakenForQ = timeSpent[i] || 0;
         const timeTakenFormatted = `${Math.floor(timeTakenForQ / 60)}m ${timeTakenForQ % 60}s`;
@@ -584,11 +649,11 @@ export default function ExamInterface() {
              throw new Error("FreeTier");
           }
           const evalResult = await gradeAnswerMode(
-            answerJson,
+            answerText,
             qPdf ? qPdf.base64 : null,
             timeTakenFormatted,
             targetTimeQ,
-            qData.scenario + "\\n" + qData.subQuestions.map(sq => sq.text).join("\\n")
+            questionContextText
           );
           results[i] = evalResult || "No result generated.";
         } catch(err) {

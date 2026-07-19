@@ -31,8 +31,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const res = await apiFetch('/auth/session');
           if (res.user) {
             setUser({ id: res.user.id, email: res.user.email });
-            setRole(res.user.email === 'admin@txglobal.com.au' ? 'admin' : 'student');
-            setTier('pro');
+            setRole(res.user.role || 'student');
+            setTier(res.user.tier || 'free');
           }
         }
       } catch (e) {
@@ -53,7 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('siteground_token', res.token);
       setUser({ id: res.user.id, email: res.user.email });
       setRole(res.user.role || 'student');
-      setTier('pro');
+      setTier(res.user.tier || 'free');
       return true;
     } catch (e: any) {
       console.error(e);
@@ -70,7 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('siteground_token', res.token);
       setUser({ id: res.user.id, email: res.user.email });
       setRole(res.user.role || 'student');
-      setTier('pro'); // Assuming pro for now
+      setTier(res.user.tier || 'free');
     } catch (e: any) {
       console.error(e);
       throw new Error(e.message || 'Signup failed');

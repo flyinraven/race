@@ -99,7 +99,7 @@ router.post('/auth/signup', async (req, res) => {
       console.error('Failed to send admin notification email:', mailErr.message);
     }
 
-    res.json({ token, user: { id: user.id, email: user.email, role: userRole } });
+    res.json({ token, user: { id: user.id, email: user.email, role: userRole, tier: 'free' } });
   } catch (e: any) {
     res.status(400).json({ error: e.message });
   }
@@ -126,23 +126,28 @@ router.post('/auth/login', async (req, res) => {
     const match = await bcrypt.compare(password, user.password_hash);
     if (!match) return res.status(401).json({ error: 'Invalid credentials' });
 
-    // Look up role from profiles table defensively
+    // Look up role and tier from profiles table defensively
     let role = 'student';
+    let tier = 'free';
     try {
-      const profileRes = await query('SELECT role FROM profiles WHERE id = $1', [user.id]);
+      const profileRes = await query('SELECT role, COALESCE(tier, \'free\') as tier FROM profiles WHERE id = $1', [user.id]);
       if (profileRes.rows[0]?.role) {
         role = profileRes.rows[0].role;
       } else if (user.email === 'admin@txglobal.com.au') {
         role = 'admin';
       }
+      if (profileRes.rows[0]?.tier) {
+        tier = profileRes.rows[0].tier;
+      }
     } catch (err) {
       if (user.email === 'admin@txglobal.com.au') {
         role = 'admin';
+        tier = 'pro';
       }
     }
 
     const token = jwt.sign({ id: user.id, email: user.email, role }, JWT_SECRET, { expiresIn: '7d' });
-    res.json({ token, user: { id: user.id, email: user.email, role } });
+    res.json({ token, user: { id: user.id, email: user.email, role, tier } });
   } catch (e: any) {
     res.status(400).json({ error: e.message });
   }
@@ -150,15 +155,15 @@ router.post('/auth/login', async (req, res) => {
 
 router.get('/auth/session', authenticate, async (req: any, res) => {
   let role = req.user.role;
-  if (!role) {
-    try {
-      const profileRes = await query('SELECT role FROM profiles WHERE id = $1', [req.user.id]);
-      role = profileRes.rows[0]?.role || (req.user.email === 'admin@txglobal.com.au' ? 'admin' : 'student');
-    } catch (err) {
-      role = req.user.email === 'admin@txglobal.com.au' ? 'admin' : 'student';
-    }
+  let tier = 'free';
+  try {
+    const profileRes = await query('SELECT role, COALESCE(tier, \'free\') as tier FROM profiles WHERE id = $1', [req.user.id]);
+    role = profileRes.rows[0]?.role || (req.user.email === 'admin@txglobal.com.au' ? 'admin' : 'student');
+    tier = profileRes.rows[0]?.tier || 'free';
+  } catch (err) {
+    role = req.user.email === 'admin@txglobal.com.au' ? 'admin' : 'student';
   }
-  res.json({ user: { id: req.user.id, email: req.user.email, role } });
+  res.json({ user: { id: req.user.id, email: req.user.email, role, tier } });
 });
 
 router.post('/auth/forgot-password', async (req, res) => {

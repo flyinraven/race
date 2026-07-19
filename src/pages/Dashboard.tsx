@@ -242,7 +242,7 @@ export default function Dashboard() {
                     onChange={(e) => setGenTopic(e.target.value)}
                     className="w-full border border-slate-300 rounded-lg p-3 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                   >
-                    <option value="combined">Combined / Balanced (All Topics)</option>
+                    <option value="mixed">Mixed (Equal Spread of Topics)</option>
                     <option value="Cataract">Cataract</option>
                     <option value="Cornea and External Eye">Cornea and External Eye</option>
                     <option value="Glaucoma">Glaucoma</option>

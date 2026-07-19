@@ -328,17 +328,48 @@ function buildExamPlan(examId: string, bankItems?: any[]): QuestionSpec[] {
           });
         });
       }
-      // If none bookmarked, let it be zero
     } else {
-      for (let i = 0; i < count; i++) {
-        const type = types[i % types.length];
-        const timeLimitSec = type === 'VSAQ' ? 90 : type === 'SEQ' ? 15 * 60 : 9 * 60;
-        const actualTopic = topic === 'combined' ? TOPICS[i % TOPICS.length] : topic;
-        plan.push({
-          type,
-          topic: actualTopic,
-          timeLimitSec,
-          label: `Question ${i + 1} (${type})`
+      if (bankItems && bankItems.length > 0) {
+        let candidates = bankItems.filter(q => types.includes(q.type));
+        
+        if (topic !== 'combined' && topic !== 'mixed' && topic !== 'Mixed') {
+          candidates = candidates.filter(q => q.topic === topic);
+        }
+        
+        const isOsceOnly = types.length === 1 && types[0] === 'OSCE';
+        candidates = filterAndCapQuestions(candidates, isOsceOnly);
+        
+        const selected: any[] = [];
+        if (topic === 'combined' || topic === 'mixed' || topic === 'Mixed') {
+          let loopIndex = 0;
+          while (selected.length < count) {
+            const currentTopic = TOPICS[loopIndex % TOPICS.length];
+            const typeForStep = types[selected.length % types.length];
+            const match = candidates.find(q => q.topic === currentTopic && q.type === typeForStep && !selected.includes(q));
+            if (match) {
+              selected.push(match);
+            }
+            loopIndex++;
+            if (loopIndex > TOPICS.length * 10) {
+              break;
+            }
+          }
+        }
+        
+        for (const q of candidates) {
+          if (selected.length >= count) break;
+          if (!selected.includes(q)) selected.push(q);
+        }
+        
+        selected.forEach((q, i) => {
+          const timeLimitSec = q.type === 'VSAQ' ? 90 : q.type === 'SEQ' ? 15 * 60 : 9 * 60;
+          plan.push({
+            type: q.type,
+            topic: q.topic,
+            timeLimitSec,
+            label: `Question ${i + 1} (${q.type})`,
+            bankId: q.id
+          });
         });
       }
     }

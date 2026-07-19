@@ -140,10 +140,9 @@ router.post('/auth/login', async (req, res) => {
         tier = profileRes.rows[0].tier;
       }
     } catch (err) {
-      if (user.email === 'admin@txglobal.com.au') {
-        role = 'admin';
-        tier = 'pro';
-      }
+    if (user.email === 'admin@txglobal.com.au') {
+      role = 'admin';
+      tier = 'pro';
     }
 
     const token = jwt.sign({ id: user.id, email: user.email, role }, JWT_SECRET, { expiresIn: '7d' });
@@ -162,6 +161,10 @@ router.get('/auth/session', authenticate, async (req: any, res) => {
     tier = profileRes.rows[0]?.tier || 'free';
   } catch (err) {
     role = req.user.email === 'admin@txglobal.com.au' ? 'admin' : 'student';
+  }
+  if (req.user.email === 'admin@txglobal.com.au') {
+    role = 'admin';
+    tier = 'pro';
   }
   res.json({ user: { id: req.user.id, email: req.user.email, role, tier } });
 });

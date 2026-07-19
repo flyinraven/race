@@ -282,21 +282,16 @@ export default function Dashboard() {
 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Number of Questions ({genCount})
+                    Number of Questions
                   </label>
                   <input 
-                    type="range" 
+                    type="number" 
                     min="1" 
-                    max="50" 
+                    max="100" 
                     value={genCount}
-                    onChange={(e) => setGenCount(parseInt(e.target.value))}
-                    className="w-full accent-blue-600 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
+                    onChange={(e) => setGenCount(Math.max(1, parseInt(e.target.value) || 1))}
+                    className="w-full sm:w-32 border border-slate-300 rounded-lg p-3 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-semibold text-slate-800"
                   />
-                  <div className="flex justify-between text-xs text-slate-400 mt-2">
-                    <span>1</span>
-                    <span>25</span>
-                    <span>50</span>
-                  </div>
                 </div>
 
                 <div className="mt-10 pt-6 border-t border-slate-100 flex justify-end">

@@ -116,6 +116,7 @@ export async function initDb() {
         END IF;
       END $$
     `);
+    await query("UPDATE questions SET paper = 'OSCE' WHERE type = 'OSCE'");
 
     console.log('Database tables initialized successfully.');
   } catch (err) {

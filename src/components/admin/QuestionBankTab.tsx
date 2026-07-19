@@ -260,62 +260,6 @@ export default function QuestionBankTab({
 
 
 
-      {/* Batch Generate Exam Simulations */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
-          <Cpu className="w-6 h-6 text-indigo-600" />
-          <h3 className="text-lg font-bold text-slate-900">Batch Generate Exam Simulations</h3>
-        </div>
-        <div className="p-6">
-          <p className="text-slate-600 mb-6 text-sm">
-            Automatically generate a complete set of questions for Paper 1, Paper 2, or OSCE and add them directly to the question bank. This process may take several minutes depending on AI limits.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 items-center max-w-xl">
-            <select 
-              value={selectedBatchType}
-              onChange={(e) => setSelectedBatchType(e.target.value as any)}
-              disabled={isGeneratingBatch}
-              className="w-full sm:w-auto flex-1 bg-white border border-slate-300 rounded-lg px-4 py-3 font-medium text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              <option value="paper1">Paper 1 (15 VSAQ, 5 SEQ)</option>
-              <option value="paper2">Paper 2 (15 VSAQ, 4 SEQ)</option>
-              <option value="paper3">Paper 3 (15 VSAQ, 5 SEQ)</option>
-              <option value="paper4">Paper 4 (15 VSAQ, 4 SEQ)</option>
-              <option value="osce">OSCE (18 Stations)</option>
-              <option value="full_exam">Full Exam (Papers 1-4 + OSCE)</option>
-            </select>
-            <button 
-              onClick={() => handleBatchGenerate(selectedBatchType)}
-              disabled={isGeneratingCustom || isGeneratingBatch}
-              className="w-full sm:w-auto bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-indigo-700 transition disabled:opacity-50 shadow-sm flex items-center justify-center gap-2"
-            >
-              {isGeneratingBatch ? <Loader2 className="w-5 h-5 animate-spin" /> : <Cpu className="w-5 h-5" />}
-              {isGeneratingBatch ? 'Generating...' : 'Start Generation'}
-            </button>
-          </div>
-          {isGeneratingBatch && batchProgress.total > 0 && (
-            <div className="mt-4 p-4 bg-indigo-50 text-indigo-700 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm font-medium border border-indigo-100 shadow-sm">
-              <div className="flex items-center gap-3">
-                <Loader2 className={`w-5 h-5 ${batchProgress.waiting && !isPaused ? '' : 'animate-spin'}`} />
-                {isPaused ? (
-                  <span>Generation Paused. Click Resume to continue.</span>
-                ) : batchProgress.waiting ? (
-                  <span>API Quota Hit. {batchProgress.waitMessage ? `(${batchProgress.waitMessage}) ` : ''}Waiting to resume: {batchProgress.waitTime}s... please do not close this window.</span>
-                ) : (
-                  <span>Generating {batchProgress.current} of {batchProgress.total} questions... please do not close this window.</span>
-                )}
-              </div>
-              <button
-                onClick={togglePause}
-                className="bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-2 rounded-lg text-xs font-semibold shadow transition duration-150"
-              >
-                {isPaused ? 'Resume' : 'Pause'}
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-
       {/* Manage Question Bank list */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">

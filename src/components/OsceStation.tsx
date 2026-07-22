@@ -94,6 +94,21 @@ export function OsceStation({
   const subQuestions = stationData?.subQuestions || [];
   const currentSubQ = subQuestions[currentSubQIndex];
 
+  if (phase === 'questioning' && (!currentSubQ || subQuestions.length === 0)) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-6 text-white text-center">
+        <div className="max-w-md bg-slate-800 p-8 rounded-2xl border border-slate-700 space-y-6">
+          <Loader2 className="w-12 h-12 text-blue-400 animate-spin mx-auto" />
+          <h2 className="text-xl font-bold">Station Completed</h2>
+          <p className="text-sm text-slate-400">All questions for this station have been answered or loaded.</p>
+          <button onClick={onSkip} className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-sm transition">
+            Next Station
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   const timerWarning = timeRemaining < 60;
   const timerCritical = timeRemaining < 30;
 

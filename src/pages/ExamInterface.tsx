@@ -336,13 +336,14 @@ function buildExamPlan(examId: string, bankItems?: any[]): QuestionSpec[] {
           candidates = candidates.filter(q => q.topic === topic);
         }
         
-        const isOsceOnly = types.length === 1 && types[0] === 'OSCE';
+        const isMixedTopic = topic === 'combined' || topic === 'mixed' || topic === 'Mixed';
+        const isOsceOnly = isMixedTopic && types.length === 1 && types[0] === 'OSCE';
         candidates = filterAndCapQuestions(candidates, isOsceOnly);
         
         const selected: any[] = [];
-        if (topic === 'combined' || topic === 'mixed' || topic === 'Mixed') {
+        if (isMixedTopic) {
           let loopIndex = 0;
-          while (selected.length < count) {
+          while (selected.length < count && candidates.length > 0) {
             const currentTopic = TOPICS[loopIndex % TOPICS.length];
             const typeForStep = types[selected.length % types.length];
             const match = candidates.find(q => q.topic === currentTopic && q.type === typeForStep && !selected.includes(q));
@@ -367,10 +368,24 @@ function buildExamPlan(examId: string, bankItems?: any[]): QuestionSpec[] {
             type: q.type,
             topic: q.topic,
             timeLimitSec,
-            label: `Question ${i + 1} (${q.type})`,
+            label: q.type === 'OSCE' ? `Station ${i + 1} (OSCE)` : `Question ${i + 1} (${q.type})`,
             bankId: q.id
           });
         });
+
+        // Fill remaining slots up to count so plan always has exact requested count
+        while (plan.length < count) {
+          const idx = plan.length;
+          const typeForStep = types[idx % types.length];
+          const topicForStep = isMixedTopic ? TOPICS[idx % TOPICS.length] : topic;
+          const timeLimitSec = typeForStep === 'VSAQ' ? 90 : typeForStep === 'SEQ' ? 15 * 60 : 9 * 60;
+          plan.push({
+            type: typeForStep,
+            topic: topicForStep,
+            timeLimitSec,
+            label: typeForStep === 'OSCE' ? `Station ${idx + 1} (OSCE)` : `Question ${idx + 1} (${typeForStep})`
+          });
+        }
       }
     }
   }
@@ -600,10 +615,22 @@ export default function ExamInterface() {
     if (!isPreload) setIsLoadingQuestion(true);
     const spec = plan[index];
 
+    const ensureSubQuestions = (rawObj: any) => {
+      const scenario = (rawObj && rawObj.scenario) || "**Clinical Presentation:** Examine the clinical findings and outline your management.";
+      let subQs = (rawObj && Array.isArray(rawObj.subQuestions)) ? rawObj.subQuestions : [];
+      if (subQs.length === 0) {
+        subQs = [
+          { id: 'q1', text: 'Describe your clinical findings and differential diagnosis.', modelAnswer: 'See examiner notes.' },
+          { id: 'q2', text: 'Outline your immediate and long-term management plan.', modelAnswer: 'See examiner notes.' }
+        ];
+      }
+      return { scenario, subQuestions: subQs };
+    };
+
     if (spec.bankId && bankItemsState.length > 0) {
       const bItem = bankItemsState.find(q => q.id === spec.bankId);
       if (bItem && bItem.data) {
-        setQuestionsCache(prev => ({...prev, [index]: bItem.data}));
+        setQuestionsCache(prev => ({...prev, [index]: ensureSubQuestions(bItem.data)}));
         if (!isPreload) setIsLoadingQuestion(false);
         return;
       }
@@ -611,24 +638,20 @@ export default function ExamInterface() {
 
     try {
       if (!navigator.onLine) {
-        setQuestionsCache(prev => ({...prev, [index]: { scenario: "**Offline Info:** You are currently offline and cannot generate new questions using AI. Please connect to the internet or skip this question.", subQuestions: [] }}));
+        setQuestionsCache(prev => ({...prev, [index]: { scenario: "**Offline Info:** You are currently offline and cannot generate new questions using AI. Please connect to the internet or skip this question.", subQuestions: [{ id: 'q1', text: 'Offline Mode: No subquestions available', modelAnswer: 'N/A' }] }}));
         if (!isPreload) setIsLoadingQuestion(false);
         return;
       }
       if (tier !== 'pro') {
-        setQuestionsCache(prev => ({...prev, [index]: { scenario: "**Premium Feature:** Generating new questions requires a Pro subscription. [Click here to upgrade](/pricing)", subQuestions: [] }}));
+        setQuestionsCache(prev => ({...prev, [index]: { scenario: "**Premium Feature:** Generating new questions requires a Pro subscription. [Click here to upgrade](/pricing)", subQuestions: [{ id: 'q1', text: 'Upgrade to Pro to unlock AI generation', modelAnswer: 'N/A' }] }}));
         if (!isPreload) setIsLoadingQuestion(false);
         return;
       }
       const data = await generateSingleQuestion(spec.type, spec.topic);
-      if (data && data.scenario && Array.isArray(data.subQuestions)) {
-        setQuestionsCache(prev => ({...prev, [index]: data}));
-      } else {
-         setQuestionsCache(prev => ({...prev, [index]: { scenario: "**Error:** Could not parse AI response. Please try skipping the question.", subQuestions: [] }}));
-      }
+      setQuestionsCache(prev => ({...prev, [index]: ensureSubQuestions(data)}));
     } catch (err) {
       console.error(err);
-      setQuestionsCache(prev => ({...prev, [index]: { scenario: "**Error:** Failed to generate question from AI Engine.", subQuestions: [] }}));
+      setQuestionsCache(prev => ({...prev, [index]: { scenario: "**Error:** Failed to generate question from AI Engine.", subQuestions: [{ id: 'q1', text: 'Please try again or skip this question.', modelAnswer: 'N/A' }] }}));
     } finally {
       if (!isPreload) setIsLoadingQuestion(false);
     }

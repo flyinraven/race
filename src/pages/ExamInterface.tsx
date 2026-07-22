@@ -13,6 +13,7 @@ type QuestionSpec = {
   timeLimitSec: number;
   label?: string;
   bankId?: string; // If this question directly maps to a specific bank item
+  maxNotice?: string;
 };
 
 type QuestionData = {
@@ -98,14 +99,21 @@ function buildExamPlan(examId: string, bankItems?: any[]): QuestionSpec[] {
     
     if (bankItems && bankItems.length > 0) {
       let paperQuestions = bankItems.filter(q => {
-        if (config.y && config.y !== 'All' && String(q.year) !== config.y) return false;
+        if (config.y && config.y !== 'All' && String(q.year) !== String(config.y)) return false;
+        if (config.s && config.s !== 'All') {
+          const semVal = String(config.s).toLowerCase();
+          const qSemVal = String(q.semester || q.paper || q.id || '').toLowerCase();
+          if (!qSemVal.includes(semVal.replace(/\s+/g, '')) && !qSemVal.includes('sem ' + semVal.slice(-1)) && !qSemVal.includes('sem' + semVal.slice(-1))) {
+            return false;
+          }
+        }
         if (config.p && config.p !== 'All' && q.paper !== config.p && q.questionLabel !== config.p) return false;
         if (config.t && config.t !== 'All' && q.type !== config.t) return false;
         if (config.tpc && config.tpc !== 'All' && q.topic !== config.tpc) return false;
         return true;
       });
       
-      const isOsceOnly = config.t === 'OSCE' || (paperQuestions.length > 0 && paperQuestions.every(q => q.type === 'OSCE'));
+      const isOsceOnly = config.t === 'OSCE' && config.p === 'All' && (!config.y || config.y === 'All');
       paperQuestions = filterAndCapQuestions(paperQuestions, isOsceOnly);
 
       const getNum = (str: string) => {
@@ -362,6 +370,10 @@ function buildExamPlan(examId: string, bankItems?: any[]): QuestionSpec[] {
           if (!selected.includes(q)) selected.push(q);
         }
         
+        const capNotice = (selected.length < count && selected.length > 0)
+          ? `Reached maximum available questions in bank: Displaying ${selected.length} available question(s) for ${topic} (${typesStr}) out of ${count} requested.`
+          : undefined;
+
         selected.forEach((q, i) => {
           const timeLimitSec = q.type === 'VSAQ' ? 90 : q.type === 'SEQ' ? 15 * 60 : 9 * 60;
           plan.push({
@@ -369,23 +381,10 @@ function buildExamPlan(examId: string, bankItems?: any[]): QuestionSpec[] {
             topic: q.topic,
             timeLimitSec,
             label: q.type === 'OSCE' ? `Station ${i + 1} (OSCE)` : `Question ${i + 1} (${q.type})`,
-            bankId: q.id
+            bankId: q.id,
+            maxNotice: capNotice
           });
         });
-
-        // Fill remaining slots up to count so plan always has exact requested count
-        while (plan.length < count) {
-          const idx = plan.length;
-          const typeForStep = types[idx % types.length];
-          const topicForStep = isMixedTopic ? TOPICS[idx % TOPICS.length] : topic;
-          const timeLimitSec = typeForStep === 'VSAQ' ? 90 : typeForStep === 'SEQ' ? 15 * 60 : 9 * 60;
-          plan.push({
-            type: typeForStep,
-            topic: topicForStep,
-            timeLimitSec,
-            label: typeForStep === 'OSCE' ? `Station ${idx + 1} (OSCE)` : `Question ${idx + 1} (${typeForStep})`
-          });
-        }
       }
     }
   }
@@ -1121,6 +1120,12 @@ export default function ExamInterface() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       {zoomedImage && <ImageModal src={zoomedImage.src} alt={zoomedImage.alt} onClose={() => setZoomedImage(null)} />}
+      {currentSpec?.maxNotice && (
+        <div className="bg-amber-50 border-b border-amber-200 px-6 py-2.5 text-xs font-semibold text-amber-900 flex items-center justify-center gap-2 shrink-0">
+          <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+          <span>{currentSpec.maxNotice}</span>
+        </div>
+      )}
       <header className="bg-white border-b border-slate-200 px-6 py-4 flex flex-col sm:flex-row gap-4 sm:justify-between items-start sm:items-center sticky top-0 z-10 w-full">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Exam Session</h1>

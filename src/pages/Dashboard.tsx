@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { LogOut, FileText, Settings, PlayCircle, Filter } from 'lucide-react';
+import { LogOut, FileText, Settings, PlayCircle, Filter, Calendar } from 'lucide-react';
 import { getBank } from '../services/examEngine';
 
 export default function Dashboard() {
@@ -14,6 +14,7 @@ export default function Dashboard() {
   const [bankQuestions, setBankQuestions] = useState<any[]>([]);
 
   const [selectedPastYear, setSelectedPastYear] = useState('All');
+  const [selectedPastSemester, setSelectedPastSemester] = useState('All');
   const [selectedPastPaper, setSelectedPastPaper] = useState('All');
   const [selectedPastType, setSelectedPastType] = useState('All');
   const [selectedPastTopic, setSelectedPastTopic] = useState('All');
@@ -23,6 +24,8 @@ export default function Dashboard() {
     bankQuestions.forEach(q => {
       if (q.year) years.add(String(q.year));
     });
+    // Add default RANZCO past years if not present
+    ['2026', '2025', '2024', '2023', '2022', '2021'].forEach(y => years.add(y));
     return Array.from(years).sort((a, b) => b.localeCompare(a, undefined, {numeric: true}));
   }, [bankQuestions]);
 
@@ -49,8 +52,6 @@ export default function Dashboard() {
     });
     return Array.from(topics).sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
   }, [bankQuestions]);
-
-  // Removed problematic interdependent useEffects that caused maximum update depth exceeded errors
 
   // Generate Paper State
   const [genMode, setGenMode] = useState<'custom' | 'sim_paper1' | 'sim_paper2' | 'sim_paper3' | 'sim_paper4' | 'sim_osce' | 'sim_full'>('custom');
@@ -116,6 +117,18 @@ export default function Dashboard() {
     const typesStr = genTypes.join('-');
     const examId = `gen_${genTopic}_${typesStr}_${genCount}`;
     navigate(`/exam/${examId}`);
+  };
+
+  const handleStartCustomPastPaper = () => {
+    const config = {
+      y: selectedPastYear,
+      s: selectedPastSemester,
+      p: selectedPastPaper,
+      t: selectedPastType,
+      tpc: selectedPastTopic
+    };
+    const encoded = btoa(JSON.stringify(config));
+    navigate(`/exam/realpastb64_${encoded}`);
   };
 
   const toggleGenType = (type: string) => {
@@ -201,36 +214,104 @@ export default function Dashboard() {
             </div>
 
             {mode === 'past' ? (
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 gap-6">
-                  {simulations.map((sim) => (
-                    <div 
-                      key={sim.id}
-                      className="border border-slate-200 hover:border-blue-400 rounded-xl p-6 transition flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:shadow-md cursor-pointer bg-slate-50/20"
-                      onClick={() => handleStartExam(sim.id)}
-                    >
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="font-bold text-slate-800 text-lg">{sim.title}</h3>
-                          <span className={`px-2.5 py-0.5 text-xs font-semibold rounded-full ${sim.badgeColor}`}>
-                            {sim.badge}
-                          </span>
-                        </div>
-                        <p className="text-slate-500 text-sm max-w-xl">{sim.description}</p>
-                        <span className="text-xs text-slate-400 font-mono block">{sim.details}</span>
-                      </div>
-                      
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleStartExam(sim.id);
-                        }}
-                        className="bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 px-5 rounded-lg text-sm transition flex items-center gap-1.5 shadow-sm"
+              <div className="space-y-8">
+                {/* Year & Semester Past Paper Customization Box */}
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-5 h-5 text-blue-600" />
+                    <h3 className="font-bold text-slate-800 text-lg">Custom Past Paper Practice (By Year & Semester)</h3>
+                  </div>
+                  <p className="text-sm text-slate-500">
+                    Select a specific Year and Semester to practice past paper questions (e.g. 2024 Semester 2 to practice all 18 questions).
+                  </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Exam Year</label>
+                      <select
+                        value={selectedPastYear}
+                        onChange={(e) => setSelectedPastYear(e.target.value)}
+                        className="w-full border border-slate-300 rounded-lg p-2.5 bg-white text-sm focus:ring-2 focus:ring-blue-500 outline-none"
                       >
-                        <PlayCircle className="w-4 h-4" /> Start Exam
-                      </button>
+                        <option value="All">All Years</option>
+                        {pastYearOptions.map(y => (
+                          <option key={y} value={y}>{y}</option>
+                        ))}
+                      </select>
                     </div>
-                  ))}
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Semester</label>
+                      <select
+                        value={selectedPastSemester}
+                        onChange={(e) => setSelectedPastSemester(e.target.value)}
+                        className="w-full border border-slate-300 rounded-lg p-2.5 bg-white text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                      >
+                        <option value="All">All Semesters</option>
+                        <option value="Sem 1">Semester 1</option>
+                        <option value="Sem 2">Semester 2</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Paper / Format</label>
+                      <select
+                        value={selectedPastPaper}
+                        onChange={(e) => setSelectedPastPaper(e.target.value)}
+                        className="w-full border border-slate-300 rounded-lg p-2.5 bg-white text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                      >
+                        <option value="All">All Papers (Full 18 Questions)</option>
+                        <option value="Paper 1">Paper 1 (15 VSAQ + 5 SEQ)</option>
+                        <option value="Paper 2">Paper 2 (15 VSAQ + 4 SEQ)</option>
+                        <option value="Paper 3">Paper 3 (15 VSAQ + 5 SEQ)</option>
+                        <option value="Paper 4">Paper 4 (15 VSAQ + 4 SEQ)</option>
+                        <option value="OSCE">OSCE (9 Stations)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 flex justify-end">
+                    <button
+                      onClick={() => handleStartCustomPastPaper()}
+                      className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-lg text-sm transition flex items-center gap-2 shadow-sm"
+                    >
+                      <PlayCircle className="w-4 h-4" /> Start Filtered Past Exam
+                    </button>
+                  </div>
+                </div>
+
+                <div className="border-t border-slate-200 pt-6">
+                  <h3 className="font-bold text-slate-800 text-md mb-4">Standard Official Simulations</h3>
+                  <div className="grid grid-cols-1 gap-6">
+                    {simulations.map((sim) => (
+                      <div 
+                        key={sim.id}
+                        className="border border-slate-200 hover:border-blue-400 rounded-xl p-6 transition flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:shadow-md cursor-pointer bg-slate-50/20"
+                        onClick={() => handleStartExam(sim.id)}
+                      >
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h3 className="font-bold text-slate-800 text-lg">{sim.title}</h3>
+                            <span className={`px-2.5 py-0.5 text-xs font-semibold rounded-full ${sim.badgeColor}`}>
+                              {sim.badge}
+                            </span>
+                          </div>
+                          <p className="text-slate-500 text-sm max-w-xl">{sim.description}</p>
+                          <span className="text-xs text-slate-400 font-mono block">{sim.details}</span>
+                        </div>
+                        
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleStartExam(sim.id);
+                          }}
+                          className="bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 px-5 rounded-lg text-sm transition flex items-center gap-1.5 shadow-sm"
+                        >
+                          <PlayCircle className="w-4 h-4" /> Start Exam
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             ) : (

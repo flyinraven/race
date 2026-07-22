@@ -98,6 +98,11 @@ function buildExamPlan(examId: string, bankItems?: any[]): QuestionSpec[] {
     } catch(e) {}
     
     if (bankItems && bankItems.length > 0) {
+      const getNum = (str: string) => {
+        const match = str?.match(/\d+/);
+        return match ? parseInt(match[0], 10) : 0;
+      };
+
       let paperQuestions = bankItems.filter(q => {
         if (config.y && config.y !== 'All' && String(q.year) !== String(config.y)) return false;
         if (config.s && config.s !== 'All') {
@@ -107,32 +112,106 @@ function buildExamPlan(examId: string, bankItems?: any[]): QuestionSpec[] {
             return false;
           }
         }
-        if (config.p && config.p !== 'All' && q.paper !== config.p && q.questionLabel !== config.p) return false;
+        
+        if (config.p && config.p !== 'All') {
+          const pVal = config.p;
+          if (pVal === 'Paper 1') {
+            if (q.paper !== 'Paper 1' && (q.type === 'SEQ' && (getNum(q.questionLabel || q.id) < 1 || getNum(q.questionLabel || q.id) > 5))) return false;
+          } else if (pVal === 'Paper 2') {
+            if (q.paper !== 'Paper 2' && (q.type === 'SEQ' && (getNum(q.questionLabel || q.id) < 6 || getNum(q.questionLabel || q.id) > 9))) return false;
+          } else if (pVal === 'Paper 3') {
+            if (q.paper !== 'Paper 3' && (q.type === 'SEQ' && (getNum(q.questionLabel || q.id) < 10 || getNum(q.questionLabel || q.id) > 14))) return false;
+          } else if (pVal === 'Paper 4') {
+            if (q.paper !== 'Paper 4' && (q.type === 'SEQ' && (getNum(q.questionLabel || q.id) < 15 || getNum(q.questionLabel || q.id) > 18))) return false;
+          } else if (pVal.includes('OSCE Day 1')) {
+            if (q.type !== 'OSCE') return false;
+            if (q.paper && q.paper.includes('Day 2')) return false;
+            const stationNum = getNum(q.id || q.questionLabel || '');
+            if (stationNum && stationNum > 9) return false;
+          } else if (pVal.includes('OSCE Day 2')) {
+            if (q.type !== 'OSCE') return false;
+            if (q.paper && q.paper.includes('Day 1')) return false;
+            const stationNum = getNum(q.id || q.questionLabel || '');
+            if (stationNum && stationNum <= 9 && stationNum > 0) return false;
+          } else if (q.paper !== pVal && q.questionLabel !== pVal) {
+            return false;
+          }
+        }
+        
         if (config.t && config.t !== 'All' && q.type !== config.t) return false;
         if (config.tpc && config.tpc !== 'All' && q.topic !== config.tpc) return false;
         return true;
       });
-      
-      const isOsceOnly = config.t === 'OSCE' && config.p === 'All' && (!config.y || config.y === 'All');
-      paperQuestions = filterAndCapQuestions(paperQuestions, isOsceOnly);
 
-      const getNum = (str: string) => {
-        const match = str?.match(/\d+/);
-        return match ? parseInt(match[0], 10) : 0;
-      };
-      
-      paperQuestions.sort((a, b) => getNum(a.questionLabel) - getNum(b.questionLabel));
-      
-      paperQuestions.forEach((q, i) => {
-        const timeLimitSec = q.type === 'VSAQ' ? 90 : q.type === 'SEQ' ? 15 * 60 : 9 * 60;
-        plan.push({
-          type: q.type,
-          topic: q.topic,
-          timeLimitSec,
-          label: q.questionLabel || `Question ${i + 1} (${q.type})`,
-          bankId: q.id
+      const isWrittenPaper = config.p === 'Paper 1' || config.p === 'Paper 2' || config.p === 'Paper 3' || config.p === 'Paper 4';
+
+      if (isWrittenPaper) {
+        // 1. Get SEQs for this specific paper
+        let seqQuestions = paperQuestions.filter(q => q.type === 'SEQ');
+        if (seqQuestions.length === 0) {
+          if (config.p === 'Paper 1') seqQuestions = bankItems.filter(q => q.type === 'SEQ' && (q.paper === 'Paper 1' || (getNum(q.questionLabel || q.id) >= 1 && getNum(q.questionLabel || q.id) <= 5)));
+          else if (config.p === 'Paper 2') seqQuestions = bankItems.filter(q => q.type === 'SEQ' && (q.paper === 'Paper 2' || (getNum(q.questionLabel || q.id) >= 6 && getNum(q.questionLabel || q.id) <= 9)));
+          else if (config.p === 'Paper 3') seqQuestions = bankItems.filter(q => q.type === 'SEQ' && (q.paper === 'Paper 3' || (getNum(q.questionLabel || q.id) >= 10 && getNum(q.questionLabel || q.id) <= 14)));
+          else if (config.p === 'Paper 4') seqQuestions = bankItems.filter(q => q.type === 'SEQ' && (q.paper === 'Paper 4' || (getNum(q.questionLabel || q.id) >= 15 && getNum(q.questionLabel || q.id) <= 18)));
+        }
+        seqQuestions.sort((a, b) => getNum(a.questionLabel || a.id) - getNum(b.questionLabel || b.id));
+
+        // 2. Build 15 VSAQs with equal topic distribution across core topics
+        let vsaqBank = bankItems.filter(q => q.type === 'VSAQ');
+        const selectedVsaqs: any[] = [];
+        for (let i = 0; i < 15; i++) {
+          const targetTopic = TOPICS[i % TOPICS.length];
+          const match = vsaqBank.find(q => q.topic === targetTopic && !selectedVsaqs.includes(q));
+          if (match) {
+            selectedVsaqs.push(match);
+          } else {
+            selectedVsaqs.push({
+              type: 'VSAQ',
+              topic: targetTopic,
+              timeLimitSec: 90,
+              questionLabel: `Question ${i + 1} (VSAQ)`
+            });
+          }
+        }
+
+        // Add 15 VSAQs to plan first
+        selectedVsaqs.forEach((q, i) => {
+          plan.push({
+            type: 'VSAQ',
+            topic: q.topic,
+            timeLimitSec: 90,
+            label: `Question ${i + 1} (VSAQ)`,
+            bankId: q.id
+          });
         });
-      });
+
+        // Add paper SEQs to plan
+        seqQuestions.forEach((q, i) => {
+          plan.push({
+            type: 'SEQ',
+            topic: q.topic || 'combined',
+            timeLimitSec: 15 * 60,
+            label: q.questionLabel || `Question ${15 + i + 1} (SEQ)`,
+            bankId: q.id
+          });
+        });
+      } else {
+        const isOsceOnly = config.t === 'OSCE' && config.p === 'All' && (!config.y || config.y === 'All');
+        paperQuestions = filterAndCapQuestions(paperQuestions, isOsceOnly);
+
+        paperQuestions.sort((a, b) => getNum(a.questionLabel || a.id) - getNum(b.questionLabel || b.id));
+
+        paperQuestions.forEach((q, i) => {
+          const timeLimitSec = q.type === 'VSAQ' ? 90 : q.type === 'SEQ' ? 15 * 60 : 9 * 60;
+          plan.push({
+            type: q.type,
+            topic: q.topic,
+            timeLimitSec,
+            label: q.questionLabel || `Question ${i + 1} (${q.type})`,
+            bankId: q.id
+          });
+        });
+      }
     }
   } else if (examId.startsWith('realpast_')) {
     const paperName = decodeURIComponent(examId.substring('realpast_'.length));

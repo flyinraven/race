@@ -277,8 +277,10 @@ export default function Dashboard() {
                         className="w-full border border-slate-300 rounded-lg p-2.5 bg-white text-sm focus:ring-2 focus:ring-blue-500 outline-none"
                       >
                         <option value="All">All Papers / Full Exam</option>
-                        <option value="Paper 1 / 3">Paper 1 / 3 (15 VSAQ + 5 SEQ)</option>
-                        <option value="Paper 2 / 4">Paper 2 / 4 (15 VSAQ + 4 SEQ)</option>
+                        <option value="Paper 1">Paper 1 (Day 1 Morning: 15 VSAQ + 5 SEQ [Q1-5])</option>
+                        <option value="Paper 2">Paper 2 (Day 1 Afternoon: 15 VSAQ + 4 SEQ [Q6-9])</option>
+                        <option value="Paper 3">Paper 3 (Day 2 Morning: 15 VSAQ + 5 SEQ [Q10-14])</option>
+                        <option value="Paper 4">Paper 4 (Day 2 Afternoon: 15 VSAQ + 4 SEQ [Q15-18])</option>
                         <option value="OSCE Day 1">OSCE Day 1 (1st 9 stations)</option>
                         <option value="OSCE Day 2">OSCE Day 2 (next 9 stations)</option>
                       </select>

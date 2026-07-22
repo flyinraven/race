@@ -22,12 +22,27 @@ export default function Dashboard() {
   const pastYearOptions = useMemo(() => {
     const years = new Set<string>();
     bankQuestions.forEach(q => {
-      if (q.year) years.add(String(q.year));
+      if (q.year && String(q.year).trim() !== '' && String(q.year).toLowerCase() !== 'unknown' && String(q.year).toLowerCase() !== 'ai') {
+        years.add(String(q.year));
+      }
     });
-    // Add default RANZCO past years if not present
-    ['2026', '2025', '2024', '2023', '2022', '2021'].forEach(y => years.add(y));
     return Array.from(years).sort((a, b) => b.localeCompare(a, undefined, {numeric: true}));
   }, [bankQuestions]);
+
+  const pastSemesterOptions = useMemo(() => {
+    const sems = new Set<string>();
+    bankQuestions.forEach(q => {
+      if (selectedPastYear !== 'All' && String(q.year) !== String(selectedPastYear)) return;
+      const semStr = String(q.semester || q.paper || q.id || '');
+      if (semStr.includes('Sem 1') || semStr.includes('sem1') || semStr.includes('s1')) sems.add('Sem 1');
+      if (semStr.includes('Sem 2') || semStr.includes('sem2') || semStr.includes('s2')) sems.add('Sem 2');
+    });
+    if (sems.size === 0) {
+      sems.add('Sem 1');
+      sems.add('Sem 2');
+    }
+    return Array.from(sems);
+  }, [bankQuestions, selectedPastYear]);
 
   const pastPaperOptions = useMemo(() => {
     const papers = new Set<string>();
@@ -156,7 +171,7 @@ export default function Dashboard() {
           </div>
           <Link to="/profile" className="flex items-center gap-2 hover:opacity-80 transition cursor-pointer">
             <span className="text-slate-600 font-medium underline underline-offset-4 decoration-slate-300">{user?.email}</span>
-            <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${tier === 'pro' ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-600'}`}>
+            <span className={`px-2.5 py-0.5 text-xs rounded-full font-medium ${tier === 'pro' ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-600'}`}>
               {tier === 'pro' ? 'Pro' : 'Free'}
             </span>
           </Link>
@@ -219,10 +234,10 @@ export default function Dashboard() {
                 <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 space-y-4">
                   <div className="flex items-center gap-2">
                     <Calendar className="w-5 h-5 text-blue-600" />
-                    <h3 className="font-bold text-slate-800 text-lg">Custom Past Paper Practice (By Year & Semester)</h3>
+                    <h3 className="font-bold text-slate-800 text-lg">Custom Past Paper Practice</h3>
                   </div>
                   <p className="text-sm text-slate-500">
-                    Select a specific Year and Semester to practice past paper questions (e.g. 2024 Semester 2 to practice all 18 questions).
+                    Select specific Year and Semester for Exam Simulation
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
@@ -233,7 +248,7 @@ export default function Dashboard() {
                         onChange={(e) => setSelectedPastYear(e.target.value)}
                         className="w-full border border-slate-300 rounded-lg p-2.5 bg-white text-sm focus:ring-2 focus:ring-blue-500 outline-none"
                       >
-                        <option value="All">All Years</option>
+                        <option value="All">All Available Years</option>
                         {pastYearOptions.map(y => (
                           <option key={y} value={y}>{y}</option>
                         ))}
@@ -248,8 +263,9 @@ export default function Dashboard() {
                         className="w-full border border-slate-300 rounded-lg p-2.5 bg-white text-sm focus:ring-2 focus:ring-blue-500 outline-none"
                       >
                         <option value="All">All Semesters</option>
-                        <option value="Sem 1">Semester 1</option>
-                        <option value="Sem 2">Semester 2</option>
+                        {pastSemesterOptions.map(s => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
                       </select>
                     </div>
 
@@ -260,12 +276,11 @@ export default function Dashboard() {
                         onChange={(e) => setSelectedPastPaper(e.target.value)}
                         className="w-full border border-slate-300 rounded-lg p-2.5 bg-white text-sm focus:ring-2 focus:ring-blue-500 outline-none"
                       >
-                        <option value="All">All Papers (Full 18 Questions)</option>
-                        <option value="Paper 1">Paper 1 (15 VSAQ + 5 SEQ)</option>
-                        <option value="Paper 2">Paper 2 (15 VSAQ + 4 SEQ)</option>
-                        <option value="Paper 3">Paper 3 (15 VSAQ + 5 SEQ)</option>
-                        <option value="Paper 4">Paper 4 (15 VSAQ + 4 SEQ)</option>
-                        <option value="OSCE">OSCE (9 Stations)</option>
+                        <option value="All">All Papers / Full Exam</option>
+                        <option value="Paper 1 / 3">Paper 1 / 3 (15 VSAQ + 5 SEQ)</option>
+                        <option value="Paper 2 / 4">Paper 2 / 4 (15 VSAQ + 4 SEQ)</option>
+                        <option value="OSCE Day 1">OSCE Day 1 (1st 9 stations)</option>
+                        <option value="OSCE Day 2">OSCE Day 2 (next 9 stations)</option>
                       </select>
                     </div>
                   </div>

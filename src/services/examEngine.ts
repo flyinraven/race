@@ -701,14 +701,19 @@ export async function parsePDFQuestionBank(pdfBase64: string, fileName: string, 
       }));
       
       const bank = await getBank();
-      const newBankItems: BankQuestion[] = combinedQuestions.map((qData: any) => {
+      const newBankItems: BankQuestion[] = combinedQuestions.map((qData: any, idx: number) => {
+        const qType = qData.type || 'VSAQ';
+        let assignedPaper = qData.paper || defaultPaper || 'Past Exam';
+        if (qType === 'OSCE' || defaultPaper === 'OSCE' || (typeof assignedPaper === 'string' && assignedPaper.includes('OSCE'))) {
+          assignedPaper = idx < 9 ? 'OSCE Day 1' : 'OSCE Day 2';
+        }
         return {
           id: Math.random().toString(36).substring(2, 15),
-          type: qData.type || 'VSAQ',
+          type: qType,
           topic: qData.topic || 'combined',
-          paper: qData.paper || defaultPaper || 'Past Exam',
+          paper: assignedPaper,
           year: qData.year || defaultYear || 'AI',
-          questionLabel: qData.questionLabel,
+          questionLabel: qData.questionLabel || (qType === 'OSCE' ? `Station ${idx + 1}` : undefined),
           data: qData.data || qData,
           used: false
         };
@@ -790,14 +795,19 @@ export async function parseTextQuestionBank(textContent: string, fileName: strin
       }));
       
       const bank = await getBank();
-      const newBankItems: BankQuestion[] = combinedQuestions.map((qData: any) => {
+      const newBankItems: BankQuestion[] = combinedQuestions.map((qData: any, idx: number) => {
+        const qType = qData.type || 'VSAQ';
+        let assignedPaper = qData.paper || defaultPaper || 'Past Exam';
+        if (qType === 'OSCE' || defaultPaper === 'OSCE' || (typeof assignedPaper === 'string' && assignedPaper.includes('OSCE'))) {
+          assignedPaper = idx < 9 ? 'OSCE Day 1' : 'OSCE Day 2';
+        }
         return {
           id: Math.random().toString(36).substring(2, 15),
-          type: qData.type || 'VSAQ',
+          type: qType,
           topic: qData.topic || 'combined',
-          paper: qData.paper || defaultPaper || 'Past Exam',
+          paper: assignedPaper,
           year: qData.year || defaultYear || 'AI',
-          questionLabel: qData.questionLabel,
+          questionLabel: qData.questionLabel || (qType === 'OSCE' ? `Station ${idx + 1}` : undefined),
           data: qData.data || qData,
           used: false
         };

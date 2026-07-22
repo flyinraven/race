@@ -1,0 +1,729 @@
+[
+  {
+    "id": "2026_s1_seq1",
+    "type": "SEQ",
+    "topic": "Cataract",
+    "paper": "Paper 1",
+    "year": "2026",
+    "semester": "Sem 1",
+    "questionLabel": "Question 1 (SEQ)",
+    "data": {
+      "scenario": "**RACE Written Examiners' Report - Semester 1 2026 (28 & 29 January 2026)**\n\n**Topic:** Cataract - Posterior pressure/choroidal haemorrhage\n**Curriculum Standard:** Cataract 1.5.1, 1.2, 3.5, 3.7, 3.1-3.3, 4.2.2, 5.2.2, 5.2.3, 5.3.6, 6.1.2, 6.2.1-6.2.3\n\n**Purpose of the Question:**\nTo identify causes of and manage posterior pressure during cataract surgery. Recognize the rare but serious complication of suprachoroidal haemorrhage and understand acute management strategies.\n\n**Clinical Scenario:**\nYou are performing cataract surgery on an 81-year-old female. Her medical history includes hypertension, congestive heart failure and obesity. Her past ophthalmic history includes 3+ nuclear sclerotic cataract, primary angle closure glaucoma controlled on a combination drop containing Timolol 0.5% and Dorzolamide 2%, and previous peripheral iridotomy.\n\nOn initiation of the capsulorrhexis, you note that the anterior chamber shallows, the intraocular pressure goes up, and it becomes difficult to maintain space in the anterior chamber.",
+      "subQuestions": [
+        {
+          "id": "a",
+          "text": "Give five (5) potential risk factors for elevated posterior pressure in this patient? (5 marks)",
+          "modelAnswer": "1. Advanced age (81-year-old)\n2. Systemic hypertension & cardiovascular disease (congestive heart failure)\n3. Obesity / increased central venous pressure\n4. Pre-existing primary angle closure glaucoma / shallow anterior chamber\n5. Patient anxiety / coughing / valsalva or intraoperative breath holding"
+        },
+        {
+          "id": "b",
+          "text": "List five (5) strategies you could use to minimise the risk of this complication? (5 marks)",
+          "modelAnswer": "1. Preoperative blood pressure optimization & systemic control\n2. Adequate patient positioning (head elevation to lower ocular/venous pressure)\n3. Ensure adequate anaesthesia and akinesia (avoid patient straining/coughing)\n4. Use of osmotic agents (e.g., IV mannitol) preoperatively if IOP elevated\n5. Careful incision construction and soft eye preparation pre-op"
+        },
+        {
+          "id": "c",
+          "text": "What is your diagnosis for this new development? (2 marks)",
+          "modelAnswer": "Acute intraoperative suprachoroidal haemorrhage (expulsive choroidal haemorrhage)."
+        },
+        {
+          "id": "d",
+          "text": "What is your immediate management? (8 marks)",
+          "modelAnswer": "1. STOP cataract surgery immediately.\n2. Instantly close and suture all surgical incisions (paracentesis and main wound) securely with 10-0 nylon to reform the anterior chamber and tamponade the haemorrhage.\n3. Do NOT perform sclerotomy acutely in the operating theatre.\n4. Administer medical therapy to control IOP (systemic aqueous suppressants, IV mannitol) and blood pressure.\n5. Commence topical and systemic corticosteroids and topical atropine post-operatively to rotate ciliary body and reduce inflammation.\n6. Perform B-scan ultrasonography post-op to monitor choroidal detachment.\n7. Plan delayed secondary vitrectomy / drainage of choroidals after clot liquefaction (usually 7-14 days later)."
+        }
+      ]
+    }
+  },
+  {
+    "id": "2026_s1_seq2",
+    "type": "SEQ",
+    "topic": "Glaucoma",
+    "paper": "Paper 1",
+    "year": "2026",
+    "semester": "Sem 1",
+    "questionLabel": "Question 2 (SEQ)",
+    "data": {
+      "scenario": "**Topic:** Glaucoma (Uveitic Glaucoma)\n**Curriculum Standard:** Glaucoma CL 1.6.2, CL 5.2, PR 1.1 and Paediatrics PO 4.8, PO 5.1.17\n\n**Purpose of the Question:**\nTo assess candidates' knowledge and approach to patients presenting with uveitic glaucoma.\n\n**Clinical Scenario:**\nAn 11-year-old girl with a history of juvenile idiopathic arthritis presents with a 3-month history of right eye blurred vision, intermittent redness and mild ocular discomfort.\n\n**Examination Findings:**\n- Visual Acuity: RE 6/12, LE 6/6\n- Intraocular Pressure: RE 38 mmHg, LE 12 mmHg\n\n**Slit Lamp Exam:**\n- Conjunctiva: RE mild injection | LE white\n- Cornea: RE fine diffuse KPs, early band keratopathy | LE clear\n- Anterior Chamber: RE cells 2+, flare 1+, 270° posterior synechiae, small pupil, iris bombé | LE quiet\n- Lens: RE anterior subcapsular and mild posterior subcapsular cataract | LE clear\n- Fundus: RE hazy view, CDR ~0.6 | LE normal, CDR 0.3",
+      "subQuestions": [
+        {
+          "id": "a",
+          "text": "List and briefly explain the mechanisms by which uveitis can lead to elevated intraocular pressure. (4 marks)",
+          "modelAnswer": "1. Trabeculitis / inflammatory swelling of TM cells and trabecular meshwork endothelial dysfunction.\n2. Obstruction of TM outflow by inflammatory debris, fibrin, and cellular protein exudate.\n3. Pupillary block secondary to 360° posterior synechiae (seclusio pupillae) causing iris bombé.\n4. Secondary angle closure from peripheral anterior synechiae (PAS) organization.\n5. Steroid-induced ocular hypertension from topical/systemic corticosteroid therapy."
+        },
+        {
+          "id": "b",
+          "text": "What are the key diagnostic challenges in detecting glaucomatous optic neuropathy in patients with uveitis? (3 marks)",
+          "modelAnswer": "1. Media opacity (hazy view from anterior chamber cell/flare, KPs, band keratopathy, or secondary cataract).\n2. Optic disc hyperaemia / inflammation / oedema mimicking or masking cupping.\n3. Unreliable visual field testing in young children with small, fixed pupils and media opacities."
+        },
+        {
+          "id": "c",
+          "text": "Outline your approach to the initial management (excluding incisional surgery) of this patient's uveitic glaucoma. (9 marks)",
+          "modelAnswer": "1. Control inflammation: Intensive topical corticosteroids (e.g. Prednisolone acetate 1% hourly initially).\n2. Medical IOP control: Aqueous suppressants (topical beta-blocker, carbonic anhydrase inhibitor, alpha-2 agonist - noting caution for systemic alpha-agonists in children).\n3. Cycloplegia: Topical atropine or cyclopentolate to relieve ciliary spasm and prevent further posterior synechiae formation.\n4. Laser peripheral iridotomy (LPI): Perform LPI to relieve pupillary block and iris bombé (preferably multiple or large LPIs due to high risk of inflammatory closure).\n5. Multidisciplinary referral: Pediatric rheumatology involvement for systemic immunosuppressive therapy (e.g., Methotrexate, anti-TNF monoclonal antibodies like Adalimumab)."
+        },
+        {
+          "id": "d",
+          "text": "Briefly outline your approach to the surgical management of uveitic glaucoma in this patient, including the timing and indications for surgery. (4 marks)",
+          "modelAnswer": "1. Indications: Uncontrolled IOP with progressive optic nerve damage despite maximal tolerated medical and laser therapy.\n2. Timing: Perform surgery when intraocular inflammation has been completely quiescent for at least 3 months if possible.\n3. Surgical procedures: Glaucoma Drainage Device (GDD / tube shunt, e.g. Ahmed or Baerveldt implant) is preferred over trabeculectomy in pediatric uveitic glaucoma due to high failure rate of trabeculectomy.\n4. Perioperative coverage: High-dose perioperative topical and systemic corticosteroid cover to prevent post-op inflammatory surge."
+        }
+      ]
+    }
+  },
+  {
+    "id": "2026_s1_seq3",
+    "type": "SEQ",
+    "topic": "Vitreoretinal",
+    "paper": "Paper 1",
+    "year": "2026",
+    "semester": "Sem 1",
+    "questionLabel": "Question 3 (SEQ)",
+    "data": {
+      "scenario": "**Topic:** Retinal Telangiectasis (Coats' Disease)\n**Curriculum Standard:** VR 1.1.1, 1.2.1, 3.1.2, 3.1.5, 4.1\n\n**Purpose of the Question:**\nTo assess the candidates' knowledge on the assessment and treatment of patients with exudation secondary to retinal telangiectasis.\n\n**Clinical Scenario:**\nA 16-year-old otherwise healthy male presents with blurred vision in the left eye for two months. Visual acuities are Right 6/5 and Left 6/12. Anterior segment and IOP are normal in both eyes. The right vitreous and fundus examination are completely normal. There are occasional cells in the left vitreous. The left fundus appearance, OCT and angiogram are shown below. He is systemically well with no relevant family history.\n\n**Clinical Images:**\n![Figure 1: Colour Fundus](/images/2026_s1/seq3_fig1.jpeg)\n![Figure 2: OCT](/images/2026_s1/seq3_fig2.jpeg)\n![Figure 3: FFA at 1 minute](/images/2026_s1/seq3_fig3.png)\n![Figure 4: FFA at 5 minutes](/images/2026_s1/seq3_fig4.png)\n![Figure 5: FFA at 5 minutes inferior view](/images/2026_s1/seq3_fig5.png)",
+      "subQuestions": [
+        {
+          "id": "a",
+          "text": "Describe the salient features on fundus, OCT, and fluorescein angiogram (FFA) images. (6 marks)",
+          "modelAnswer": "1. Fundus: Extensive temporal exudation, subretinal lipid deposition, dilated telangiectatic aneurysmal vessels.\n2. OCT: Subretinal fluid, retinal thickening, intraretinal exudates, hyperreflective foci.\n3. FFA (Early/Late): Early hyperfluorescence of aneurysms/telangiectasis, progressive diffuse late hyperfluorescent leakage, capillary non-perfusion/dropout peripheral zones, absence of macular leak."
+        },
+        {
+          "id": "b",
+          "text": "What is the most likely diagnosis? (3 marks)",
+          "modelAnswer": "Coats' disease (retinal telangiectasis with exudative retinopathy), left eye."
+        },
+        {
+          "id": "c",
+          "text": "List two (2) possible differentials? (2 marks)",
+          "modelAnswer": "1. Familial Exudative Vitreoretinopathy (FEVR)\n2. Retinoblastoma / Retinal Vasoproliferative Tumour (VPTR)"
+        },
+        {
+          "id": "d",
+          "text": "What are possible sequelae if this is left untreated? (3 marks)",
+          "modelAnswer": "1. Progressive total exudative retinal detachment\n2. Secondary neovascular glaucoma\n3. Phthisis bulbi and vision loss"
+        },
+        {
+          "id": "e",
+          "text": "In this patient what are the main treatment options? (6 marks)",
+          "modelAnswer": "1. Targeted laser photocoagulation to telangiectatic vessels\n2. Cryotherapy to peripheral non-perused telangiectatic zones\n3. Intravitreal anti-VEGF or corticosteroid injections for macular edema\n4. Vitrectomy with subretinal fluid drainage for persistent detachment"
+        }
+      ]
+    }
+  },
+  {
+    "id": "2026_s1_seq4",
+    "type": "SEQ",
+    "topic": "Paediatrics",
+    "paper": "Paper 1",
+    "year": "2026",
+    "semester": "Sem 1",
+    "questionLabel": "Question 4 (SEQ)",
+    "data": {
+      "scenario": "**Topic:** Myopia\n**Curriculum Standard:** Paediatrics 10.4, Clinical Refraction 4.3f, 4.3h, 4.3i\n\n**Purpose of the Question:**\nTo establish the candidate knows the important causes, associations and treatment options in Myopia in children.\n\n**Clinical Scenario:**\nA 5-year-old child is referred to you as they are holding books very close. You diagnose myopia. You confirm that this child's myopia is isolated. The parents want to know the facts.",
+      "subQuestions": [
+        {
+          "id": "a",
+          "text": "Name four (4) ophthalmic conditions and two (2) systemic conditions associated with myopia in children. (6 marks)",
+          "modelAnswer": "Ophthalmic conditions: Retinopathy of prematurity (ROP), Congenital glaucoma, Ectopia lentis (e.g. Marfan/homocystinuria), Keratoconus.\nSystemic conditions: Stickler syndrome, Marfan syndrome."
+        },
+        {
+          "id": "b",
+          "text": "Prognosis for vision (2 marks)",
+          "modelAnswer": "Visual acuity with optical correction is generally excellent, but axial elongation will continue during childhood growth and stabilise in late teens/early adulthood."
+        },
+        {
+          "id": "c",
+          "text": "Recommended lifestyle modifications (2 marks)",
+          "modelAnswer": "Increase outdoor time (at least 2 hours daily) and limit continuous near work with frequent rest breaks."
+        },
+        {
+          "id": "d",
+          "text": "Treatment options (now and later) – briefly mention risks, benefits and limits of each (10 marks)",
+          "modelAnswer": "1. Low-dose atropine eye drops (0.01% - 0.05%): Benefits slow axial progression; risks include glare, light sensitivity, allergic conjunctivitis.\n2. Orthokeratology (Ortho-K) / Dual-focus contact lenses: Benefits slow progression and optical correction; risks include microbial keratitis.\n3. Defocus Incorporated Multiple Segments (DIMS) spectacle lenses: Non-invasive; benefits slow progression without contact lens risk."
+        }
+      ]
+    }
+  },
+  {
+    "id": "2026_s1_seq5",
+    "type": "SEQ",
+    "topic": "Ocular Motility",
+    "paper": "Paper 1",
+    "year": "2026",
+    "semester": "Sem 1",
+    "questionLabel": "Question 5 (SEQ)",
+    "data": {
+      "scenario": "**Topic:** Myasthenia Gravis\n**Curriculum Standard:** Efferent Pathway 3.10, Lid Abnormality 3.14\n\n**Purpose of the Question:**\nTo test candidates' knowledge of myasthenia gravis, clinical features and fundamentals of management.\n\n**Clinical Scenario:**\nA 68-year-old female presents with unilateral upper lid ptosis and intermittent diplopia. It is worse by the end of the day. You suspect myasthenia gravis.",
+      "subQuestions": [
+        {
+          "id": "a",
+          "text": "What should you ask in the history? Which systemic symptoms indicate urgent neurological assessment is required? (6 marks)",
+          "modelAnswer": "Ask about diurnal variation, fatiguability, dysphagia, dysarthria, shortness of breath. Urgent neurological evaluation needed for bulbar (swallowing/speaking) or respiratory muscle weakness."
+        },
+        {
+          "id": "b",
+          "text": "What clinical ocular features do you look for, including a useful negative finding? (5 marks)",
+          "modelAnswer": "Fatiguable ptosis, Cogan lid twitch, variable incomitant strabismus. Useful negative finding: Normal pupil size and light reaction (pupils are completely spared)."
+        },
+        {
+          "id": "c",
+          "text": "What in office tests can you do to help you make the diagnosis? (2 marks)",
+          "modelAnswer": "1. Ice pack test (improvement in ptosis after 2 mins ice application).\n2. Rest test / sustained upgaze fatigue test."
+        },
+        {
+          "id": "d",
+          "text": "What investigations would you arrange? (4 marks)",
+          "modelAnswer": "1. Anti-acetylcholine receptor (AChR) antibodies & anti-MuSK antibodies.\n2. CT chest to screen for thymoma.\n3. Single-fiber electromyography (SFEMG).\n4. Thyroid function tests."
+        },
+        {
+          "id": "e",
+          "text": "Briefly describe the treatment options. (3 marks)",
+          "modelAnswer": "1. Anticholinesterase agent (Pyridostigmine).\n2. Systemic immunosuppression (oral corticosteroids, azathioprine, mycophenolate).\n3. Ophthalmic symptomatic care (prisms, lid crutches)."
+        }
+      ]
+    }
+  },
+  {
+    "id": "2026_s1_seq6",
+    "type": "SEQ",
+    "topic": "Cornea and External Eye",
+    "paper": "Paper 2",
+    "year": "2026",
+    "semester": "Sem 1",
+    "questionLabel": "Question 6 (SEQ)",
+    "data": {
+      "scenario": "**Topic:** Ocular Surface Squamous Neoplasia (OSSN)\n**Curriculum Standard:** Cornea and External Eye CL 1.4.3, CL 2.9\n\n**Purpose of the Question:**\nTo assess the candidate's ability to diagnose and treat ocular surface squamous neoplasia.\n\n**Clinical Scenario:**\nA 78-year-old male presents to your clinic with a history of irritation and redness of his left eye for 3 months. He has tried lubricants and hot compresses with no improvement. On clinical examination there is a raised gelatinous lesion with a thickened white centre on the conjunctiva, extending 2 mm onto the corneal surface. The lesion measures 4 x 6 mm in size, covers 2 clock hours of the limbus and has associated dilated blood vessels. There is no pigmentation or epithelial defect.",
+      "subQuestions": [
+        {
+          "id": "a",
+          "text": "What are six (6) risk factors associated with this condition? (3 marks)",
+          "modelAnswer": "1. Ultraviolet (UV-B) radiation exposure\n2. Fair skin/pale irides\n3. Advanced age / male gender\n4. Human Papillomavirus (HPV 16/18) infection\n5. Immunosuppression (HIV, organ transplant)\n6. Ocular surface inflammation / chronic irritation / heavy smoking"
+        },
+        {
+          "id": "b",
+          "text": "What diagnostic options do you have? List a positive and negative consideration of each one. (6 marks)",
+          "modelAnswer": "1. Impression cytology: Positive (non-invasive, painless) / Negative (surface cells only, cannot grade invasion).\n2. High-resolution anterior segment OCT (HR-OCT): Positive (non-contact optical biopsy, hyperreflective thickened epithelium) / Negative (requires expensive equipment).\n3. Excisional / incisional biopsy: Positive (definitive histological diagnosis) / Negative (invasive, risk of limbal stem cell deficiency)."
+        },
+        {
+          "id": "c",
+          "text": "List three (3) different medical treatment options, including mechanism of action? (6 marks)",
+          "modelAnswer": "1. Interferon alpha-2b drops: MOA - immunomodulatory glycoprotein enhancing host immune response.\n2. Mitomycin-C (MMC 0.02%-0.04%): MOA - alkylating agent inhibiting DNA synthesis.\n3. 5-Fluorouracil (5-FU 1%): MOA - antimetabolite inhibiting thymidylate synthase."
+        },
+        {
+          "id": "d",
+          "text": "Describe your surgical approach to this condition? (4 marks)",
+          "modelAnswer": "Excision using 'no-touch' technique with 4 mm clear margins, alcohol epitheliectomy to corneal component, cryotherapy to remaining conjunctival margins (double freeze-thaw), and amniotic membrane reconstruction."
+        },
+        {
+          "id": "e",
+          "text": "After surgery, when would medical therapy be required? (1 mark)",
+          "modelAnswer": "When histological pathology confirms positive or involved surgical margins."
+        }
+      ]
+    }
+  },
+  {
+    "id": "2026_s1_seq7",
+    "type": "SEQ",
+    "topic": "Ocular Inflammation",
+    "paper": "Paper 2",
+    "year": "2026",
+    "semester": "Sem 1",
+    "questionLabel": "Question 7 (SEQ)",
+    "data": {
+      "scenario": "**Topic:** Acute anterior uveitis\n**Curriculum Standard:** 1.3.4, 1.3.5, 1.4.2, 1.4.3, 1.4.5, 2.3, 2.10, 3.1, 1.1, 1.5, 1.6, 2.6, 2.9, 2.10, 2.11, 2.1a\n\n**Purpose of Question:**\nTo assess workup and management of Acute anterior uveitis, including knowledge of differential diagnoses and potential complications.\n\n**Clinical Scenario:**\nA 36-year-old male presents with a 3-day history of increasing left eye pain, redness and photophobia.\n\n**Clinical Image:**\n![Figure 1: Clinical Presentation](/images/2026_s1/seq7_fig1.jpeg)\n\n**Findings:**\n- VA: RE 6/6 | LE 6/9, PH NI\n- IOP: RE 14 mmHg | LE 21 mmHg\n- Examination: RE quiet | LE AC cells +++, flare+, fine KP, ciliary injection",
+      "subQuestions": [
+        {
+          "id": "a",
+          "text": "What is the most likely cause of the anisocoria? (1 mark)",
+          "modelAnswer": "Inflammatory miosis (iris sphincter / ciliary spasm secondary to anterior segment inflammation)."
+        },
+        {
+          "id": "b",
+          "text": "On history, apart from his immediate symptoms what other symptoms, and background would you ask about? (7 marks)",
+          "modelAnswer": "Ask about back pain/stiffness (ankylosing spondylitis), joint pains (psoriatic arthritis), gastrointestinal symptoms (IBD/Crohn's/ulcerative colitis), reactive arthritis symptoms (urethritis, dysuria), skin rashes (psoriasis), oral/genital ulcers (Behcet's), and past history of uveitis or cold sores."
+        },
+        {
+          "id": "c",
+          "text": "What else would you look for on ophthalmic examination? (2 marks)",
+          "modelAnswer": "Check for posterior synechiae (PS), gonioscopy for PAS, hypopyon, and dilated fundoscopy for vitritis or macular edema."
+        },
+        {
+          "id": "d",
+          "text": "Assuming systems review and the remainder of your examination was negative, what are the two (2) most likely causes for left eye inflammation? (2 marks)",
+          "modelAnswer": "1. Idiopathic acute anterior uveitis\n2. HLA-B27 associated acute anterior uveitis"
+        },
+        {
+          "id": "e",
+          "text": "What treatment would you commence? (2 marks)",
+          "modelAnswer": "1. Topical corticosteroid drops (Prednisolone acetate 1% 1-2 hourly).\n2. Topical cycloplegic drops (Atropine 1% or Cyclopentolate 1%)."
+        },
+        {
+          "id": "f",
+          "text": "What are the potential causes for vision loss with this condition? (4 marks)",
+          "modelAnswer": "Cystoid macular edema (CME), secondary glaucoma, secondary cataract, and inflammatory pupillary membrane/vitritis."
+        },
+        {
+          "id": "g",
+          "text": "If this was the second presentation, what investigations would you arrange? (2 marks)",
+          "modelAnswer": "HLA-B27 typing, Chest X-ray (sarcoidosis/TB), syphilis serology (Treponemal antibody/VDRL), and serum ACE."
+        }
+      ]
+    }
+  },
+  {
+    "id": "2026_s1_seq8",
+    "type": "SEQ",
+    "topic": "Ocular Motility",
+    "paper": "Paper 2",
+    "year": "2026",
+    "semester": "Sem 1",
+    "questionLabel": "Question 8 (SEQ)",
+    "data": {
+      "scenario": "**Topic:** Ocular Motility\n**Curriculum Standard:** OM 2.8, 3.5, 5.1, 5.3\n\n**Purpose of the Question:**\nDemonstrate understanding of EOM trauma and incomitant strabismus.\n\n**Clinical Scenario:**\nKathleen is a 42-year-old woman referred to you following sinus surgery one month previously. She describes horizontal diplopia since the surgery.\n\n**Examination Findings:**\n- VA: Right 6/6 | Left 6/9\n\n**Motility Findings Diagram:**\n![Figure 1: Ocular Motility Grid](/images/2026_s1/seq8_fig1.png)",
+      "subQuestions": [
+        {
+          "id": "a",
+          "text": "Interpret these ocular motility examination findings. (3 marks)",
+          "modelAnswer": "Left eye shows severe (-4) abduction deficit, 45 pd left exotropia in primary position distance, 55 pd left exotropia at near, and 75 pd left exotropia on left gaze."
+        },
+        {
+          "id": "b",
+          "text": "What is the most likely diagnosis? (3 marks)",
+          "modelAnswer": "Left medial rectus transection / iatrogenic surgical trauma following endoscopic sinus surgery."
+        },
+        {
+          "id": "c",
+          "text": "What further ancillary tests and investigations would help you confirm this? (2 marks)",
+          "modelAnswer": "1. High-resolution orbital MRI/CT to evaluate muscle integrity and localisation of distal muscle belly.\n2. Force Generation Test (FGT) and Forced Duction Test (FDT)."
+        },
+        {
+          "id": "d",
+          "text": "How would you manage her diplopia in the immediate term? (2 marks)",
+          "modelAnswer": "1. Fresnel prism / occlusion foil.\n2. Advise strictly against driving while diplopic."
+        },
+        {
+          "id": "e",
+          "text": "What are surgical options for her diplopia if her motility does not improve after 3 months? (4 marks)",
+          "modelAnswer": "Vertical muscle transposition (Knapp or Foster transposition of superior and inferior recti to medial rectus) with ipsilateral lateral rectus recession or Botox."
+        },
+        {
+          "id": "f",
+          "text": "How would you counsel her about the risks of surgery and her prognosis? (6 marks)",
+          "modelAnswer": "Counsel on risk of anterior segment ischemia (ASI), general anaesthetic risks, residual diplopia, over/under-correction, and need for further surgery."
+        }
+      ]
+    }
+  },
+  {
+    "id": "2026_s1_seq9",
+    "type": "SEQ",
+    "topic": "Oculoplastics and Orbit",
+    "paper": "Paper 2",
+    "year": "2026",
+    "semester": "Sem 1",
+    "questionLabel": "Question 9 (SEQ)",
+    "data": {
+      "scenario": "**Topic:** Congenital Eyelid Coloboma\n**Curriculum Standard:** CL 1.1.1, 1.3, 3.6, 4.4, 4.16\n\n**Purpose of the Question:**\nDemonstrate knowledge of congenital eyelid coloboma and malformations.\n\n**Clinical Scenario:**\nA 3-year-old girl is brought to your clinic by her parents, who are concerned about a noticeable defect in her right eyelid. The child has a history of developmental delays but otherwise has been healthy. Upon examination, you observe a notch in the right upper eyelid causing eyelid malposition and exposing part of the conjunctiva.\n\n**Clinical Image:**\n![Figure 1: Eyelid Defect](/images/2026_s1/seq9_fig1.jpeg)",
+      "subQuestions": [
+        {
+          "id": "a",
+          "text": "Define and describe this condition and give two (2) differential diagnoses. (3 marks)",
+          "modelAnswer": "Congenital upper eyelid coloboma (full-thickness eyelid margin defect from failure of fusion of lid folds). Differentials: Traumatic eyelid avulsion/laceration, cryptophthalmos."
+        },
+        {
+          "id": "b",
+          "text": "Name two (2) associated syndromes. (2 marks)",
+          "modelAnswer": "1. Goldenhar syndrome (oculo-auriculo-vertebral spectrum)\n2. Treacher Collins syndrome"
+        },
+        {
+          "id": "c",
+          "text": "How would you evaluate this patient? (4 marks)",
+          "modelAnswer": "Assess corneal exposure/staining, Bell's phenomenon, visual acuity/refraction for astigmatism and amblyopia, and screen for systemic/auricular anomalies."
+        },
+        {
+          "id": "d",
+          "text": "Outline your approach to the treatment / management of this patient including grading of defects and surgical reconstructive options of the upper lid. (9 marks)",
+          "modelAnswer": "1. Immediate: Lubricating ointments / moisture chamber to protect cornea.\n2. Small defect (<25-33%): Direct primary closure with pentagonal excision.\n3. Moderate defect (33-50%): Primary closure with lateral canthotomy and cantholysis.\n4. Large defect (>50%): Tenzel semicircular flap or Cutler-Beard lower lid bridge flap."
+        },
+        {
+          "id": "e",
+          "text": "Which other multidisciplinary and interprofessional team might you involve? (2 marks)",
+          "modelAnswer": "Pediatricians, clinical geneticists, ENT/audiology, and pediatric dermatologists."
+        }
+      ]
+    }
+  },
+  {
+    "id": "2026_s1_seq10",
+    "type": "SEQ",
+    "topic": "Cataract",
+    "paper": "Paper 3",
+    "year": "2026",
+    "semester": "Sem 1",
+    "questionLabel": "Question 10 (SEQ)",
+    "data": {
+      "scenario": "**Topic:** Cataract surgery in Wet AMD / IVI Complications\n**Curriculum Standard:** 5.2.3, 3.5.2, 3.6\n\n**Purpose of the Question:**\nAssess candidate's recognition of a higher risk for cataract surgery and the management thereof.\n\n**Clinical Scenario:**\nYou have been treating an 80-year-old with 8-weekly intravitreal ranibizumab injections for stable wet macular degeneration. At the previous injection their vision was 6/18, but at the subsequent injection the vision has dropped to 6/60 with no change on the macular OCT but a new 3+ posterior subcapsular cataract. You decide to proceed with cataract surgery.",
+      "subQuestions": [
+        {
+          "id": "a",
+          "text": "Name five (5) additional points you would cover in pre-op counselling in this setting compared to a routine cataract surgery operation. (10 marks)",
+          "modelAnswer": "1. Guarded visual prognosis due to underlying wet AMD.\n2. High risk of posterior capsule rupture/lens touch from previous IVI needle.\n3. Ongoing post-op need for anti-VEGF injections.\n4. Risk of post-op macular edema exacerbation.\n5. Discussion of IOL selection (avoid multifocal IOLs)."
+        },
+        {
+          "id": "b",
+          "text": "List pre-op and intra-op additional precautions you would undertake for cataract surgery here. (10 marks)",
+          "modelAnswer": "1. Pre-op OCT macular baseline & anti-VEGF injection planning.\n2. Have anterior vitrectomy unit, triamcinolone, and miotic ready.\n3. Careful Hydrodissection (avoid forceful hydrodissection due to possible PC breach).\n4. Low phaco parameters and vitreo-retinal backup available."
+        }
+      ]
+    }
+  },
+  {
+    "id": "2026_s1_seq11",
+    "type": "SEQ",
+    "topic": "Glaucoma",
+    "paper": "Paper 3",
+    "year": "2026",
+    "semester": "Sem 1",
+    "questionLabel": "Question 11 (SEQ)",
+    "data": {
+      "scenario": "**Topic:** Plateau Iris\n**Curriculum Standard:** Cl 2.1 / Cl 5.2 / Cl 4.7 / Cl 7.4 / PR 5.6\n\n**Purpose of the Question:**\nTo examine candidate knowledge of Plateau Iris (PI).\n\n**Clinical Scenario:**\nA 52-year-old female is referred for assessment of 'occludable Anterior Chamber Angles'.",
+      "subQuestions": [
+        {
+          "id": "a",
+          "text": "What history is relevant to this patient's assessment? (3 marks)",
+          "modelAnswer": "Family history of angle closure glaucoma, past episodes of halo vision, eye pain, headaches, medication history (mydriatic drugs)."
+        },
+        {
+          "id": "b",
+          "text": "What features of your anterior segment examination including gonioscopy would suggest plateau iris. (3 marks)",
+          "modelAnswer": "Flat iris plane, deep central anterior chamber, double-hump sign on indentation gonioscopy, steep iris root."
+        },
+        {
+          "id": "c",
+          "text": "Outline the mechanism of IOP elevation in plateau iris. (2 marks)",
+          "modelAnswer": "Anteriorly displaced ciliary body processes holding iris root against trabecular meshwork, causing mechanical angle crowding."
+        },
+        {
+          "id": "d",
+          "text": "What is the difference between Plateau Iris Configuration (PIC) and Plateau Iris Syndrome (PIS)? (2 marks)",
+          "modelAnswer": "PIC: Occludable angle with plateau iris features before LPI. PIS: Persistent occludable angle / elevated IOP after patent LPI eliminates pupil block."
+        },
+        {
+          "id": "e",
+          "text": "Laser Iridotomy fails to control IOP. What other laser treatment is indicated? Outline your technique. (4 marks)",
+          "modelAnswer": "Argon Laser Peripheral Iridoplasty (ALPI). Technique: Low energy, large spot size (200-500 um), long duration (0.5s) burns to extreme iris periphery to contract stroma."
+        },
+        {
+          "id": "f",
+          "text": "Uncontrolled IOP and glaucomatous optic nerve change force surgical treatment. What are the surgical options? (2 marks)",
+          "modelAnswer": "Clear lens extraction / phacoemulsification with IOL implantation, trabeculectomy with MMC."
+        },
+        {
+          "id": "g",
+          "text": "There is a landmark study that is directly applicable to your surgical decision. Outline the study and its results. (4 marks)",
+          "modelAnswer": "EAGLE Study (Effectiveness in Angle-closure Glaucoma of Lens Extraction): Showed clear lens extraction was superior to LPI + medical therapy in clinical and cost-effectiveness for primary angle closure."
+        }
+      ]
+    }
+  },
+  {
+    "id": "2026_s1_seq12",
+    "type": "SEQ",
+    "topic": "Vitreoretinal",
+    "paper": "Paper 3",
+    "year": "2026",
+    "semester": "Sem 1",
+    "questionLabel": "Question 12 (SEQ)",
+    "data": {
+      "scenario": "**Topic:** Myopic Macular Hole\n**Curriculum Standard:** 3.1.4, 3.12.5, 3.16\n\n**Purpose of the Question:**\nAssess the candidate on macular pathology.\n\n**Clinical Scenario:**\nHigh myopic patient presenting with vision loss.\n\n**Clinical Image:**\n![Figure 1: OCT Macula](/images/2026_s1/seq12_fig1.jpeg)",
+      "subQuestions": [
+        {
+          "id": "a",
+          "text": "List five (5) causes of macular pathology leading to vision loss that more commonly occurs in a highly myopic patient. (5 marks)",
+          "modelAnswer": "1. Myopic choroidal neovascularisation (CNV)\n2. Myopic foveoschisis (maculoschisis)\n3. Full-thickness macular hole\n4. Posterior staphyloma / chorioretinal atrophy (Fuchs spot)\n5. Dome-shaped macula with serous detachment"
+        },
+        {
+          "id": "b",
+          "text": "Describe the macular pathology on the OCT in Figure 1. (1 mark)",
+          "modelAnswer": "Full-thickness macular hole with surrounding retinoschisis/foveoschisis and posterior staphyloma."
+        },
+        {
+          "id": "c",
+          "text": "How do you measure the size of the macular pathology? (1 mark)",
+          "modelAnswer": "Measure minimum hole diameter at narrowest point parallel to RPE on OCT caliper tool."
+        },
+        {
+          "id": "d",
+          "text": "What causes the speckled appearance on the OCT? (1 mark)",
+          "modelAnswer": "Orbital fat underlying the thinned sclera in posterior staphyloma."
+        },
+        {
+          "id": "e",
+          "text": "How do you grade the macular pathology on OCT? (2 marks)",
+          "modelAnswer": "Grade based on minimum diameter: Small (<250 um), Medium (250-400 um), Large (>400 um)."
+        },
+        {
+          "id": "f",
+          "text": "Can intravitreal ocriplasmin be used? Why/why not? (1 mark)",
+          "modelAnswer": "No, contraindicated/ineffective in high myopia and large holes (>400 um) without focal VMT."
+        },
+        {
+          "id": "g",
+          "text": "What are the key concepts of surgical repair of this pathology? (3 marks)",
+          "modelAnswer": "Pars plana vitrectomy, ILM peeling (inverted ILM flap technique), and long-acting gas tamponade (C3F8/SF6)."
+        },
+        {
+          "id": "h",
+          "text": "The patient is visiting from overseas, has noted a recent drop in vision, and wishes to fly home this week. What options do you have? (3 marks)",
+          "modelAnswer": "Use heavy silicone oil tamponade instead of gas if air travel is required, or defer surgery until travel is completed."
+        },
+        {
+          "id": "i",
+          "text": "The pathology fails to repair after initial surgery. List three (3) methods that may help repair with repeat surgery. (3 marks)",
+          "modelAnswer": "1. Autologous ILM free graft\n2. Autologous lens capsular graft\n3. Radial puncturing / relaxing retinotomy of hole edges"
+        }
+      ]
+    }
+  },
+  {
+    "id": "2026_s1_seq13",
+    "type": "SEQ",
+    "topic": "Paediatrics",
+    "paper": "Paper 3",
+    "year": "2026",
+    "semester": "Sem 1",
+    "questionLabel": "Question 13 (SEQ)",
+    "data": {
+      "scenario": "**Topic:** Paediatrics – Glaucoma (Sturge-Weber Syndrome)\n**Curriculum Standard:** PO1.1.8, PO5.1, CL3\n\n**Purpose of the Question:**\nTo assess the ability to assess, diagnose, and develop a treatment plan for Sturge-Weber Syndrome and glaucoma.\n\n**Clinical Scenario:**\nA 10-month-old baby has been referred by the paediatrician for an eye check. She was born with a large reddish birth mark to the left side of her face which respects the midline. The baby has started having seizures over the past month and a diagnosis of Sturge-Weber Syndrome has been made.",
+      "subQuestions": [
+        {
+          "id": "a",
+          "text": "What is the inheritance pattern of Sturge-Weber Syndrome and what is the likelihood that the child will develop an ocular complication? (2 marks)",
+          "modelAnswer": "Somatic mosaicism (non-heritable mutation in GNAQ gene). Approx 50% risk of ocular involvement (glaucoma or choroidal hemangioma)."
+        },
+        {
+          "id": "b",
+          "text": "What clinical signs are you looking for on examination of the eyes? (6 marks)",
+          "modelAnswer": "Buphthalmos, corneal haze/enlargement, Haab striae, elevated IOP, episcleral hemangioma (vascular engorgement), diffuse choroidal hemangioma ('tomato-ketchup' fundus), optic nerve cupping."
+        },
+        {
+          "id": "c",
+          "text": "How do you check the intraocular pressure in a 10-month-old? What if they are distressed and refuse to open their eyes? (4 marks)",
+          "modelAnswer": "Rebound tonometry (iCare) or Perkins tonometer while baby is napping/feeding. If distressed: Examination Under Anaesthesia (EUA) with ketamine/inhalational agent."
+        },
+        {
+          "id": "d",
+          "text": "What are the two (2) underlying pathological causes of the elevated pressure? (2 marks)",
+          "modelAnswer": "1. Congenital trabecular meshwork dysgenesis.\n2. Elevated episcleral venous pressure (EVP) from episcleral hemangioma."
+        },
+        {
+          "id": "e",
+          "text": "How do you manage this baby in the short and long term? (6 marks)",
+          "modelAnswer": "Short-term: Topical aqueous suppressants (beta-blocker/CAI), goniotomy or trabeculotomy as primary surgical intervention. Long-term: Refractive correction for amblyopia prevention, tube shunt if trabeculotomy fails."
+        }
+      ]
+    }
+  },
+  {
+    "id": "2026_s1_seq14",
+    "type": "SEQ",
+    "topic": "Neuro-ophthalmology",
+    "paper": "Paper 3",
+    "year": "2026",
+    "semester": "Sem 1",
+    "questionLabel": "Question 14 (SEQ)",
+    "data": {
+      "scenario": "**Topic:** Neuro-ophthalmology (Miller Fisher Syndrome)\n**Curriculum Standard:** 3.16 Neuro-ophthalmology\n\n**Purpose of the Question:**\nUnderstand Miller Fisher Syndrome and differentiate it from other conditions and have a knowledge of its management.\n\n**Clinical Scenario:**\nA 40-year-old male with no significant medical history presents to the Emergency Department with one day onset of diplopia. He has been generally feeling unwell with limb weakness and unsteady gait since a recent upper respiratory tract infection. His visual acuity is 6/9 OU with normal colour vision, optic discs and retinal assessment. The pupils were mydriatic with minimal reaction to light and no relative afferent pupillary defect. He has evidence of bilateral ptosis, worse on the right, with right esotropia and hyperphoria. There's bilateral generalized ophthalmoplegia without nystagmus.",
+      "subQuestions": [
+        {
+          "id": "a",
+          "text": "What is the likely diagnosis and list four (4) supporting features. (4 marks)",
+          "modelAnswer": "Miller Fisher Syndrome (GBS variant). Supporting features: 1. Ophthalmoplegia 2. Ataxia 3. Areflexia 4. Post-viral antecedent infection."
+        },
+        {
+          "id": "b",
+          "text": "What other features on clinical examination are important in this patient's assessment? (3 marks)",
+          "modelAnswer": "Test deep tendon reflexes (areflexia), vital capacity / respiratory function, cranial nerves (bulbar involvement)."
+        },
+        {
+          "id": "c",
+          "text": "What investigations would aid in the diagnosis? (4 marks)",
+          "modelAnswer": "1. Serum anti-GQ1b IgG antibodies.\n2. Lumbar puncture (albuminocytological dissociation).\n3. Nerve conduction studies (NCS).\n4. MRI brain/brainstem."
+        },
+        {
+          "id": "d",
+          "text": "List two (2) differential diagnoses and compare and contrast the clinical findings and investigations. (5 marks)",
+          "modelAnswer": "1. Myasthenia Gravis (fatiguable, AChR+, normal reflexes, SFEMG abnormal).\n2. Wernicke encephalopathy (thiamine deficiency, confusion, nystagmus)."
+        },
+        {
+          "id": "e",
+          "text": "Outline your treatment for this patient. (4 marks)",
+          "modelAnswer": "Intravenous Immunoglobulin (IVIG) or Plasmapheresis (PE); supportive respiratory monitoring."
+        }
+      ]
+    }
+  },
+  {
+    "id": "2026_s1_seq15",
+    "type": "SEQ",
+    "topic": "Cornea and External Eye",
+    "paper": "Paper 4",
+    "year": "2026",
+    "semester": "Sem 1",
+    "questionLabel": "Question 15 (SEQ)",
+    "data": {
+      "scenario": "**Topic:** Corneal Collagen Crosslinking (CXL)\n**Curriculum Standard:** Cornea and External Eye 3.3, 3.19, 2.15, 3.3\n\n**Purpose of the Question:**\nTo demonstrate knowledge of the role of Corneal Collagen Crosslinking in the management of ectatic corneal diseases.\n\n**Clinical Scenario:**\nCorneal collagen crosslinking is used increasingly in the management of a number of corneal conditions.",
+      "subQuestions": [
+        {
+          "id": "a",
+          "text": "List six (6) conditions for which it may be used. Include at least one (1) non-ectatic condition. (3 marks)",
+          "modelAnswer": "Ectatic: Keratoconus, Pellucid marginal degeneration, Post-LASIK ectasia. Non-ectatic: Infectious keratitis (PACK-CXL), Bullous keratopathy, Corneal melting."
+        },
+        {
+          "id": "b",
+          "text": "Briefly describe the standard treatment method including UV wavelength, total dose, and variants to the standard protocol. (4 marks)",
+          "modelAnswer": "Standard Dresden protocol: Epithelium-off, Riboflavin 0.1% for 30 mins, UVA 365 nm at 3 mW/cm2 for 30 mins (total dose 5.4 J/cm2). Variants: Accelerated CXL (higher fluence), Epi-on CXL."
+        },
+        {
+          "id": "c",
+          "text": "Discuss the proposed mechanism(s) of action. (3 marks)",
+          "modelAnswer": "UVA photoactivation of riboflavin generates reactive oxygen species (ROS) creating covalent bonds between corneal collagen fibrils."
+        },
+        {
+          "id": "d",
+          "text": "What are the specific indications in ectatic and non-ectatic conditions. (3 marks)",
+          "modelAnswer": "Ectatic: Progressive keratoconus / ectasia (increase in Kmax >1D). Non-ectatic: Treatment-resistant bacterial/fungal keratitis."
+        },
+        {
+          "id": "e",
+          "text": "What are the contra-indications for this procedure? (4 marks)",
+          "modelAnswer": "Thinnest corneal stroma <400 um (epi-off), active neurotrophic keratitis, poor wound healing, pregnancy/lactation."
+        },
+        {
+          "id": "f",
+          "text": "What are the results of treatment for ectasia? (3 marks)",
+          "modelAnswer": "Stabilisation of ectasia progression in >90-95% of cases, slight flattening of Kmax (1-2D)."
+        }
+      ]
+    }
+  },
+  {
+    "id": "2026_s1_seq16",
+    "type": "SEQ",
+    "topic": "Ocular Inflammation",
+    "paper": "Paper 4",
+    "year": "2026",
+    "semester": "Sem 1",
+    "questionLabel": "Question 16 (SEQ)",
+    "data": {
+      "scenario": "**Topic:** Systemic Uveitis Treatment and Pregnancy\n**Curriculum Standard:** Ocular inflammation 1.4, 1.3, 4.1, 4.2, 2.1\n\n**Purpose of the Question:**\nTo assess candidates' understanding and management of systemic uveitis treatment and pregnancy.\n\n**Clinical Scenario:**\nA 29-year-old woman presents with a three-month history of gradual loss of vision and floaters in both eyes. She is systemically well with no significant past medical history.\n\n**Examination Findings:**\n- Visual Acuity: RE 6/24 | LE 6/18\n- Anterior Segment: RE 1+ cells, 1+ flare | LE 1+ cells, 1+ flare\n- Anterior Vitreous: 2+ cells OU\n- Lens: Clear OU\n- Fundus: Cystoid macular oedema (CMT 720 RE, 630 LE), peripheral venous sheathing, multifocal chorioretinal scars, inferior snowballs OU\n- IOP: 16 mmHg OU",
+      "subQuestions": [
+        {
+          "id": "a",
+          "text": "If infectious causes, systemic disease, and pregnancy were all excluded, how would you treat this patient over the next 12 months? (5 marks)",
+          "modelAnswer": "Induction with high-dose oral corticosteroids (Prednisolone 1 mg/kg/day) with slow taper; early initiation of steroid-sparing DMARD (e.g. Mycophenolate, Methotrexate, or Cyclosporine) or Adalimumab."
+        },
+        {
+          "id": "b",
+          "text": "How would you counsel the patient about your treatment plan – list the major benefits, risks, and requirements for monitoring during treatment? (5 marks)",
+          "modelAnswer": "Benefits: Control vitritis/CME, prevent vision loss. Risks: Infection, hypertension, diabetes, liver/kidney toxicity. Monitoring: Baseline bloods (FBC, LFT, EUC), blood pressure, vaccines before therapy."
+        },
+        {
+          "id": "c",
+          "text": "One year following presentation the patient is stable on medical treatment but flares when treatment is reduced. She indicates that she would like to become pregnant. Which immunosuppressants are contraindicated during pregnancy? (3 marks)",
+          "modelAnswer": "Methotrexate (teratogenic), Mycophenolate mofetil (teratogenic), Cyclophosphamide."
+        },
+        {
+          "id": "d",
+          "text": "How long should these contraindicated medications be discontinued before trying to conceive? (1 mark)",
+          "modelAnswer": "Methotrexate: at least 3 months. Mycophenolate: at least 6 weeks."
+        },
+        {
+          "id": "e",
+          "text": "The patient has some concerns about continuing systemic medical treatment during pregnancy. What two (2) major treatment strategies would you discuss for her pregnancy? Explain the relative benefits and risks of each strategy. (6 marks)",
+          "modelAnswer": "1. Switch to pregnancy-safe systemic therapy (Cyclosporine, Azathioprine, or low-dose Prednisolone) / Adalimumab in 1st/2nd trimester.\n2. Local intraocular steroid therapy (e.g. intravitreal Ozurdex / Fluocinolone implant) to avoid systemic drug exposure to fetus."
+        }
+      ]
+    }
+  },
+  {
+    "id": "2026_s1_seq17",
+    "type": "SEQ",
+    "topic": "Ocular Motility",
+    "paper": "Paper 4",
+    "year": "2026",
+    "semester": "Sem 1",
+    "questionLabel": "Question 17 (SEQ)",
+    "data": {
+      "scenario": "**Topic:** Extraocular Motility (3rd Nerve Palsy with Aberrant Regeneration)\n**Curriculum Standard:** 2.6, 2.7, 2.8\n\n**Purpose of the Question:**\nTo identify and localise cranial nerve palsy.\n\n**Clinical Scenario:**\nA 65-year-old woman was referred for intermittent eye pain and diplopia. She denied any previous ophthalmic history or eye trauma. The visual acuity measured R 6/38, L 6/6.\n\n**Motility Examination Photos:**\n![Figure 1: 9-Gaze Clinical Photos](/images/2026_s1/seq17_fig1.jpeg)",
+      "subQuestions": [
+        {
+          "id": "a",
+          "text": "Describe the findings. (6 marks)",
+          "modelAnswer": "Right eye ptosis, right exotropia and hypotropia in primary gaze, limitation of adduction, elevation, and depression, with pseudo-Graefe sign (lid elevation on downgaze/adduction)."
+        },
+        {
+          "id": "b",
+          "text": "What is the diagnosis for the motility change? (3 marks)",
+          "modelAnswer": "Right 3rd cranial nerve palsy with aberrant regeneration (oculomotor synkinesis)."
+        },
+        {
+          "id": "c",
+          "text": "What other cranial nerves would you examine? (2 marks)",
+          "modelAnswer": "CN IV (trochlear - intorsion on downgaze), CN V1 (trigeminal corneal sensation), CN VI (abducens)."
+        },
+        {
+          "id": "d",
+          "text": "How would you examine the right 4th nerve function in this patient? (2 marks)",
+          "modelAnswer": "Observe intorsion of conjunctival vessels on attempted downgaze while the eye is abducted."
+        },
+        {
+          "id": "e",
+          "text": "State the likely localisations of pathology, and how would you differentiate them? (3 marks)",
+          "modelAnswer": "Cavernous sinus or posterior communicating artery (PCoA) aneurysm. Differentiate via neuroimaging and testing adjacent CNs (III, IV, V1, V2, VI)."
+        },
+        {
+          "id": "f",
+          "text": "What investigation would you order? (1 mark)",
+          "modelAnswer": "Urgent CTA or MRA brain/orbits (catheter digital subtraction angiography if high suspicion)."
+        },
+        {
+          "id": "g",
+          "text": "How would you manage this patient? (3 marks)",
+          "modelAnswer": "Urgent neurosurgical referral for aneurysm clipping/coiling; strabismus/ptosis surgery after stabilization."
+        }
+      ]
+    }
+  },
+  {
+    "id": "2026_s1_seq18",
+    "type": "SEQ",
+    "topic": "Oculoplastics and Orbit",
+    "paper": "Paper 4",
+    "year": "2026",
+    "semester": "Sem 1",
+    "questionLabel": "Question 18 (SEQ)",
+    "data": {
+      "scenario": "**Topic:** Periocular Melanoma\n**Curriculum Standard:** OP 1.3.2, OP 1.3.4, OP 3.7c, 3.7d, 3.7e, OP 5.2\n\n**Purpose of the Question:**\nTo demonstrate an understanding of how to deal with periocular melanoma and pigmented lesions.\n\n**Clinical Scenario:**\nA 61-year-old woman presents as a referral from her GP with a pigmented lesion on her left lower eyelid.",
+      "subQuestions": [
+        {
+          "id": "a",
+          "text": "What features would you look for in this lesion that would make you suspicious this might be melanoma? (5 marks)",
+          "modelAnswer": "ABCDE criteria: Asymmetry, Border irregularity, Color variation, Diameter >6 mm, Evolving/elevation, loss of lashes (madarosis), ulceration."
+        },
+        {
+          "id": "b",
+          "text": "You decide the lesion has some suspicious features. How would your approach differ between a lesion with high suspicion and low suspicion of melanoma? (3 marks)",
+          "modelAnswer": "Low suspicion: Excisional biopsy with narrow margins. High suspicion: Full-thickness incisional/punch biopsy to assess Breslow thickness before wide local excision."
+        },
+        {
+          "id": "c",
+          "text": "If the lesion was a malignant melanoma – in broad terms – how would you go about treating this patient (details of surgical reconstruction are NOT required)? (6 marks)",
+          "modelAnswer": "Wide local surgical excision with 5-10 mm clear margins, sentinel lymph node biopsy (SLNB) if thickness >0.8 mm, staging PET/CT scan, and multidisciplinary oncology team (MDT) management."
+        },
+        {
+          "id": "d",
+          "text": "If the lesion was melanoma in situ – in broad terms – how would you go about treating this patient? (6 marks)",
+          "modelAnswer": "Complete surgical excision with 5 mm clear margins (Mohs or paraffin section mapping), topical imiquimod 5% if non-surgical candidate, long-term dermatological surveillance."
+        }
+      ]
+    }
+  }
+]

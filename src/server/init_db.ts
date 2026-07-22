@@ -231,6 +231,7 @@ export async function initDb() {
     await seedVolume(6);
     await seedVolume(7);
     await seedJsonFile('test1_questions.json');
+    await seedJsonFile('2026_s1_questions.json');
 
     console.log('Database tables initialized successfully.');
   } catch (err) {

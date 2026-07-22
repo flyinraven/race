@@ -198,9 +198,39 @@ export async function initDb() {
       }
     };
 
+    const seedJsonFile = async (fileName: string) => {
+      try {
+        const fs = require('fs');
+        const path = require('path');
+        let jsonPath = path.join(__dirname, `../../${fileName}`);
+        if (!fs.existsSync(jsonPath)) {
+          jsonPath = path.join(__dirname, `../${fileName}`);
+        }
+        if (!fs.existsSync(jsonPath)) {
+          jsonPath = path.join(process.cwd(), fileName);
+        }
+        if (fs.existsSync(jsonPath)) {
+          const dataArr = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
+          for (const q of dataArr) {
+            await query(
+              `INSERT INTO questions (id, type, topic, paper, year, data)
+               VALUES ($1, $2, $3, $4, $5, $6)
+               ON CONFLICT (id) DO UPDATE 
+               SET type = EXCLUDED.type, topic = EXCLUDED.topic, paper = EXCLUDED.paper, year = EXCLUDED.year, data = EXCLUDED.data`,
+              [q.id, q.type, q.topic, q.paper, q.year, JSON.stringify(q.data)]
+            );
+          }
+          console.log(`Auto-seeded ${dataArr.length} questions from ${fileName}.`);
+        }
+      } catch (e) {
+        console.error(`Error auto-seeding ${fileName}:`, e);
+      }
+    };
+
     await seedVolume(5);
     await seedVolume(6);
     await seedVolume(7);
+    await seedJsonFile('test1_questions.json');
 
     console.log('Database tables initialized successfully.');
   } catch (err) {

@@ -1,0 +1,83 @@
+[
+  {
+    "id": "test1_st1",
+    "type": "OSCE",
+    "topic": "Cataract",
+    "paper": "OSCE Test 1",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** 74-year-old male\n**Visual Acuity:** OD 6/24 | OS 6/9\n**Intraocular Pressure (IOP):** OD 22 mmHg | OS 16 mmHg\n**Primary Instruction:** \"Examine the provided slit-lamp photographs of this patient's anterior segments. Describe the abnormalities present and state your diagnosis.\"\n\n**Clinical Images:**\n![Clinical Image 1](/images/test1/test1_st1_img1.jpeg)\n![Clinical Image 2](/images/test1/test1_st1_img2.jpeg)\n![Clinical Image 3](/images/test1/test1_st1_img3.jpeg)\n\n*Findings to elicit (Examiner Notes):* Poor pupillary dilation, white flaky fibrillar material on the pupillary border and in a target/bullseye configuration on the anterior lens capsule, phacodonesis on slit-lamp with fine iris tremor (iridodonesis) suggesting zonular laxity.\n**Diagnosis:** Pseudoexfoliation syndrome with early pseudoexfoliative glaucoma and visually significant cataract, right eye.",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Describe the pathophysiology of this condition. What is the 'three-ring sign' and how does it arise? What is the genetic basis, and why is this systemic rather than purely ocular?",
+          "modelAnswer": "**Definitive Diagnosis:** Pseudoexfoliation (PXF) syndrome\n\n**Pathophysiology:** An age-related, generalised elastic microfibrillopathy characterised by progressive extracellular production and aggregation of an abnormal fibrillar amyloid-like glycoprotein material, derived from basement membranes of the lens epithelium, iris pigment epithelium, ciliary body, and non-ocular tissue (skin, heart, lung, kidney, meninges).\n\n**Genetics:** Strong association with single-nucleotide polymorphisms in the LOXL1 gene (lysyl oxidase-like 1), which encodes an enzyme involved in elastin cross-linking; incomplete penetrance and environmental/UV exposure modify expression.\n\n**Three-ring sign on the anterior lens capsule:**\n- *Central disc:* Undisturbed zone of deposited material corresponding to the area under a normally-sized pupil.\n- *Clear (lucent) mid-zone:* Material mechanically rubbed off by the moving iris margin during physiological pupillary movement.\n- *Peripheral granular zone:* Deposits beyond the range of iris movement, often only seen after full dilation.\n\n**Systemic significance:** Material deposits in vessel adventitia throughout the body; associated with an increased risk of cardiovascular and cerebrovascular disease, abdominal aortic aneurysm, and sensorineural hearing loss — not solely an ophthalmic condition.\n\n**Zonular consequence:** PXF material accumulates on zonular fibres and the lens equator, causing progressive zonulopathy, phacodonesis, and predisposition to lens subluxation/dislocation — critical for surgical planning."
+        },
+        {
+          "id": "q2",
+          "text": "How would you confirm this diagnosis on examination, and what are the key differentials for white pupillary/lens capsule material? How does true exfoliation syndrome differ?",
+          "modelAnswer": "**Gonioscopy:** Patchy, dense pigmentation of the trabecular meshwork (\"dirty\" TM), and a Sampaolesi line — a scalloped line of pigment anterior to Schwalbe's line.\n\n**Iris transillumination:** Moth-eaten peripupillary transillumination defects from mechanical iris pigment epithelial rubbing, distinct from the mid-peripheral spoke-like defects of pigment dispersion syndrome.\n\n**Diurnal IOP phasing:** Given documented pressure asymmetry and elevated risk of unrecognised glaucomatous damage — disc asymmetry and OCT RNFL/visual fields are mandatory.\n\n**Key differential — True exfoliation syndrome (lens capsule delamination):** Occurs with chronic heat/infra-red exposure (glassblowers, furnace workers) or ageing; the anterior lens capsule itself splits and a thin, free-floating, scroll-like membrane is seen in the anterior chamber, undulating with eye movement, rather than surface-deposited fibrillar material.\n\n**Other differentials:** Primary pigment dispersion syndrome (no capsular deposits, Krukenberg spindle instead), anterior capsular fibrosis, and inflammatory keratic-type precipitates on the lens in chronic uveitis."
+        },
+        {
+          "id": "q3",
+          "text": "Outline your management, addressing both the glaucomatous risk and the specific challenges of cataract surgery in this condition.",
+          "modelAnswer": "**Glaucoma management:**\n- First-line topical therapy as per OAG protocols (prostaglandin analogue first-line); PXF glaucoma runs an aggressive course with greater IOP fluctuation, requiring lower target pressures.\n- Selective laser trabeculoplasty is effective given pigmented TM.\n- Trabeculectomy with mitomycin-C for medically uncontrolled disease.\n\n**Cataract surgery considerations:**\n- *Poor pre-operative dilation:* Plan for pupil expansion (iris hooks, Malyugin ring) proactively.\n- *Zonular weakness:* Use a capsular tension ring (CTR) early to distribute zonular stress evenly; Cionni-modified CTR for significant dehiscence.\n- *Reduced phacodynamics:* Lower phaco power/flow settings; chopping techniques preferred over sculpting.\n- *Counseling:* Increased risk of intraoperative zonular dialysis, vitreous loss, PCR, and late IOL subluxation/decentration.\n\n**Post-operative course:** Close IOP monitoring given risk of post-operative pressure spikes."
+        }
+      ]
+    }
+  },
+  {
+    "id": "test1_st2",
+    "type": "OSCE",
+    "topic": "Paediatrics",
+    "paper": "OSCE Test 1",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** 18-month-old female\n**Visual Acuity:** OD unable to fix and follow centrally, steadily, and maintained | OS fixes, follows centrally, steadily, maintained\n**Intraocular Pressure (IOP):** OD 26 mmHg | OS 15 mmHg\n**Primary Instruction:** \"The parents noticed an abnormal white reflex in a flash photograph. Examine the external photograph and fundus photograph provided. Describe the abnormalities and state your diagnosis.\"\n\n**Clinical Images:**\n![Clinical Image 1](/images/test1/test1_st2_img1.png)\n\n*Findings to elicit (Examiner Notes):* Absent red reflex on the right with a chalky-white pupillary reflex (leukocoria); fundoscopy shows a creamy-white, friable, elevated intraretinal mass with intrinsic calcification (\"cottage cheese\" appearance) and dilated tortuous feeder vessels, with possible vitreous seeding.\n**Diagnosis:** Retinoblastoma, right eye, with early neovascular glaucoma from tumour ischaemia (raised IOP OD).",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Describe the tumour biology and growth patterns of this condition. How does the genetics determine whether disease is unilateral or bilateral, and what other malignancy risk does this confer?",
+          "modelAnswer": "**Definitive Diagnosis:** Retinoblastoma\n\n**Pathophysiology:** Malignant tumour of primitive retinal cells arising from biallelic inactivation of the RB1 tumour suppressor gene (13q14), which normally regulates cell cycle at G1–S checkpoint.\n\n**Knudson's \"two-hit\" hypothesis:**\n- *Heritable (germline) form (~40%):* First mutation inherited or de novo in all cells; second hit in retinal cell. Typically earlier onset, bilateral/multifocal disease, risk of trilateral disease (pineoblastoma) and secondary malignancies (osteosarcoma, soft tissue sarcoma, melanoma).\n- *Non-heritable (somatic) form (~60%):* Both hits occur in a single somatic retinal cell — unilateral, unifocal, later presentation, no heritable risk.\n\n**Growth patterns:**\n- *Endophytic:* Grows into vitreous cavity (vitreous seeding).\n- *Exophytic:* Grows into subretinal space (exudative retinal detachment).\n- *Infiltrative/diffuse:* Rare flat growth mimicking uveitis.\n\n**Secondary neovascular glaucoma:** Driven by diffuse tumour-related retinal ischaemia driving anterior segment neovascularisation."
+        },
+        {
+          "id": "q2",
+          "text": "What is your differential diagnosis for leukocoria, and what investigations would you arrange to confirm the diagnosis and stage the disease? What imaging modality would you specifically avoid and why?",
+          "modelAnswer": "**Differential diagnosis for leukocoria:**\n- Persistent fetal vasculature (PFV/PHPV)\n- Coats' disease (retinal telangiectasia with exudative detachment)\n- Retinopathy of prematurity (ROP)\n- Toxocariasis (granuloma, puppy exposure)\n- Congenital cataract, Coloboma, Uveitis, Vitreous haemorrhage\n\n**Investigations:**\n- *B-scan ultrasonography:* Key initial test showing intralesional calcification with high reflectivity and posterior shadowing.\n- *MRI orbits and brain:* Assesses optic nerve invasion, extraocular extension, and screens for trilateral retinoblastoma.\n- *EUA with RetCam wide-field photography:* For staging and documentation.\n- *Genetic testing/counselling:* RB1 mutation status for child and family.\n\n**Modality to avoid:** CT imaging — ionising radiation confers significant additional risk of secondary malignancy in RB1 germline carriers."
+        },
+        {
+          "id": "q3",
+          "text": "Outline the classification system used to guide treatment and describe the treatment escalation options from globe-conserving therapy through to enucleation.",
+          "modelAnswer": "**Classification:** International Intraocular Retinoblastoma Classification (Groups A–E).\n\n**Globe-conserving options (Groups A–C, selected D):**\n- *Focal consolidation:* Laser photocoagulation/TTT for small posterior tumours; cryotherapy for small peripheral tumours.\n- *Chemoreduction:* Systemic carboplatin/etoposide/vincristine followed by focal consolidation.\n- *Intra-arterial chemotherapy (IAC - Abramson technique):* Targeted delivery via ophthalmic artery catheterisation.\n- *Intravitreal chemotherapy (melphalan):* Specifically for vitreous seeding.\n\n**Enucleation:** Indicated for Group E disease (extensive tumour >50% globe, neovascular glaucoma, anterior segment involvement, or no visual potential).\n\n**Radiotherapy:** External beam radiotherapy is reserved as a last resort.\n\n**Long-term surveillance:** Genetic counselling and screening for second malignancies."
+        }
+      ]
+    }
+  },
+  {
+    "id": "test1_st3",
+    "type": "OSCE",
+    "topic": "Oculoplastics and Orbit",
+    "paper": "OSCE Test 1",
+    "year": "2026",
+    "data": {
+      "scenario": "**Demographics:** 42-year-old female\n**Visual Acuity:** OD 6/6 | OS 6/9⁻²\n**Intraocular Pressure (IOP):** OD 18 mmHg | OS 24 mmHg\n**Primary Instruction:** \"Examine the external photograph and orbital CT provided. Describe the abnormalities present and state your diagnosis.\"\n\n**Clinical Images:**\n![Clinical Image 1](/images/test1/test1_st3_img1.jpeg)\n![Clinical Image 2](/images/test1/test1_st3_img2.gif)\n![Clinical Image 3](/images/test1/test1_st3_img3.jpeg)\n\n*Findings to elicit (Examiner Notes):* Bilateral (asymmetric) proptosis, upper lid retraction with scleral show and lid lag on downgaze, conjunctival injection over horizontal rectus insertions; CT shows fusiform enlargement of extraocular muscle bellies sparing tendinous insertions, with apical crowding.\n**Diagnosis:** Thyroid eye disease (Graves' orbitopathy) with early compressive optic neuropathy, left eye.",
+      "subQuestions": [
+        {
+          "id": "q1",
+          "text": "Describe the autoimmune pathophysiology driving this disease and the characteristic pattern of muscle involvement. What clinical scoring system is used to assess disease activity?",
+          "modelAnswer": "**Definitive Diagnosis:** Thyroid eye disease (Graves' orbitopathy) with left compressive optic neuropathy\n\n**Pathophysiology:** Autoimmune process where TSH-receptor autoantibodies (TRAb) cross-react with TSH receptors on orbital fibroblasts and preadipocytes; drives fibroblast activation, adipogenesis, and secretion of hydrophilic glycosaminoglycans (hyaluronic acid) causing muscle/fat expansion and T-cell infiltration.\n\n**Phases:** Active inflammatory phase (6 months–2 years) followed by stable fibrotic phase.\n\n**Muscle involvement pattern:** Inferior rectus > Medial rectus > Superior rectus/levator > Lateral rectus (\"I'm Slow\"). Explains elevation and abduction restriction.\n\n**Clinical Activity Score (CAS):** 7-point scale. CAS ≥3/7 indicates active inflammatory disease warranting immunosuppression."
+        },
+        {
+          "id": "q2",
+          "text": "What investigations would you arrange, and what are the key differentials for bilateral proptosis with muscle enlargement on imaging?",
+          "modelAnswer": "**Investigations:**\n- Thyroid function tests & TRAb.\n- Hertel exophthalmometry for proptosis measurement.\n- CT or MRI orbits (CT for bony planning; MRI T2 for active muscle inflammation).\n- Formal visual fields, colour vision (Ishihara), and RAPD assessment.\n\n**Key Differentials:**\n- *Orbital myositis:* Involves tendinous insertion, painful, steroid-responsive.\n- *IgG4-related orbital disease:* Lacrimal gland & muscle infiltration, elevated IgG4.\n- *Carotid-cavernous fistula:* Pulsatile proptosis, arterialised vessels, bruit.\n- *Orbital lymphoma / metastasis:* Asymmetric, irregular muscle enlargement.\n- *Granulomatosis with polyangiitis:* Associated scleritis, sinus disease, ANCA+."
+        },
+        {
+          "id": "q3",
+          "text": "This patient has evidence of compressive optic neuropathy. Outline your management, from acute medical therapy through to surgical rehabilitation, and specify your first-line regimen for sight-threatening disease.",
+          "modelAnswer": "**General measures:** Strict smoking cessation, selenium supplementation, lubrication, prism/occlusion, endocrine control.\n\n**Sight-threatening disease (Compressive Optic Neuropathy):**\n- *First-line:* High-dose IV methylprednisolone pulse therapy (500 mg–1 g weekly for 3 weeks).\n- *Second-line / Surgical:* Urgent surgical orbital decompression (medial/inferior wall) if no response within 1–2 weeks.\n- *Emerging therapies:* Teprotumumab (IGF-1R inhibitor), mycophenolate, rituximab.\n\n**Staged surgical rehabilitation (once quiescent for ≥6 months):**\n1. Bony orbital decompression first.\n2. Strabismus surgery second.\n3. Eyelid surgery (lid retraction repair) last."
+        }
+      ]
+    }
+  }
+]

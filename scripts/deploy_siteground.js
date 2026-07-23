@@ -1,7 +1,40 @@
 import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
+import https from 'https';
 import 'dotenv/config';
+
+function deployRenderBackend() {
+  const RENDER_DEPLOY_HOOK = process.env.RENDER_DEPLOY_HOOK || 'https://api.render.com/deploy/srv-d9dg83taeets7394tl8g?key=IZqdGq5dX40';
+  
+  return new Promise((resolve, reject) => {
+    console.log('🔄 Triggering Render backend redeploy...');
+    const url = new URL(RENDER_DEPLOY_HOOK);
+    const options = {
+      hostname: url.hostname,
+      path: url.pathname + url.search,
+      method: 'GET',
+    };
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', (chunk) => data += chunk);
+      res.on('end', () => {
+        if (res.statusCode >= 200 && res.statusCode < 400) {
+          console.log('✅ Render backend deploy triggered successfully! (It will be live in ~1-2 minutes)');
+          resolve();
+        } else {
+          console.warn(`⚠️  Render deploy hook returned status ${res.statusCode}: ${data}`);
+          resolve(); // Non-fatal: frontend deploy already succeeded
+        }
+      });
+    });
+    req.on('error', (e) => {
+      console.warn('⚠️  Could not reach Render deploy hook:', e.message);
+      resolve(); // Non-fatal
+    });
+    req.end();
+  });
+}
 
 function deploy() {
   const {
@@ -54,4 +87,9 @@ function deploy() {
   }
 }
 
-deploy();
+async function main() {
+  deploy();
+  await deployRenderBackend();
+}
+
+main();

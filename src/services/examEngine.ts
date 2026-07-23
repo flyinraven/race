@@ -712,7 +712,7 @@ export async function parsePDFQuestionBank(pdfBase64: string, fileName: string, 
           type: qType,
           topic: qData.topic || 'combined',
           paper: assignedPaper,
-          year: defaultYear || 'AI',
+          year: qData.year || defaultYear || 'AI',
           questionLabel: qData.questionLabel || (qType === 'OSCE' ? `Station ${idx + 1}` : undefined),
           data: qData.data || qData,
           used: false
@@ -806,7 +806,7 @@ export async function parseTextQuestionBank(textContent: string, fileName: strin
           type: qType,
           topic: qData.topic || 'combined',
           paper: assignedPaper,
-          year: defaultYear || 'AI',
+          year: qData.year || defaultYear || 'AI',
           questionLabel: qData.questionLabel || (qType === 'OSCE' ? `Station ${idx + 1}` : undefined),
           data: qData.data || qData,
           used: false

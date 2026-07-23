@@ -119,9 +119,19 @@ export async function initDb() {
         END IF;
       END $$
     `);
-    await query("UPDATE questions SET paper = 'OSCE' WHERE type = 'OSCE'");
-    await query("UPDATE questions SET year = 'AI' WHERE type = 'OSCE' AND year = '2026'");
-    await query("UPDATE questions SET paper = 'OSCE' WHERE paper LIKE 'OSCE Bank%'");
+    // Backfill paper, year, question_label columns from the data JSON blob for all existing rows
+    await query(`UPDATE questions SET year = data->>'year' WHERE year IS NULL AND data->>'year' IS NOT NULL`);
+    await query(`UPDATE questions SET paper = data->>'paper' WHERE paper IS NULL AND data->>'paper' IS NOT NULL`);
+    await query(`UPDATE questions SET question_label = data->>'questionLabel' WHERE question_label IS NULL AND data->>'questionLabel' IS NOT NULL`);
+
+    // Clean up OSCE questions: set paper = 'OSCE', and year = 'AI' (they are AI mock questions, not real past exams)
+    await query(`UPDATE questions SET paper = 'OSCE' WHERE type = 'OSCE'`);
+    await query(`UPDATE questions SET year = 'AI' WHERE type = 'OSCE'`);
+    await query(`UPDATE questions SET paper = 'OSCE' WHERE paper LIKE 'OSCE Bank%'`);
+
+    // Clean up AI-generated VSAQ/SEQ that got incorrectly tagged with the calendar year
+    await query(`UPDATE questions SET year = 'AI' WHERE type IN ('VSAQ','SEQ') AND paper IN ('AI Generated','Unknown','VSAQ','SEQ')`);
+
 
     // Standardize OSCE instructions
     const osceRes = await query("SELECT id, topic, data FROM questions WHERE type = 'OSCE'");

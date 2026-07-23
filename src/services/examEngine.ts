@@ -661,11 +661,23 @@ export async function parsePDFQuestionBank(pdfBase64: string, fileName: string, 
       
       let chunkQuestions: any[] = [];
       try {
-        chunkQuestions = JSON.parse(parsedText || "[]");
+        let raw = JSON.parse(parsedText || "[]");
+        if (raw && !Array.isArray(raw) && typeof raw === 'object') {
+          if (Array.isArray(raw.questions)) raw = raw.questions;
+          else if (Array.isArray(raw.data)) raw = raw.data;
+          else raw = [raw];
+        }
+        chunkQuestions = Array.isArray(raw) ? raw : [];
       } catch (e) {
         try {
           const repaired = jsonrepair(parsedText || "[]");
-          chunkQuestions = JSON.parse(repaired);
+          let raw = JSON.parse(repaired);
+          if (raw && !Array.isArray(raw) && typeof raw === 'object') {
+            if (Array.isArray(raw.questions)) raw = raw.questions;
+            else if (Array.isArray(raw.data)) raw = raw.data;
+            else raw = [raw];
+          }
+          chunkQuestions = Array.isArray(raw) ? raw : [];
         } catch (repairErr) {
           console.warn(`Failed to parse chunk ${chunkIndex}, skipping.`, repairErr);
         }

@@ -4,7 +4,7 @@
     "type": "OSCE",
     "topic": "Cataract",
     "paper": "OSCE",
-    "year": "2026",
+    "year": "AI",
     "data": {
       "scenario": "**Demographics:** Older adult female\n**Visual Acuity:** OD 6/24 (pinhole 6/12); OS 6/6\n**Intraocular Pressure:** OD 15 mmHg; OS 14 mmHg\n**Primary Instruction:** Examine the clinical presentation and slit-lamp findings. Identify the complications, discuss your differential diagnosis, and outline your immediate surgical and medical management plan.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume6/vol6_st1_img1.jpeg)\n![Clinical Image 2](/images/volume6/vol6_st1_img2.jpeg)",
       "subQuestions": [
@@ -31,7 +31,7 @@
     "type": "OSCE",
     "topic": "Cornea and External Eye",
     "paper": "OSCE",
-    "year": "2026",
+    "year": "AI",
     "data": {
       "scenario": "**Demographics:** Adult male\n**Visual Acuity:** OD 6/12; OS counting fingers at 1 m\n**Intraocular Pressure:** OD 13 mmHg; OS digital estimate only\n**Primary Instruction:** Examine the slit-lamp findings and any corneal imaging provided. Describe the abnormalities, state the most likely diagnosis, and discuss your immediate treatment strategy.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume6/vol6_st2_img1.jpeg)\n![Clinical Image 2](/images/volume6/vol6_st2_img2.jpeg)",
       "subQuestions": [
@@ -58,7 +58,7 @@
     "type": "OSCE",
     "topic": "Glaucoma",
     "paper": "OSCE",
-    "year": "2026",
+    "year": "AI",
     "data": {
       "scenario": "**Demographics:** Adult male\n**Visual Acuity:** OD 6/6; OS 6/18\n**Intraocular Pressure:** OD 15 mmHg; OS 54 mmHg\n**Primary Instruction:** Examine the clinical presentation and imaging findings. Identify the pathology, discuss the mechanism, and outline your immediate and long-term management plan.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume6/vol6_st3_img1.jpeg)\n![Clinical Image 2](/images/volume6/vol6_st3_img2.jpeg)",
       "subQuestions": [
@@ -85,7 +85,7 @@
     "type": "OSCE",
     "topic": "Ocular Inflammation",
     "paper": "OSCE",
-    "year": "2026",
+    "year": "AI",
     "data": {
       "scenario": "**Demographics:** Adult male\n**Visual Acuity:** OD 6/6; OS 6/60\n**Intraocular Pressure:** OD 14 mmHg; OS 13 mmHg\n**Primary Instruction:** Examine the clinical presentation and fundus findings. Describe the inflammatory phenotype, state the diagnosis, and outline your investigation and treatment plan.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume6/vol6_st4_img1.jpeg)\n![Clinical Image 2](/images/volume6/vol6_st4_img2.jpeg)\n![Clinical Image 3](/images/volume6/vol6_st4_img3.jpeg)",
       "subQuestions": [
@@ -112,7 +112,7 @@
     "type": "OSCE",
     "topic": "Vitreoretinal",
     "paper": "OSCE",
-    "year": "2026",
+    "year": "AI",
     "data": {
       "scenario": "**Demographics:** Older adult female\n**Visual Acuity:** OD 6/12; OS 6/24\n**Intraocular Pressure:** OD 14 mmHg; OS 15 mmHg\n**Primary Instruction:** Examine the fundus photographs and optical coherence tomography. Describe the clinical findings, discuss the mechanism of the pathology, and outline your management options.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume6/vol6_st5_img1.jpeg)\n![Clinical Image 2](/images/volume6/vol6_st5_img2.jpeg)",
       "subQuestions": [
@@ -139,7 +139,7 @@
     "type": "OSCE",
     "topic": "Neuro-ophthalmology",
     "paper": "OSCE",
-    "year": "2026",
+    "year": "AI",
     "data": {
       "scenario": "**Demographics:** Adult female\n**Visual Acuity:** OD 6/6; OS 6/36\n**Intraocular Pressure:** OD 14 mmHg; OS 13 mmHg\n**Primary Instruction:** Examine the clinical presentation and neuroimaging. Describe the abnormalities, localise the lesion, and outline your immediate investigation and management priorities.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume6/vol6_st6_img1.jpeg)\n![Clinical Image 2](/images/volume6/vol6_st6_img2.jpeg)",
       "subQuestions": [
@@ -166,7 +166,7 @@
     "type": "OSCE",
     "topic": "Ocular Motility",
     "paper": "OSCE",
-    "year": "2026",
+    "year": "AI",
     "data": {
       "scenario": "**Demographics:** Adult male\n**Visual Acuity:** OD 6/12; OS 6/6\n**Intraocular Pressure:** OD 22 mmHg; OS 20 mmHg\n**Primary Instruction:** Examine the motility photographs and any neuroimaging provided. Describe the abnormalities, identify the clinical syndrome, and outline your immediate and long-term management.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume6/vol6_st7_img1.jpeg)\n![Clinical Image 2](/images/volume6/vol6_st7_img2.jpeg)",
       "subQuestions": [
@@ -193,7 +193,7 @@
     "type": "OSCE",
     "topic": "Paediatrics",
     "paper": "OSCE",
-    "year": "2026",
+    "year": "AI",
     "data": {
       "scenario": "**Demographics:** Young child female\n**Visual Acuity:** OD fixes and follows; OS poor fixation\n**Intraocular Pressure:** OD 18 mmHg; OS 32 mmHg under anaesthesia\n**Primary Instruction:** Examine the clinical presentation and imaging findings. State the diagnosis, outline the key risks, and discuss your investigation and treatment plan.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume6/vol6_st8_img1.jpeg)\n![Clinical Image 2](/images/volume6/vol6_st8_img2.jpeg)",
       "subQuestions": [
@@ -220,7 +220,7 @@
     "type": "OSCE",
     "topic": "Oculoplastics and Orbit",
     "paper": "OSCE",
-    "year": "2026",
+    "year": "AI",
     "data": {
       "scenario": "**Demographics:** Adult female\n**Visual Acuity:** OD 6/6; OS 6/18\n**Intraocular Pressure:** OD 14 mmHg; OS 15 mmHg\n**Primary Instruction:** Examine the clinical presentation and orbital imaging. Describe the abnormalities, state the diagnosis, and discuss your immediate and long-term management plan.\n\n**Clinical Images:**\n![Clinical Image 1](/images/volume6/vol6_st9_img1.jpeg)\n![Clinical Image 2](/images/volume6/vol6_st9_img2.jpeg)",
       "subQuestions": [

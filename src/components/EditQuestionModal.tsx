@@ -106,16 +106,25 @@ export default function EditQuestionModal({ question, onClose, onSave }: EditQue
                 value={editedQuestion.year || ''} 
                 onChange={e => handleTopLevelChange('year', e.target.value)}
                 className="w-full border border-slate-300 rounded p-2 text-sm focus:ring-1 focus:ring-indigo-500"
-                placeholder="e.g. 2023"
+                placeholder="e.g. 2026 or AI"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Paper/Label</label>
+              <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Paper</label>
               <input 
-                value={editedQuestion.questionLabel || editedQuestion.paper || ''} 
+                value={editedQuestion.paper || ''} 
+                onChange={e => handleTopLevelChange('paper', e.target.value)}
+                className="w-full border border-slate-300 rounded p-2 text-sm focus:ring-1 focus:ring-indigo-500"
+                placeholder="e.g. Paper 1, OSCE Day 1, or OSCE"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Question Label</label>
+              <input 
+                value={editedQuestion.questionLabel || ''} 
                 onChange={e => handleTopLevelChange('questionLabel', e.target.value)}
                 className="w-full border border-slate-300 rounded p-2 text-sm focus:ring-1 focus:ring-indigo-500"
-                placeholder="e.g. Sem 1 Q12"
+                placeholder="e.g. Question 1 (SEQ)"
               />
             </div>
           </div>

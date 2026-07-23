@@ -117,6 +117,8 @@ export async function initDb() {
       END $$
     `);
     await query("UPDATE questions SET paper = 'OSCE' WHERE type = 'OSCE'");
+    await query("UPDATE questions SET year = 'AI' WHERE type = 'OSCE' AND year = '2026'");
+    await query("UPDATE questions SET paper = 'OSCE' WHERE paper LIKE 'OSCE Bank%'");
 
     // Standardize OSCE instructions
     const osceRes = await query("SELECT id, topic, data FROM questions WHERE type = 'OSCE'");

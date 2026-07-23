@@ -706,6 +706,8 @@ export async function parsePDFQuestionBank(pdfBase64: string, fileName: string, 
         let assignedPaper = qData.paper || defaultPaper || 'AI Generated';
         if (qType === 'OSCE' || defaultPaper === 'OSCE' || (typeof assignedPaper === 'string' && assignedPaper.includes('OSCE'))) {
           assignedPaper = idx < 9 ? 'OSCE Day 1' : 'OSCE Day 2';
+        } else if (typeof assignedPaper === 'string') {
+          assignedPaper = assignedPaper.replace(/Bank\s*\d+/gi, '').trim() || 'AI Generated';
         }
         return {
           id: Math.random().toString(36).substring(2, 15),
@@ -800,6 +802,8 @@ export async function parseTextQuestionBank(textContent: string, fileName: strin
         let assignedPaper = qData.paper || defaultPaper || 'AI Generated';
         if (qType === 'OSCE' || defaultPaper === 'OSCE' || (typeof assignedPaper === 'string' && assignedPaper.includes('OSCE'))) {
           assignedPaper = idx < 9 ? 'OSCE Day 1' : 'OSCE Day 2';
+        } else if (typeof assignedPaper === 'string') {
+          assignedPaper = assignedPaper.replace(/Bank\s*\d+/gi, '').trim() || 'AI Generated';
         }
         return {
           id: Math.random().toString(36).substring(2, 15),

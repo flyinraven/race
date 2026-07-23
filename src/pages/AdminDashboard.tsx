@@ -823,7 +823,7 @@ export default function AdminDashboard() {
 
   const uniqueTopics = ['All', ...Array.from(new Set(bankItems.map(q => q.topic)))].filter(Boolean);
   const uniqueYears = ['All', ...Array.from(new Set(bankItems.map(q => String(q.year || 'Unknown'))))];
-  const uniquePapers = ['All', ...Array.from(new Set(bankItems.map(q => String(q.paper || 'Unknown'))))];
+  const uniquePapers = ['All', ...Array.from(new Set(bankItems.map(q => String(q.paper || 'Unknown')))).filter(p => !p.startsWith('OSCE Bank'))];
   const uniqueTypes = ['All', ...Array.from(new Set(bankItems.map(q => q.type)))];
 
   return (

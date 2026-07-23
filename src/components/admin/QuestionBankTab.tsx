@@ -395,13 +395,15 @@ export default function QuestionBankTab({
                               'bg-blue-100 text-blue-800'
                             }`}>{q.type}</span>
                             <span className="text-sm font-medium text-slate-800">{q.topic}</span>
-                            {q.year && q.year !== 'Unknown' && <span className="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded">{q.year}</span>}
+                            {q.year && q.year !== 'Unknown' && q.year !== 'AI' && <span className="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded">{q.year}</span>}
                             {q.created_at && (
                               <span className="text-xs text-slate-400 font-medium">
                                 (Added: {new Date(q.created_at).toLocaleDateString()})
                               </span>
                             )}
-                            {q.paper && q.paper !== 'Unknown' && <span className="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded">{q.paper}</span>}
+                            {q.paper && q.paper !== 'Unknown' && q.paper !== 'AI Generated' && q.paper !== q.type && !q.paper.startsWith('OSCE Bank') && (
+                              <span className="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded">{q.paper}</span>
+                            )}
                             {q.used && <span className="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded flex items-center gap-1"><CheckCircle className="w-3 h-3"/> Used</span>}
                           </div>
                           <div className="flex items-center gap-2 mt-2 sm:mt-0">

@@ -757,11 +757,11 @@ router.get('/questions', authenticate, async (req: any, res) => {
         id: row.id,
         type: row.type || (row.data && row.data.type) || 'VSAQ',
         topic: row.topic || (row.data && row.data.topic) || 'General',
-        paper: (row.data && row.data.paper) || 'Unknown',
-        year: (row.data && row.data.year) || 'Unknown',
-        questionLabel: (row.data && row.data.questionLabel) || '',
+        paper: row.paper || (row.data && row.data.paper) || 'Unknown',
+        year: row.year || (row.data && row.data.year) || 'Unknown',
+        questionLabel: row.question_label || (row.data && row.data.questionLabel) || (row.data && row.data.question_label) || '',
         data: qData,
-        used: (row.data && row.data.used) || false,
+        used: row.used || (row.data && row.data.used) || false,
         created_at: row.created_at
       };
     });
@@ -780,8 +780,11 @@ router.post('/questions/upsert', authenticate, async (req: any, res) => {
         qData = q.data.data;
       }
       await query(
-        'INSERT INTO questions (id, type, topic, data) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO UPDATE SET type = EXCLUDED.type, topic = EXCLUDED.topic, data = EXCLUDED.data',
-        [q.id, q.type, q.topic, JSON.stringify({
+        `INSERT INTO questions (id, type, topic, paper, year, question_label, data) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7) 
+         ON CONFLICT (id) DO UPDATE 
+         SET type = EXCLUDED.type, topic = EXCLUDED.topic, paper = EXCLUDED.paper, year = EXCLUDED.year, question_label = EXCLUDED.question_label, data = EXCLUDED.data`,
+        [q.id, q.type, q.topic, q.paper || 'Unknown', q.year || 'Unknown', q.questionLabel || '', JSON.stringify({
           id: q.id,
           type: q.type,
           topic: q.topic,

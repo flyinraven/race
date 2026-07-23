@@ -89,6 +89,9 @@ export async function initDb() {
     await query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token_expires_at TIMESTAMP WITH TIME ZONE`);
     await query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS welcome_token TEXT`);
     await query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS welcome_token_expires_at TIMESTAMP WITH TIME ZONE`);
+    await query(`ALTER TABLE questions ADD COLUMN IF NOT EXISTS paper TEXT`);
+    await query(`ALTER TABLE questions ADD COLUMN IF NOT EXISTS year TEXT`);
+    await query(`ALTER TABLE questions ADD COLUMN IF NOT EXISTS question_label TEXT`);
     await query(`ALTER TABLE questions ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP`);
     await query(`ALTER TABLE questions ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP`);
 

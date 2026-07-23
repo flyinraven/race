@@ -37,10 +37,6 @@ export default function Dashboard() {
       if (semStr.includes('Sem 1') || semStr.includes('sem1') || semStr.includes('s1')) sems.add('Sem 1');
       if (semStr.includes('Sem 2') || semStr.includes('sem2') || semStr.includes('s2')) sems.add('Sem 2');
     });
-    if (sems.size === 0) {
-      sems.add('Sem 1');
-      sems.add('Sem 2');
-    }
     return Array.from(sems);
   }, [bankQuestions, selectedPastYear]);
 

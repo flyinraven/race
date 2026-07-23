@@ -703,7 +703,7 @@ export async function parsePDFQuestionBank(pdfBase64: string, fileName: string, 
       const bank = await getBank();
       const newBankItems: BankQuestion[] = combinedQuestions.map((qData: any, idx: number) => {
         const qType = qData.type || 'VSAQ';
-        let assignedPaper = qData.paper || defaultPaper || 'Past Exam';
+        let assignedPaper = qData.paper || defaultPaper || 'AI Generated';
         if (qType === 'OSCE' || defaultPaper === 'OSCE' || (typeof assignedPaper === 'string' && assignedPaper.includes('OSCE'))) {
           assignedPaper = idx < 9 ? 'OSCE Day 1' : 'OSCE Day 2';
         }
@@ -712,7 +712,7 @@ export async function parsePDFQuestionBank(pdfBase64: string, fileName: string, 
           type: qType,
           topic: qData.topic || 'combined',
           paper: assignedPaper,
-          year: qData.year || defaultYear || 'AI',
+          year: defaultYear || 'AI',
           questionLabel: qData.questionLabel || (qType === 'OSCE' ? `Station ${idx + 1}` : undefined),
           data: qData.data || qData,
           used: false
@@ -797,7 +797,7 @@ export async function parseTextQuestionBank(textContent: string, fileName: strin
       const bank = await getBank();
       const newBankItems: BankQuestion[] = combinedQuestions.map((qData: any, idx: number) => {
         const qType = qData.type || 'VSAQ';
-        let assignedPaper = qData.paper || defaultPaper || 'Past Exam';
+        let assignedPaper = qData.paper || defaultPaper || 'AI Generated';
         if (qType === 'OSCE' || defaultPaper === 'OSCE' || (typeof assignedPaper === 'string' && assignedPaper.includes('OSCE'))) {
           assignedPaper = idx < 9 ? 'OSCE Day 1' : 'OSCE Day 2';
         }
@@ -806,7 +806,7 @@ export async function parseTextQuestionBank(textContent: string, fileName: strin
           type: qType,
           topic: qData.topic || 'combined',
           paper: assignedPaper,
-          year: qData.year || defaultYear || 'AI',
+          year: defaultYear || 'AI',
           questionLabel: qData.questionLabel || (qType === 'OSCE' ? `Station ${idx + 1}` : undefined),
           data: qData.data || qData,
           used: false
@@ -1122,7 +1122,7 @@ export async function generateCustomBatch(specs: QuestionSpec[], onProgress?: (m
             type: spec.type,
             topic: spec.topic,
             questionLabel: spec.label,
-            paper: spec.paperName,
+            paper: spec.paperName || 'AI Generated',
             year: extractedYear,
             data: qWrapper.data,
             used: false

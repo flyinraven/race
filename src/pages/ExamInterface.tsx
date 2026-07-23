@@ -321,55 +321,79 @@ function buildExamPlan(examId: string, bankItems?: any[]): QuestionSpec[] {
         });
       }
     } else if (simType.startsWith('paper')) {
-      if (bankItems && bankItems.length > 0) {
-        let vsaqs = bankItems.filter(q => q.type === 'VSAQ');
-        let seqs = bankItems.filter(q => q.type === 'SEQ');
-        
-        vsaqs = filterAndCapQuestions(vsaqs, false);
-        seqs = filterAndCapQuestions(seqs, false);
-        
-        const selectedVsaqs: any[] = [];
-        for (const topic of TOPICS) {
-          const match = vsaqs.find(q => q.topic === topic && !selectedVsaqs.includes(q));
-          if (match) selectedVsaqs.push(match);
-        }
-        for (const q of vsaqs) {
-          if (selectedVsaqs.length >= 15) break;
-          if (!selectedVsaqs.includes(q)) selectedVsaqs.push(q);
-        }
-        
-        const seqCount = (simType === 'paper2' || simType === 'paper4') ? 4 : 5;
-        const selectedSeqs: any[] = [];
-        for (const topic of TOPICS) {
-          if (selectedSeqs.length >= seqCount) break;
-          const match = seqs.find(q => q.topic === topic && !selectedSeqs.includes(q));
-          if (match) selectedSeqs.push(match);
-        }
-        for (const q of seqs) {
-          if (selectedSeqs.length >= seqCount) break;
-          if (!selectedSeqs.includes(q)) selectedSeqs.push(q);
-        }
-        
-        selectedVsaqs.forEach((q, i) => {
-          plan.push({
+      let vsaqs = (bankItems || []).filter(q => q.type === 'VSAQ');
+      let seqs = (bankItems || []).filter(q => q.type === 'SEQ');
+      
+      vsaqs = filterAndCapQuestions(vsaqs, false);
+      seqs = filterAndCapQuestions(seqs, false);
+      
+      const selectedVsaqs: any[] = [];
+      for (let i = 0; i < 15; i++) {
+        const topic = TOPICS[i % TOPICS.length];
+        const match = vsaqs.find(q => q.topic === topic && !selectedVsaqs.includes(q));
+        if (match) {
+          selectedVsaqs.push(match);
+        } else {
+          selectedVsaqs.push({
             type: 'VSAQ',
-            topic: q.topic,
+            topic,
             timeLimitSec: 90,
-            label: `Question ${i + 1} (VSAQ)`,
-            bankId: q.id
+            questionLabel: `Question ${i + 1} (VSAQ)`
           });
-        });
-        
-        selectedSeqs.forEach((q, i) => {
-          plan.push({
-            type: 'SEQ',
-            topic: q.topic,
-            timeLimitSec: 15 * 60,
-            label: `Question ${15 + i + 1} (SEQ)`,
-            bankId: q.id
-          });
-        });
+        }
       }
+      
+      const seqCount = (simType === 'paper2' || simType === 'paper4') ? 4 : 5;
+      let seqStart = 1;
+      if (simType === 'paper2') seqStart = 6;
+      else if (simType === 'paper3') seqStart = 10;
+      else if (simType === 'paper4') seqStart = 15;
+
+      const getNum = (str: string) => {
+        const match = str?.match(/\d+/);
+        return match ? parseInt(match[0], 10) : 0;
+      };
+
+      let paperSeqs = seqs.filter(q => {
+        const qNum = getNum(q.questionLabel || q.id);
+        return qNum >= seqStart && qNum < seqStart + seqCount;
+      });
+      if (paperSeqs.length === 0) paperSeqs = seqs.slice(0, seqCount);
+
+      const selectedSeqs: any[] = [];
+      for (let i = 0; i < seqCount; i++) {
+        const match = paperSeqs[i];
+        if (match) {
+          selectedSeqs.push(match);
+        } else {
+          selectedSeqs.push({
+            type: 'SEQ',
+            topic: TOPICS[i % TOPICS.length],
+            timeLimitSec: 15 * 60,
+            questionLabel: `Question ${seqStart + i} (SEQ)`
+          });
+        }
+      }
+      
+      selectedVsaqs.forEach((q, i) => {
+        plan.push({
+          type: 'VSAQ',
+          topic: q.topic,
+          timeLimitSec: 90,
+          label: `Question ${i + 1} (VSAQ)`,
+          bankId: q.id
+        });
+      });
+      
+      selectedSeqs.forEach((q, i) => {
+        plan.push({
+          type: 'SEQ',
+          topic: q.topic || 'combined',
+          timeLimitSec: 15 * 60,
+          label: q.questionLabel || `Question ${15 + i + 1} (SEQ)`,
+          bankId: q.id
+        });
+      });
     } else if (simType === 'osce') {
       if (bankItems && bankItems.length > 0) {
         let osces = bankItems.filter(q => q.type === 'OSCE');
@@ -596,7 +620,7 @@ export default function ExamInterface() {
         if (examId.startsWith('realpastb64_')) {
            try {
              const config = JSON.parse(atob(examId.substring('realpastb64_'.length)));
-             if ((config.p === 'Paper 1' || config.p === 'Paper 2') && config.t === 'All' && (!config.tpc || config.tpc === 'All')) {
+             if ((config.p === 'Paper 1' || config.p === 'Paper 2' || config.p === 'Paper 3' || config.p === 'Paper 4' || config.p === 'All') && (config.t === 'All' || !config.t) && (!config.tpc || config.tpc === 'All')) {
                 fullPaperMode = true;
              }
             } catch(e) {}
@@ -1147,6 +1171,15 @@ export default function ExamInterface() {
           <div className="text-4xl font-mono font-bold bg-slate-900/60 py-4 rounded-xl text-blue-400 border border-slate-900">
             {formatTime(loginTimeRemaining)}
           </div>
+          <button
+            onClick={() => {
+              setExamPhase('reading');
+            }}
+            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-xl transition shadow-lg flex items-center justify-center gap-2"
+          >
+            <span>Proceed to Reading Phase</span>
+            <ChevronRight className="w-5 h-5" />
+          </button>
         </div>
       </div>
     );
